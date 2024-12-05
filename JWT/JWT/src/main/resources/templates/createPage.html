@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th ="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CreateFrom</title>
+</head>
+<body>
+    <form action="#" th:action="@{/test/create}" th:object="${user}" method="post">
+      <label>Username</label>
+      <input type="text" th:field="*{username}">
+      <br>
+      <label>Password</label>
+      <input type="password" th:field="*{password}">
+      <br>
+      <label>Roles</label>
+      <input type="text" th:field="*{authorities}">
+      <br>
+      <input type="submit" value="save">
+    </form>
+
+</body>
+</html>
