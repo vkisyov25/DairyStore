@@ -2,6 +2,7 @@ package com.springSecurity.JWT.Controllers;
 
 import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Security.CustomUserDetailsService;
+import com.springSecurity.JWT.Services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,8 @@ import org.springframework.security.core.Authentication;
 @RequestMapping("/test")
 public class SecurityController {
     private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     public SecurityController(CustomUserDetailsService customUserDetailsService) {
@@ -54,6 +57,7 @@ public class SecurityController {
     @PostMapping("/create")
     public String create(@ModelAttribute User user){
         customUserDetailsService.create(user);
+        emailService.sendRegistrationEmail(user.getEmail(), user.getUsername());
         return "redirect:/test/home";
     }
 }

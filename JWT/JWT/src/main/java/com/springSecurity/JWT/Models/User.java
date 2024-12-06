@@ -20,4 +20,6 @@ public class User {
     private String password;
     @Column(unique = false, nullable = false)
     private String authorities;
+    @Column(unique = true, nullable = false)
+    private String email;
 }
