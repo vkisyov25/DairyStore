@@ -34,13 +34,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+                //TODO: I have to view how to use JWT
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authorizeRequest -> authorizeRequest
                                 .requestMatchers("/test/seller").hasAuthority("seller")
                                 .requestMatchers("/test/admin").hasAuthority("admin")
                                 .anyRequest().permitAll()
-                ).formLogin(Customizer.withDefaults());
+                ).formLogin(Customizer.withDefaults()); // This is for custom login page: form -> form.loginPage("/login")
         return httpSecurity.build();
     }
 

@@ -41,12 +41,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     }*/
 
     public String create(User user) {
-        /*// Encodes the password and creates a new User object
-        User user = User.builder()
-                .username(user.getUsername())
-                .password(new BCryptPasswordEncoder().encode(user.getPassword())) // Encrypts the password
-                .authorities(user.getAuthorities()) // Assigns default authority
-                .build();*/
 
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 
