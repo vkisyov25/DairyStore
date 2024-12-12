@@ -47,11 +47,11 @@ public class SecurityConfiguration  {
                                 .anyRequest().permitAll()
                 ).formLogin(Customizer.withDefaults())// This is for custom login page: form -> form.loginPage("/login")
                 .logout(logout -> logout
-                        .logoutUrl("/custom-logout")
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                        //.logoutUrl("/custom-logout")
+                        //.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                         .logoutSuccessUrl("/test/home")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                        //.invalidateHttpSession(true)
+                        //.deleteCookies("JSESSIONID")
                 );
                 /*.logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
