@@ -47,33 +47,8 @@ public class SecurityConfiguration  {
                                 .anyRequest().permitAll()
                 ).formLogin(Customizer.withDefaults())// This is for custom login page: form -> form.loginPage("/login")
                 .logout(logout -> logout
-                        //.logoutUrl("/custom-logout")
-                        //.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                         .logoutSuccessUrl("/test/home")
-                        //.invalidateHttpSession(true)
-                        //.deleteCookies("JSESSIONID")
                 );
-                /*.logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-                        .logoutSuccessUrl("/login?logout")
-                );*/
-               /* .logout(logout -> logout
-                        .logoutUrl("/logout") // URL за logout
-                        .logoutSuccessUrl("/test/home") // Пренасочване към homePage
-                        .invalidateHttpSession(true) // Инвалидиране на сесията
-                        .deleteCookies("JSESSIONID") // Изтриване на сесийните бисквитки
-                )
-                .sessionManagement(session -> session
-                        .sessionConcurrency(concurrency -> concurrency
-                                .maximumSessions(1) // Ограничаване до 1 активна сесия
-                                .expiredUrl("/login?expired=true") // Пренасочване при изтичане на сесията
-                        )
-                );
-                *//*.headers()
-                .frameOptions().sameOrigin() // Защита от clickjacking
-                .xssProtection().block(true) // Защита от XSS
-                .addHeaderWriter(new StaticHeadersWriter("X-Custom-Header", "Value")); */// Пример за добавяне на потребителски хедър// Пример: добавяне на потребителски хедър
-                //.logout().logoutSuccessUrl("/test/home").permitAll();
         return httpSecurity.build();
     }
 
