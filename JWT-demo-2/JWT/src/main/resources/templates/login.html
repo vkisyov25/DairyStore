@@ -1,0 +1,64 @@
+<!--
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2 class="text-center">Вход в системата</h2>
+      <form action="#" th:action="@{/test/login}" method="post">
+        &lt;!&ndash; Потребителско име &ndash;&gt;
+        <div class="form-group">
+          <label for="username">Потребителско име</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Въведете потребителско име" required>
+        </div>
+
+        &lt;!&ndash; Парола &ndash;&gt;
+        <div class="form-group">
+          <label for="password">Парола</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Въведете парола" required>
+        </div>
+
+        &lt;!&ndash; Бутон за вход &ndash;&gt;
+        <button type="submit" class="btn btn-primary btn-block">Вход</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Login</title>
+</head>
+<body>
+<h2>Влезте в профила си</h2>
+<form action="/test/login" method="post">
+  <div>
+    <label for="username">Потребителско име:</label>
+    <input type="text" id="username" name="username" required>
+  </div>
+  <div>
+    <label for="password">Парола:</label>
+    <input type="password" id="password" name="password" required>
+  </div>
+  <div>
+    <button type="submit">Вход</button>
+  </div>
+</form>
+<p th:if="${error}" th:text="${error}"></p>
+</body>
+</html>

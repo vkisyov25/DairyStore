@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seller</title>
+</head>
+<body>
+    <h2>You are Seller</h2>
+    <div th:text="${seller}"></div>
+    <br>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" value="Sign Out">Logout</button>
+    </form>
+    <!--<form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>-->
+    <!--<form action="/logout" method="post">
+        <input type="hidden" name="_csrf" value="${_csrf.token}" />
+        <button type="submit">Logout</button>
+    </form>-->
+
+</body>
+</html>
