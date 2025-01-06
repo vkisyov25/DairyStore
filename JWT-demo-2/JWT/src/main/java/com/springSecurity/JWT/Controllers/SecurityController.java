@@ -4,17 +4,17 @@ import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Security.CustomUserDetailsService;
 import com.springSecurity.JWT.Services.EmailService;
 import com.springSecurity.JWT.Utils.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-
+import jakarta.servlet.http.HttpServletResponse;
 @Controller
 //@RestController
 @RequestMapping("/test")
@@ -37,21 +37,6 @@ public class SecurityController {
         model.addAttribute("message", "Добре дошли в моята HTML страница!");
         return "homePage";
     }
-
-    /*@GetMapping("/login")
-    public String login (Model model){
-        // Извличане на информация за логнатия потребител
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInUsername = authentication.getName();
-        String role = authentication.getPrincipal().toString();
-        if (role.equals("admin")){
-            model.addAttribute("admin", "Hello " + loggedInUsername);
-            return "adminPage";
-        }
-        model.addAttribute("seller","Hello " + loggedInUsername );
-        return "sellerPage";
-    }*/
-
     @GetMapping("/login")
     public String showloginPage(Model model) {
         return "login";
@@ -60,7 +45,7 @@ public class SecurityController {
     @PostMapping("/login")
     public String processLogin(@RequestParam String username,
                                @RequestParam String password,
-                               Model model) {
+                               Model model,HttpServletResponse response) {
         try {
             // Аутентикация
             Authentication authentication = authenticationManager.authenticate(
@@ -72,23 +57,22 @@ public class SecurityController {
             // Генериране на JWT токен
             String token = jwtUtil.generateToken(userDetails);
 
+            //TODO: I may be have to delete it.
+
             // Добавяне на токена в сесията или като атрибут
             model.addAttribute("token", token);
 
-            String role = userDetails.getAuthorities().iterator().next().getAuthority(); // Взима първата роля
+            String role = userDetails.getAuthorities().iterator().next().getAuthority();
+            //Collection<? extends GrantedAuthority> cc = authentication.getAuthorities();
 
-            /*// Навигация според ролята
-            switch (role) {
-                case "seller":
-                    return "redirect:/sellerPage"; // Пренасочва към sellerPage
-                *//*case "bayer":
-                    return "redirect:/buyerPage"; // Пренасочва към buyerPage*//*
-                case "admin":
-                    return "redirect:/adminPage"; // Пренасочва към adminPage
-                default:
-                    model.addAttribute("error", "Непозната роля.");
-                    return "login";
-            }*/
+            // Съхраняване на JWT токен в HTTP-only cookie
+            Cookie cookie = new Cookie("JWT", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(3600); // 1 час
+            response.addCookie(cookie);
+
             if (role.equals("admin")){
                 model.addAttribute("admin", "Hello " + username);
                 return "adminPage";
@@ -100,7 +84,7 @@ public class SecurityController {
             return "login";
         } catch (AuthenticationException e) {
             model.addAttribute("error", "Невалидни данни за вход");
-            return "login"; // Връща страницата с грешка
+            return "login";
         }
     }
     @GetMapping("/register")
@@ -115,4 +99,5 @@ public class SecurityController {
         emailService.sendRegistrationEmail(user.getEmail(), user.getUsername());
         return "redirect:/test/home";
     }
+
 }

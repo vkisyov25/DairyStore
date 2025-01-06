@@ -1,9 +1,11 @@
 package com.springSecurity.JWT.Security;
 
 import com.springSecurity.JWT.Models.User;
+import com.springSecurity.JWT.Utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;

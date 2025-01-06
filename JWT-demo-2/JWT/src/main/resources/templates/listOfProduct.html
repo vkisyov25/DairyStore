@@ -1,0 +1,35 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seller</title>
+</head>
+<body>
+    <form>
+        th:eav
+    </form>
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>List of Products</title>
+</head>
+<body>
+<h1>Products</h1>
+<ul>
+    <li th:each="product : ${productList}">
+        <span th:text="${product.getName()}">Product Name</span>:
+        <span th:text="${product.type}">Product Type</span>
+        <br>
+        <span th:text="${product.price}">Product Price</span>лв/кг
+        <br>
+        <span th:text="${product.description}">Product Description</span>
+    </li>
+    <br>
+</ul>
+</body>
+</html>

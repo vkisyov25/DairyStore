@@ -24,14 +24,12 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         authorizeRequest -> authorizeRequest
-                                /*//.requestMatchers("/test/login").hasAuthority("seller")
-                                //.requestMatchers("/test/login").hasAuthority("admin")
-                                .requestMatchers("/test/login").hasAnyAuthority("seller", "admin")
-                                .anyRequest().permitAll()*/
-                                .requestMatchers("test/home","/test/login", "/test/register").permitAll() // Разрешаваме достъп до публични маршрути
-                                .anyRequest().authenticated() // Всички останали маршрути изискват аутентикация
+                                .requestMatchers("test/home","/test/login", "/test/register").permitAll()
+                                .requestMatchers("/products/all").hasAuthority("seller")
+                                .anyRequest().authenticated()
 
                 )
                 //.formLogin(Customizer.withDefaults())// This is for custom login page: form -> form.loginPage("/login")
@@ -44,8 +42,7 @@ public class SecurityConfiguration {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                );
 
         return http.build();
     }
