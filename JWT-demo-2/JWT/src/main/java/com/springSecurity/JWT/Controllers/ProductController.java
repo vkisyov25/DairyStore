@@ -21,7 +21,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/products")
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -37,7 +37,7 @@ public class ProductController {
             model.addAttribute("productList", products);
             return "listOfProduct";
         }
-
+        //TODO: Не може да я достъпим ако не сме логнати
         return "login"; // Ако няма логнат потребител
     }
 
