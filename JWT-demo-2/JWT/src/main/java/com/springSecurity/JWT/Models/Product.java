@@ -21,7 +21,7 @@ public class Product {
     @Column(nullable = false)
     private String type;
     @Column(nullable = false)
-    private String price;
+    private Double price;
     @Column(nullable = false)
     private String description;
     @ManyToOne
