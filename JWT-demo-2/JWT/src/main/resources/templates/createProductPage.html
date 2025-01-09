@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create product</title>
+</head>
+<body>
+<form action="#" th:action="@{/products/create}" th:object="${product}" method="post">
+  <label>Създаване на продукт</label>
+  <br>
+  <label>Name</label>
+  <input type="text" th:field="*{name}">
+  <br>
+  <label>Type</label>
+  <input type="text" th:field="*{type}">
+  <br>
+  <label>Price</label>
+  <input type="text" th:field="*{price}">
+  <br>
+  <label>Description</label>
+  <input type="text" th:field="*{description}">
+  <br>
+  <input type="submit" value="save">
+  <br>
+  <a th:href="@{/test/seller}">Back</a>
+</form>
+</body>
+</html>
