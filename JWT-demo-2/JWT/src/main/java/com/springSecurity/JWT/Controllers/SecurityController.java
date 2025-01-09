@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,8 +78,7 @@ public class SecurityController {
                 model.addAttribute("admin", "Hello " + username);
                 return "adminPage";
             } else if (role.equals("seller")) {
-                model.addAttribute("seller","Hello " + username );
-                return "sellerPage";
+                return "redirect:/test/seller";
             }
             model.addAttribute("error", "Непозната роля.");
             return "login";
@@ -100,4 +100,10 @@ public class SecurityController {
         return "redirect:/test/home";
     }
 
+    @GetMapping("/seller")
+    public String sellerPage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("seller","Hello " + authentication.getName() );
+        return "sellerPage"; // Това връща изгледа sellerPage.html
+    }
 }
