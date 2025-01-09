@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                         authorizeRequest -> authorizeRequest
                                 .requestMatchers("test/home","/test/login", "/test/register").permitAll()
                                 .requestMatchers("/products/all").hasAuthority("seller")
+                                .requestMatchers("/products/create").hasAuthority("seller")
                                 .anyRequest().authenticated()
 
                 )
