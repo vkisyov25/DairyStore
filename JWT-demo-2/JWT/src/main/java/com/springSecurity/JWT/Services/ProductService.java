@@ -18,4 +18,7 @@ public class ProductService {
     public List<Product> getAllProductByUsername(String username){
        return productRepository.findProductsByUsername(username);
     }
+    public Product creteProduct(Product product){
+        return productRepository.save(product);
+    }
 }
