@@ -5,6 +5,7 @@ import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Repository.UserRepository;
 import com.springSecurity.JWT.Security.CustomUserDetailsService;
 import com.springSecurity.JWT.Services.ProductService;
+import com.springSecurity.JWT.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -24,14 +25,11 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
-    private final CustomUserDetailsService customUserDetailsService;
-    @Autowired
-    private UserRepository userRepository;
+    private  UserService userService;
 
-    @Autowired
-    public ProductController(ProductService productService, CustomUserDetailsService customUserDetailsService) {
+    public ProductController(ProductService productService, UserService userService) {
         this.productService = productService;
-        this.customUserDetailsService = customUserDetailsService;
+        this.userService = userService;
     }
 
     //@PreAuthorize("hasAuthority('seller')")
@@ -58,7 +56,7 @@ public class ProductController {
     @PostMapping("/create")
     public String createProduct(@ModelAttribute Product product) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(authentication.getName());
+        User user = userService.getUserByUsername(authentication.getName());
         product.setUser(user);
         productService.creteProduct(product);
         return "sellerPage";
