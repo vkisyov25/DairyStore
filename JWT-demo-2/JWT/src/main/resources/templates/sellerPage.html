@@ -6,23 +6,23 @@
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
 </head>
 <body>
-    <h2>You are Seller</h2>
-    <div th:text="${seller}"></div>
+
+    <h2><div th:text="${seller}"></div></h2>
+    <br>
+
+    <a th:href="@{/user/allInformation}" class="btn btn-primary">My profile information</a>
+    <br>
+    <br>
+    <a th:href="@{/products/create}" class="btn btn-primary">Create product for sale</a>
+    <br>
+    <br>
+    <a th:href="@{/products/all}" class="btn btn-primary">View your products</a>
+    <br>
     <br>
     <form th:action="@{/logout}" method="post">
         <button type="submit" value="Sign Out">Logout</button>
     </form>
-    <a th:href="@{/products/all}" class="btn btn-primary">View your products</a>
-    <br>
-    <br>
-    <a th:href="@{/products/create}" class="btn btn-primary">Create product for sale</a>
-    <!--<form action="/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>-->
-    <!--<form action="/logout" method="post">
-        <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        <button type="submit">Logout</button>
-    </form>-->
 
 </body>
 </html>
+
