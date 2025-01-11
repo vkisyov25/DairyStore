@@ -5,6 +5,7 @@ import com.springSecurity.JWT.Security.CustomUserDetailsService;
 import com.springSecurity.JWT.Services.EmailService;
 import com.springSecurity.JWT.Utils.JwtUtil;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,7 +47,7 @@ public class SecurityController {
     @PostMapping("/login")
     public String processLogin(@RequestParam String username,
                                @RequestParam String password,
-                               Model model,HttpServletResponse response) {
+                               Model model, HttpServletResponse response, HttpServletRequest request) {
         try {
             // Аутентикация
             Authentication authentication = authenticationManager.authenticate(
@@ -65,6 +66,22 @@ public class SecurityController {
 
             String role = userDetails.getAuthorities().iterator().next().getAuthority();
             //Collection<? extends GrantedAuthority> cc = authentication.getAuthorities();
+
+            // Изтриваме стария токен, ако има такъв
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("JWT")) {
+                        cookie.setValue(null); // Изтриваме стойността
+                        cookie.setMaxAge(0);   // Изтриваме cookie-то
+                        cookie.setPath("/");   // Уверяваме се, че е изтрито на глобално ниво
+                        response.addCookie(cookie); // Изпращаме обратно изтритото cookie
+                    }
+                }
+            }
+
+            /*if (jwtUtil.isTokenExpired(token)) {
+                token = jwtUtil.generateToken(customUserDetailsService.loadUserByUsername(username));}*/
 
             // Съхраняване на JWT токен в HTTP-only cookie
             Cookie cookie = new Cookie("JWT", token);
