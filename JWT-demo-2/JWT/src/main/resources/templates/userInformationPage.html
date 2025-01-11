@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>User Information</title>
 </head>
 <body>
-$END$
+<h1>My Information</h1>
+<form>
+  Username: <label th:text="${user.username}"></label>
+    <br>
+  Email: <label th:text="${user.email}">Email</label>
+    <br>
+  Role: <label th:text="${user.authorities}">Role</label>
+    <br>
+    <br>
+    <a th:href="@{/test/seller}">Back</a>
+</form>
 </body>
 </html>
