@@ -123,4 +123,24 @@ public class SecurityController {
         model.addAttribute("seller","Hello " + authentication.getName() );
         return "sellerPage"; // Това връща изгледа sellerPage.html
     }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+        request.getSession().invalidate(); // Това ще изтрие текущата сесия
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JWT")) {
+                    cookie.setValue(null);
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie); // Изпращаме обратно изтритото cookie
+                }
+            }
+        }
+
+        return "redirect:/test/login";
+    }
 }
