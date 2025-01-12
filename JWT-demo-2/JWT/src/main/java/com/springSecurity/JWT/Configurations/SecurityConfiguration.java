@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         authorizeRequest -> authorizeRequest
-                                .requestMatchers("test/home","/test/login", "/test/register").permitAll()
+                                .requestMatchers("/test/home","/test/login", "/test/register", "/test/tokenExpiration").permitAll()
                                 .requestMatchers("/products/all").hasAuthority("seller")
                                 .requestMatchers("/products/create").hasAuthority("seller")
                                 .requestMatchers("/user/allInformation").hasAuthority("seller")
