@@ -143,4 +143,22 @@ public class SecurityController {
 
         return "redirect:/test/login";
     }
+
+    @GetMapping("/tokenExpiration")
+    public  String showInvalidToken(HttpServletRequest request, HttpServletResponse response){
+        request.getSession().invalidate(); // Това ще изтрие текущата сесия
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JWT")) {
+                    cookie.setValue(null);
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie); // Изпращаме обратно изтритото cookie
+                }
+            }
+        }
+        return "tokenExpirationPage";
+    }
 }
