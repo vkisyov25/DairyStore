@@ -1,6 +1,7 @@
 package com.springSecurity.JWT.Configurations;
 
 import com.springSecurity.JWT.Utils.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,10 +25,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String token = null;
-
+        String requestURI = request.getRequestURI();
         // Извличаме токена от HTTP-only cookie
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -39,13 +41,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        if (token != null && jwtUtil.validateToken(token)) {
-            String username = jwtUtil.extractUsername(token);
-            Collection<? extends GrantedAuthority> role = jwtUtil.getAuthoritiesFromToken(token);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,role);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Изключи URL пътищата, които не трябва да се обработват от филтъра
+        if (requestURI.equals("/test/tokenExpiration")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            if (token != null && jwtUtil.validateToken(token)) {
+                String username = jwtUtil.extractUsername(token);
+                Collection<? extends GrantedAuthority> role = jwtUtil.getAuthoritiesFromToken(token);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, role);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendRedirect("/test/tokenExpiration"); // Пренасочване при изтекъл токен
+        }
+
     }
 }
