@@ -41,7 +41,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // Изключи URL пътищата, които не трябва да се обработват от филтъра
+        // Изключи URL пътищата, които не трябва да се обработват от филтъра. Не искаме да правим нова проверка на токените за този URL.
+        // Тогава просто ще пропуснем филтрацията за този път и ще позволим заявката да продължи.
         if (requestURI.equals("/test/tokenExpiration")) {
             filterChain.doFilter(request, response);
             return;

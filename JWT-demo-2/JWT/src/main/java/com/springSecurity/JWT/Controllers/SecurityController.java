@@ -6,6 +6,7 @@ import com.springSecurity.JWT.Services.EmailService;
 import com.springSecurity.JWT.Utils.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,10 +14,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
 //@RestController
 @RequestMapping("/test")
@@ -50,8 +56,8 @@ public class SecurityController {
                                Model model, HttpServletResponse response, HttpServletRequest request) {
         try {
             // Аутентикация
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password));
+            //Authentication authentication = authenticationManager.authenticate(
+                    //new UsernamePasswordAuthenticationToken(username, password));
 
             // Зареждане на данни за потребителя
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
@@ -111,10 +117,54 @@ public class SecurityController {
     }
 
     @PostMapping("/register")
-    public String create(@ModelAttribute User user){
+    public String create(@Validated @ModelAttribute User user, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+
+        if (customUserDetailsService.existsByEmail(user.getEmail())) {
+            bindingResult.rejectValue("email", "error.user", "Email already exists.");
+        }
+
+        if (customUserDetailsService.existsByCompanyName(user.getCompanyName())) {
+            bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
+        }
+
+        if(customUserDetailsService.existsByUsername(user.getUsername())){
+            bindingResult.rejectValue("username","error.username","Username already exists");
+        }
+
+        if(customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())){
+            bindingResult.rejectValue("companyEIK","error.companyEIK","Company EIK already exists");
+        }
+        System.out.println("Phone: " + user.getPhone());
+        //bindingResult.rejectValue("phone", "error.phone", "Test phone error");
+
+
+        /*if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(error ->
+                    System.out.println("Validation error: " + error.getDefaultMessage()));
+            return "registerPage";
+        }*/
+       /* if (user.getPhone() != null && user.getPhone().length() != 10) {
+            bindingResult.rejectValue("phone", "error.phone", "Phone number must be exactly 10 digits.");
+            return "registerPage";  // Показване на формата с грешки
+        }*/
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(error -> {
+                if (error instanceof FieldError) {
+                    FieldError fieldError = (FieldError) error;
+                    System.out.println("Field: " + fieldError.getField());
+                    System.out.println("Message: " + fieldError.getDefaultMessage());
+                } else {
+                    System.out.println("Error: " + error.getDefaultMessage());
+                }
+            });
+            return "registerPage";
+        }
         customUserDetailsService.create(user);
-        emailService.sendRegistrationEmail(user.getEmail(), user.getUsername());
-        return "redirect:/test/home";
+        System.out.println(customUserDetailsService.create(user));
+        emailService.sendRegistrationEmail(user.getEmail(), user.getName());
+        //RedirectAttributes redirectAttributes
+        redirectAttributes.addFlashAttribute("success", "Registration successful!");
+        return "redirect:/test/login";
     }
 
     @GetMapping("/seller")
