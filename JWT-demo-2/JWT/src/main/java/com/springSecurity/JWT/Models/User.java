@@ -1,10 +1,14 @@
 package com.springSecurity.JWT.Models;
 
+import com.springSecurity.JWT.Validations.ValidSellerFields;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
-
 import java.util.List;
 
+@ValidSellerFields
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,17 +18,41 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    @Column(unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank
+    @Column(unique = true)
     private String username;
-    @Column(unique = true, nullable = false)
+
+    @NotBlank
     private String password;
-    @Column(unique = false, nullable = false)
+
+    @NotBlank
     private String authorities;
-    @Column(unique = true, nullable = false)
+
+    @NotBlank
+    @Email
+    @Column(unique = true)
     private String email;
 
+    @NotBlank
+    private String name;
+
+    @NotBlank(message = "Phone number cannot be blank.")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits.")
+    private String phone;
+
+    @NotBlank
+    private String address;
+
+    @Column(unique = true)
+    private String companyName;
+
+    @Column(unique = true)
+    @Pattern(regexp = "^[0-9]{9}$")
+    private String companyEIK;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Product> productList;
+
 }
