@@ -48,4 +48,20 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return "Create Successfully!";
     }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean existsByCompanyName(String companyName) {
+        return userRepository.existsByCompanyName(companyName);
+    }
+
+    public boolean existsByUsername(String username){
+        return  userRepository.existsByUsername(username);
+    }
+
+    public boolean existsByCompanyEIK(String companyEIK) {
+        return userRepository.existsByCompanyEIK(companyEIK);
+    }
 }
