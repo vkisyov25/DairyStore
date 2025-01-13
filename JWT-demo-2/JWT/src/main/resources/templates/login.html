@@ -60,5 +60,10 @@
   </div>
 </form>
 <p th:if="${error}" th:text="${error}"></p>
+
+<div th:if="${success}">
+  <span th:text="${success}"></span>
+</div>
+
 </body>
 </html>
