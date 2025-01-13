@@ -134,35 +134,13 @@ public class SecurityController {
         if(customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())){
             bindingResult.rejectValue("companyEIK","error.companyEIK","Company EIK already exists");
         }
-        System.out.println("Phone: " + user.getPhone());
-        //bindingResult.rejectValue("phone", "error.phone", "Test phone error");
 
-
-        /*if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(error ->
-                    System.out.println("Validation error: " + error.getDefaultMessage()));
-            return "registerPage";
-        }*/
-       /* if (user.getPhone() != null && user.getPhone().length() != 10) {
-            bindingResult.rejectValue("phone", "error.phone", "Phone number must be exactly 10 digits.");
-            return "registerPage";  // Показване на формата с грешки
-        }*/
         if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(error -> {
-                if (error instanceof FieldError) {
-                    FieldError fieldError = (FieldError) error;
-                    System.out.println("Field: " + fieldError.getField());
-                    System.out.println("Message: " + fieldError.getDefaultMessage());
-                } else {
-                    System.out.println("Error: " + error.getDefaultMessage());
-                }
-            });
             return "registerPage";
         }
         customUserDetailsService.create(user);
         System.out.println(customUserDetailsService.create(user));
         emailService.sendRegistrationEmail(user.getEmail(), user.getName());
-        //RedirectAttributes redirectAttributes
         redirectAttributes.addFlashAttribute("success", "Registration successful!");
         return "redirect:/test/login";
     }
@@ -171,7 +149,7 @@ public class SecurityController {
     public String sellerPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("seller","Hello " + authentication.getName() );
-        return "sellerPage"; // Това връща изгледа sellerPage.html
+        return "sellerPage";
     }
 
     @PostMapping("/logout")
