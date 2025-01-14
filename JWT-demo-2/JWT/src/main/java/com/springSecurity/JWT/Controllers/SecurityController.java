@@ -118,28 +118,50 @@ public class SecurityController {
 
     @PostMapping("/register")
     public String create(@Validated @ModelAttribute User user, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+        //проверката с ролите е заради това, че при buyer companyName и companyEIK могат да са празни и като има потребител с празни
+        // companyName и companyEIK в базата данни и като искам да запиша нов ми показва, че вече съществуват
+        if(user.getAuthorities().equals("seller")){
+
+            if (customUserDetailsService.existsByCompanyName(user.getCompanyName())) {
+                bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
+            }
+
+            if(user.getCompanyName().isEmpty()){
+                bindingResult.rejectValue("companyName", "error.companyName", "Company name can't be empty");
+            }
+            if(customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())){
+                bindingResult.rejectValue("companyEIK","error.companyEIK","Company EIK already exists");
+            }
+            if(user.getCompanyEIK().isEmpty()){
+                bindingResult.rejectValue("companyEIK", "error.companyName", "Company EIK can't be empty");
+            }
+        }
+
+        if(user.getAuthorities().equals("buyer")){
+            // && !user.getCompanyName().isEmpty()
+            if (customUserDetailsService.existsByCompanyName(user.getCompanyName()) && !user.getCompanyName().isEmpty()) {
+                bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
+            }
+
+            //&& !user.getCompanyEIK().isEmpty()
+            if(customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK()) && !user.getCompanyEIK().isEmpty()){
+                bindingResult.rejectValue("companyEIK","error.companyEIK","Company EIK already exists");
+            }
+        }
 
         if (customUserDetailsService.existsByEmail(user.getEmail())) {
             bindingResult.rejectValue("email", "error.user", "Email already exists.");
-        }
-
-        if (customUserDetailsService.existsByCompanyName(user.getCompanyName())) {
-            bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
         }
 
         if(customUserDetailsService.existsByUsername(user.getUsername())){
             bindingResult.rejectValue("username","error.username","Username already exists");
         }
 
-        if(customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())){
-            bindingResult.rejectValue("companyEIK","error.companyEIK","Company EIK already exists");
-        }
-
         if (bindingResult.hasErrors()) {
+            //TODO:Here the program can't catch phone pattern constraint
             return "registerPage";
         }
         customUserDetailsService.create(user);
-        System.out.println(customUserDetailsService.create(user));
         emailService.sendRegistrationEmail(user.getEmail(), user.getName());
         redirectAttributes.addFlashAttribute("success", "Registration successful!");
         return "redirect:/test/login";
