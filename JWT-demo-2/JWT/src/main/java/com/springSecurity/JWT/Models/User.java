@@ -46,10 +46,11 @@ public class User {
     @NotBlank
     private String address;
 
-    @Column(unique = true)
+    //@Column(unique = true) //Махнах ги заради проблема при регистрация на потребители с роля byuer защото като
+    // companyName и companyEIK са празни и в базата данни има потребител с празни полета не може да се запази в базата данни новия потребител
     private String companyName;
 
-    @Column(unique = true)
+    //@Column(unique = true) // както при companyName
     @Pattern(regexp = "^[0-9]{9}$")
     private String companyEIK;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
