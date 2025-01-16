@@ -5,16 +5,32 @@
     <title>User Information</title>
 </head>
 <body>
-<h1>My Information</h1>
+<h1>My profile information</h1>
 <form>
   Username: <label th:text="${user.username}"></label>
     <br>
-  Email: <label th:text="${user.email}">Email</label>
+    Role: <label th:text="${user.authorities}">Role</label>
     <br>
-  Role: <label th:text="${user.authorities}">Role</label>
+  Name: <label th:text="${user.name}">Name</label>
     <br>
+    Email: <label th:text="${user.email}">Email</label>
     <br>
-    <a th:href="@{/test/seller}">Back</a>
+    Phone: <label th:text="${user.phone}">Phone</label>
+    <br>
+    Address: <label th:text="${user.address}">Address</label>
+    <br>
+    <!-- Скриване на полета за фирма, ако стойностите не съществуват -->
+    <div th:if="${user.companyName != null and user.companyName != ''}">
+      Company name: <label th:text="${user.companyName}">it is not company</label>
+      <br>
+    </div>
+
+    <div th:if="${user.companyEIK != null and user.companyEIK != ''}">
+      Company EIK: <label th:text="${user.companyEIK}">it is not company</label>
+      <br>
+    </div>
+
+  <a th:href="@{/test/seller}">Back</a>
 </form>
 </body>
 </html>
