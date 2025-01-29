@@ -6,17 +6,14 @@ import com.springSecurity.JWT.Services.EmailService;
 import com.springSecurity.JWT.Utils.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
+import jakarta.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -32,6 +29,7 @@ public class SecurityController {
     private final CustomUserDetailsService customUserDetailsService;
     @Autowired
     private EmailService emailService;
+
     @Autowired
     public SecurityController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, CustomUserDetailsService customUserDetailsService) {
         this.authenticationManager = authenticationManager;
@@ -45,19 +43,18 @@ public class SecurityController {
         model.addAttribute("message", "Добре дошли в моята HTML страница!");
         return "homePage";
     }
+
     @GetMapping("/login")
     public String showloginPage(Model model) {
         return "login";
     }
 
     @PostMapping("/login")
-    public String processLogin(@RequestParam String username,
-                               @RequestParam String password,
-                               Model model, HttpServletResponse response, HttpServletRequest request) {
+    public String processLogin(@RequestParam String username, @RequestParam String password, Model model, HttpServletResponse response, HttpServletRequest request) {
         try {
             // Аутентикация
             //Authentication authentication = authenticationManager.authenticate(
-                    //new UsernamePasswordAuthenticationToken(username, password));
+            //new UsernamePasswordAuthenticationToken(username, password));
 
             // Зареждане на данни за потребителя
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
@@ -97,7 +94,7 @@ public class SecurityController {
             cookie.setMaxAge(3600); // 1 час
             response.addCookie(cookie);
 
-            if (role.equals("admin")){
+            if (role.equals("admin")) {
                 model.addAttribute("admin", "Hello " + username);
                 return "adminPage";
             } else if (role.equals("seller")) {
@@ -110,57 +107,59 @@ public class SecurityController {
             return "login";
         }
     }
+
     @GetMapping("/register")
-    public String showCreateFrom(Model model){
-        model.addAttribute("user",new User());
+    public String showCreateFrom(Model model) {
+        model.addAttribute("user", new User());
         return "registerPage";
     }
 
     @PostMapping("/register")
-    public String create(@Validated @ModelAttribute User user, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String create(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
         //проверката с ролите е заради това, че при buyer companyName и companyEIK могат да са празни и като има потребител с празни
         // companyName и companyEIK в базата данни и като искам да запиша нов ми показва, че вече съществуват
-        if(user.getAuthorities().equals("seller")){
-
-            if (customUserDetailsService.existsByCompanyName(user.getCompanyName())) {
+        if (user.getAuthorities().equals("seller")) {
+            if (user.getCompanyName().isEmpty()) {
+                bindingResult.rejectValue("companyName", "error.companyName", "Company name can't be empty");
+            } else if (customUserDetailsService.existsByCompanyName(user.getCompanyName())) {
                 bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
             }
 
-            if(user.getCompanyName().isEmpty()){
-                bindingResult.rejectValue("companyName", "error.companyName", "Company name can't be empty");
+            if (user.getCompanyEIK().isEmpty()) {
+                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK can't be empty");
+            } else if (user.getCompanyEIK().length() != 9) {
+                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK must be exactly 9 digits");
+            } else if (customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())) {
+                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
             }
-            if(customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())){
-                bindingResult.rejectValue("companyEIK","error.companyEIK","Company EIK already exists");
-            }
-            if(user.getCompanyEIK().isEmpty()){
-                bindingResult.rejectValue("companyEIK", "error.companyName", "Company EIK can't be empty");
-            }
+
         }
 
-        if(user.getAuthorities().equals("buyer")){
-            // && !user.getCompanyName().isEmpty()
+        if (user.getAuthorities().equals("buyer")) {
             if (customUserDetailsService.existsByCompanyName(user.getCompanyName()) && !user.getCompanyName().isEmpty()) {
                 bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
             }
 
-            //&& !user.getCompanyEIK().isEmpty()
-            if(customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK()) && !user.getCompanyEIK().isEmpty()){
-                bindingResult.rejectValue("companyEIK","error.companyEIK","Company EIK already exists");
+            if (!user.getCompanyEIK().isEmpty()) {
+                if (customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())) {
+                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
+                }
+                if (user.getCompanyEIK().length() != 9) {
+                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK must be exactly 9 digits");
+                }
             }
+
         }
 
         if (customUserDetailsService.existsByEmail(user.getEmail())) {
             bindingResult.rejectValue("email", "error.user", "Email already exists.");
         }
 
-        if(customUserDetailsService.existsByUsername(user.getUsername())){
-            bindingResult.rejectValue("username","error.username","Username already exists");
-        }
-
         if (bindingResult.hasErrors()) {
-            //TODO:Here the program can't catch phone pattern constraint
             return "registerPage";
         }
+
         customUserDetailsService.create(user);
         emailService.sendRegistrationEmail(user.getEmail(), user.getName());
         redirectAttributes.addFlashAttribute("success", "Registration successful!");
@@ -170,7 +169,7 @@ public class SecurityController {
     @GetMapping("/seller")
     public String sellerPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("seller","Hello " + authentication.getName() );
+        model.addAttribute("seller", "Hello " + authentication.getName());
         return "sellerPage";
     }
 
@@ -195,7 +194,7 @@ public class SecurityController {
     }
 
     @GetMapping("/tokenExpiration")
-    public  String showInvalidToken(HttpServletRequest request, HttpServletResponse response){
+    public String showInvalidToken(HttpServletRequest request, HttpServletResponse response) {
         request.getSession().invalidate(); // Това ще изтрие текущата сесия
 
         Cookie[] cookies = request.getCookies();
