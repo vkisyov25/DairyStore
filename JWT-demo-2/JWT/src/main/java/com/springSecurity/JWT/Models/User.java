@@ -21,29 +21,30 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank")
     @Column(unique = true)
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 
     @NotBlank
     private String authorities;
 
-    @NotBlank
+    @NotBlank(message = "Email cannot be blank")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Invalid email format")
     @Email
     @Column(unique = true)
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
     @NotBlank(message = "Phone number cannot be blank.")
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits.")
     private String phone;
 
-    @NotBlank
+    @NotBlank(message = "Address cannot be blank")
     private String address;
 
     //@Column(unique = true) //Махнах ги заради проблема при регистрация на потребители с роля byuer защото като
@@ -51,9 +52,8 @@ public class User {
     private String companyName;
 
     //@Column(unique = true) // както при companyName
-    @Pattern(regexp = "^[0-9]{9}$")
+    //@Pattern(regexp = "^[0-9]{9}$")
     private String companyEIK;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Product> productList;
-
 }
