@@ -120,19 +120,21 @@ public class SecurityController {
         //проверката с ролите е заради това, че при buyer companyName и companyEIK могат да са празни и като има потребител с празни
         // companyName и companyEIK в базата данни и като искам да запиша нов ми показва, че вече съществуват
         if (user.getAuthorities().equals("seller")) {
-            if (user.getCompanyName().isEmpty()) {
-                bindingResult.rejectValue("companyName", "error.companyName", "Company name can't be empty");
-            } else if (customUserDetailsService.existsByCompanyName(user.getCompanyName())) {
+            //По принцип seller няма как да има записани потребители с празно companyName, но метода existsByCompanyName() проверява за
+            //всички потребители а buyer могат да имат и затова слагам !user.getCompanyName().isEmpty()
+            if (customUserDetailsService.existsByCompanyName(user.getCompanyName()) && !user.getCompanyName().isEmpty()) {
                 bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
             }
 
-            if (user.getCompanyEIK().isEmpty()) {
-                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK can't be empty");
-            } else if (user.getCompanyEIK().length() != 9) {
-                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK must be exactly 9 digits");
-            } else if (customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())) {
-                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
+            //няма смисъл когато companyEIK е празно да се правят допълнителни проверки
+            if(!user.getCompanyEIK().isEmpty()){
+                if (user.getCompanyEIK().length() != 9) {
+                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK must be exactly 9 digits");
+                } else if (customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())) {
+                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
+                }
             }
+
 
         }
 
