@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/test/home","/test/login", "/test/register", "/test/tokenExpiration").permitAll()
                                 .requestMatchers("/products/all").hasAuthority("seller")
                                 .requestMatchers("/products/create").hasAuthority("seller")
-                                .requestMatchers("/user/allInformation").hasAuthority("seller")
+                                .requestMatchers("/user/allInformation").hasAnyAuthority("seller","buyer")
                                 .requestMatchers("/test/seller").hasAuthority("seller")
                                 .anyRequest().authenticated()
 
