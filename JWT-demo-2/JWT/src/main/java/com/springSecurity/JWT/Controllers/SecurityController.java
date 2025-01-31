@@ -94,9 +94,8 @@ public class SecurityController {
             cookie.setMaxAge(3600); // 1 час
             response.addCookie(cookie);
 
-            if (role.equals("admin")) {
-                model.addAttribute("admin", "Hello " + username);
-                return "adminPage";
+            if (role.equals("buyer")) {
+                return "redirect:/test/buyer";
             } else if (role.equals("seller")) {
                 return "redirect:/test/seller";
             }
@@ -162,6 +161,13 @@ public class SecurityController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("seller", "Hello " + authentication.getName());
         return "sellerPage";
+    }
+
+    @GetMapping("/buyer")
+    public String buyerPage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("buyer", "Hello " + authentication.getName());
+        return "buyerPage";
     }
 
     @PostMapping("/logout")
