@@ -1,5 +1,6 @@
 package com.springSecurity.JWT.Models;
 
+import com.springSecurity.JWT.Validations.CompanyEIK;
 import com.springSecurity.JWT.Validations.ValidSellerFields;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -9,6 +10,7 @@ import lombok.*;
 import java.util.List;
 
 @ValidSellerFields
+@CompanyEIK
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
