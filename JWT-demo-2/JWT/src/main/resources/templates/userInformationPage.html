@@ -30,7 +30,10 @@
       <br>
     </div>
 
-  <a th:href="@{/test/seller}">Back</a>
+  <!--<a th:href="@{/test/seller}">Back</a>-->
+  <a th:href="@{/test/seller}" th:if="${#authorization.expression('hasAuthority(''seller'')')}">Back</a>
+  <a th:href="@{/test/buyer}" th:if="${#authorization.expression('hasAuthority(''buyer'')')}">Back</a>
+
 </form>
 </body>
 </html>
