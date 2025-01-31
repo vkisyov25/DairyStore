@@ -125,16 +125,10 @@ public class SecurityController {
             if (customUserDetailsService.existsByCompanyName(user.getCompanyName()) && !user.getCompanyName().isEmpty()) {
                 bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
             }
-
-            //няма смисъл когато companyEIK е празно да се правят допълнителни проверки
-            if(!user.getCompanyEIK().isEmpty()){
-                if (user.getCompanyEIK().length() != 9) {
-                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK must be exactly 9 digits");
-                } else if (customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())) {
-                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
-                }
-            }
-
+            
+           if (customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK()) && !user.getCompanyEIK().isEmpty()) {
+                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
+           }
 
         }
 
@@ -143,13 +137,8 @@ public class SecurityController {
                 bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
             }
 
-            if (!user.getCompanyEIK().isEmpty()) {
-                if (customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK())) {
-                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
-                }
-                if (user.getCompanyEIK().length() != 9) {
-                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK must be exactly 9 digits");
-                }
+            if (customUserDetailsService.existsByCompanyEIK(user.getCompanyEIK()) && !user.getCompanyEIK().isEmpty()) {
+                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
             }
 
         }
