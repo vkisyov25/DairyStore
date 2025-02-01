@@ -6,9 +6,15 @@
 </head>
 <body>
 <label th:text="${buyer}"></label>
+<br>
+<br>
+<a th:href="@{/user/allInformation}">My profile information</a>
+<br>
+<a th:href="@{/products/listToBuy}">Products to buy</a>
+<br>
+<br>
 <form action="/test/logout" method="post">
     <button type="submit">Logout</button>
 </form>
-<a th:href="@{/user/allInformation}">My profile information</a>
 </body>
 </html>
