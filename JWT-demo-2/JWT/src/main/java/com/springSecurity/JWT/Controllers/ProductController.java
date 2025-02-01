@@ -14,10 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -60,6 +57,21 @@ public class ProductController {
         product.setUser(user);
         productService.creteProduct(product);
         return "sellerPage";
+    }
+
+    @GetMapping("/listToBuy")
+    public String showListToBuy(Model model){
+        model.addAttribute("allProduct",productService.getAllProducts());
+        return "listToBuyPage";
+    }
+    @PostMapping("/listToBuy")
+    public String viewProductsListToBuy(@RequestParam String productType, Model model){
+        if (productType.equals("всички")){
+            model.addAttribute("productList", productService.getAllProducts());
+        }else {
+            model.addAttribute("productList", productService.getProductsByType(productType));
+        }
+        return "listToBuyPage";
     }
 
 }
