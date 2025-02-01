@@ -12,4 +12,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("select product from Product product where product.user.username = ?1")
     List<Product> findProductsByUsername (String username);
+
+    @Query("select product from Product product where product.type = ?1")
+    List<Product> findProductsByType (String username);
 }
