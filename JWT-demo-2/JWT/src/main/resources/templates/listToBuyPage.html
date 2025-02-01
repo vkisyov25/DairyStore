@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List to buy</title>
+</head>
+<body>
+<div>
+    <label>кашкавал, сирене, прясно мляко, кисело мляко, масло</label>
+</div>
+<div>
+    <form th:action="@{/products/listToBuy}" method="post">
+        <label for="productType">Type:</label>
+        <input type="text" id="productType" name="productType">
+        <input type="submit" value="Search">
+    </form>
+</div>
+
+<br>
+
+<div>
+    <ul>
+        <li th:each="product : ${allProduct}">
+            <span th:text="${product.name}">Product Name</span>:
+            <span th:text="${product.type}">Product Type</span>
+            <br>
+            <span th:text="${product.price}">Product Price</span>лв/кг
+            <br>
+            <span th:text="${product.description}">Product Description</span>
+        </li>
+    </ul>
+</div>
+
+<div>
+    <ul>
+        <li th:each="product : ${productList}">
+            <span th:text="${product.name}">Product Name</span>:
+            <span th:text="${product.type}">Product Type</span>
+            <br>
+            <span th:text="${product.price}">Product Price</span>лв/кг
+            <br>
+            <span th:text="${product.description}">Product Description</span>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>
