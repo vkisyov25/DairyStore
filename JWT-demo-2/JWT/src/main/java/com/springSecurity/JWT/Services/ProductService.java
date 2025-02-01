@@ -21,4 +21,12 @@ public class ProductService {
     public Product creteProduct(Product product){
         return productRepository.save(product);
     }
+
+    public List<Product> getProductsByType(String productType){
+        return productRepository.findProductsByType(productType);
+    }
+
+    public List<Product> getAllProducts(){
+        return productRepository.findAll();
+    }
 }
