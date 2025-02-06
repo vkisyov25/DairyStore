@@ -32,7 +32,10 @@ public class SecurityConfiguration {
                                 .requestMatchers("/products/create").hasAuthority("seller")
                                 .requestMatchers("/user/allInformation").hasAnyAuthority("seller","buyer")
                                 .requestMatchers("/test/seller").hasAuthority("seller")
+                                .requestMatchers("/test/buyer").hasAuthority("buyer")
                                 .requestMatchers("/products/listToBuy").hasAuthority("buyer")
+                                .requestMatchers("/cart/add").hasAuthority("buyer")
+                                .requestMatchers("/cart/view").hasAuthority("buyer")
                                 .anyRequest().authenticated()
 
                 )
