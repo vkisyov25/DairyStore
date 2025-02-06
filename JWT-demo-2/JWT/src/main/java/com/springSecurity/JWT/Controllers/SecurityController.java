@@ -187,7 +187,7 @@ public class SecurityController {
             }
         }
 
-        return "redirect:/test/login";
+        return "redirect:/test/home";
     }
 
     @GetMapping("/tokenExpiration")
