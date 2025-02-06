@@ -11,7 +11,7 @@ import lombok.*;
 import java.util.List;
 
 @ValidSellerFields
-@CompanyEIK
+//@CompanyEIK
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +29,7 @@ public class User {
     private String username;
 
     @NotBlank(message = "Password cannot be blank")
-    @Pattern(regexp = "^([A-Za-z@.!%0-9]{8,}+)$", message = "The password must be at least 8 characters long and contain at least: one uppercase letter, " + "one lowercase letter, one number, and one special character (@, $, !, %, , ?, &).")
+    //@Pattern(regexp = "^([A-Za-z@.!%0-9]{8,}+)$", message = "The password must be at least 8 characters long and contain at least: one uppercase letter, " + "one lowercase letter, one number, and one special character (@, $, !, %, , ?, &).")
     private String password;
 
     @NotBlank
@@ -60,4 +60,6 @@ public class User {
     private String companyEIK;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Product> productList;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
 }

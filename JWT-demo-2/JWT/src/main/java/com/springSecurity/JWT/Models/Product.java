@@ -25,7 +25,8 @@ public class Product {
     @Column(nullable = false)
     private String description;
     @ManyToOne
-    //@JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private List<CartItem> cartItemList;
 }

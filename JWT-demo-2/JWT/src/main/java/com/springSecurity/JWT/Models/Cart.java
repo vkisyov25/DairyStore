@@ -16,9 +16,9 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    private int quantity;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart") //cart е името на полето в Product, което съдържа релацията.
-    private List<Product> productList;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<CartItem> cartItemList;
 }
