@@ -7,6 +7,7 @@ import com.springSecurity.JWT.Security.CustomUserDetailsService;
 import com.springSecurity.JWT.Services.ProductService;
 import com.springSecurity.JWT.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,7 +24,7 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
-    private  UserService userService;
+    private final UserService userService;
 
     public ProductController(ProductService productService, UserService userService) {
         this.productService = productService;
@@ -52,13 +53,21 @@ public class ProductController {
     }
 
     @PostMapping("/create")
+    public ResponseEntity<?> createProduct(@RequestBody Product product) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.getUserByUsername(authentication.getName());
+        product.setUser(user);
+        productService.createProduct(product);
+        return ResponseEntity.ok("Product created successfully!");
+    }
+   /* @PostMapping("/create")
     public String createProduct(@ModelAttribute Product product) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByUsername(authentication.getName());
         product.setUser(user);
         productService.creteProduct(product);
         return "sellerPage";
-    }
+    }*/
 
     @GetMapping("/listToBuy")
     public String showListToBuy(){
