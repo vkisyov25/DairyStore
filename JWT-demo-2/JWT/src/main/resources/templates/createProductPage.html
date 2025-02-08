@@ -5,24 +5,57 @@
     <title>Create product</title>
 </head>
 <body>
-<form action="#" th:action="@{/products/create}" th:object="${product}" method="post">
+<form>
   <label>Създаване на продукт</label>
   <br>
-  <label>Name</label>
-  <input type="text" th:field="*{name}">
+  <label for="name">Name</label>
+  <input type="text" id="name">
   <br>
-  <label>Type</label>
-  <input type="text" th:field="*{type}">
+  <label for="type">Type</label>
+  <input type="text" id="type">
   <br>
-  <label>Price</label>
-  <input type="text" th:field="*{price}">
+  <label for="price">Price</label>
+  <input type="text" id="price">
   <br>
-  <label>Description</label>
-  <input type="text" th:field="*{description}">
+  <label for="description">Description</label>
+  <input type="text" id="description">
   <br>
-  <input type="submit" value="save">
+  <input type="button" id="saveProduct" value="save">
   <br>
   <a th:href="@{/test/seller}">Back</a>
 </form>
+
+<script>
+  document.getElementById("saveProduct").addEventListener("click",function () {
+    let product = {
+      name: document.getElementById("name").value,
+      type: document.getElementById("type").value,
+      price: document.getElementById("price").value,
+      description: document.getElementById("description").value,
+    }
+
+    fetch("/products/create",{
+      method:"POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(product)
+    })
+            .then(response =>{
+              if(!response.ok){
+                throw new Error("Грешка при създаването на продукт!")
+              } return response.text();
+            })
+            .then(data => {
+              alert(data)
+              window.location.href="/test/seller";
+              //window.location.href = "/test/seller?message=" + encodeURIComponent(data);
+            })
+            .catch(error =>{
+              alert(error.message);
+              console.error("Грешка:",error);
+            });
+  });
+</script>
 </body>
 </html>
