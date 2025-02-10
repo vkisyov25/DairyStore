@@ -53,12 +53,20 @@
             <td th:text="${cartItem.product.price}">Product Price</td>
             <td th:text="${cartItem.quantity}">Quantity</td>
             <td th:text="${cartItem.quantity * cartItem.product.price}">Total Price</td>
+            <td>
+                <form th:action="@{/cart/deleteById}" method="post">
+                    <input type="hidden" name="productId" th:value="${cartItem.product.id}" />
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
 
     <br>
-
+    <div th:if="${success}">
+        <span th:text="${success}"></span>
+    </div>
     <!-- Изчисляване на общата сума -->
     <div class="total">
         Обща сума за плащане:

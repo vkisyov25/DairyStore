@@ -44,4 +44,11 @@ public class CartController {
         model.addAttribute("productList",cartItemList);
         return "cartPage";
     }
+
+    @PostMapping("/deleteById")
+    public String deleteProductById(@RequestParam("productId") Long productId,RedirectAttributes redirectAttributes){
+        cartService.deleteByProductId(productId);
+        redirectAttributes.addFlashAttribute("success","Product is successfully deleted");
+        return "redirect:/test/buyer";
+    }
 }

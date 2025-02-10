@@ -61,4 +61,8 @@ public class CartService {
         Cart cart = cartRepository.findByUser(user);
         return cartItemRepository.findByCart(cart);
     }
+
+    public void deleteByProductId(long id) {
+        cartItemRepository.deleteByProductId(id);
+    }
 }
