@@ -18,5 +18,9 @@
 <form action="/test/logout" method="post">
     <button type="submit">Logout</button>
 </form>
+
+<div th:if="${success}">
+    <span th:text="${success}"></span>
+</div>
 </body>
 </html>
