@@ -9,7 +9,7 @@
     <label>кашкавал, сирене, прясно мляко, кисело мляко, масло</label>
 </div>
 <div>
-    <form th:action="@{/products/listToBuy}" method="get">
+    <form th:action="@{/products/listToBuy}" method="post">
         <label for="productType">Type:</label>
         <input type="text" id="productType" name="productType" placeholder="Search">
         <input type="submit" value="Search">
