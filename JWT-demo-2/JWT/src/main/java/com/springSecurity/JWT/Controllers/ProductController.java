@@ -48,8 +48,8 @@ public class ProductController {
         return "listToBuyPage";
     }
 
-    @GetMapping("/listToBuy")
-    public String displayProductsByType(@RequestParam String productType, Model model) {
+    @PostMapping("/listToBuy")
+    public String viewProductsByType(@RequestParam String productType, Model model) {
         model.addAttribute("productList", productService.getProductsByType(productType));
         return "listToBuyPage";
     }
