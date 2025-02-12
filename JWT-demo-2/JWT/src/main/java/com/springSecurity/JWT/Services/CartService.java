@@ -7,8 +7,6 @@ import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Repository.CartItemRepository;
 import com.springSecurity.JWT.Repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,9 +27,7 @@ public class CartService {
     }
 
     public void addToCart(Long productId, int quantity) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByUsername(authentication.getName());
+        User user = userService.getUserByUsername();
         Product product = productService.getProductById(productId);
 
         Cart cart = cartRepository.findByUser(user);
@@ -49,8 +45,7 @@ public class CartService {
     }
 
     public List<CartItem> getCartItems() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByUsername(authentication.getName());
+        User user = userService.getUserByUsername();
         Cart cart = cartRepository.findByUser(user);
         return cartItemRepository.findByCart(cart);
     }
