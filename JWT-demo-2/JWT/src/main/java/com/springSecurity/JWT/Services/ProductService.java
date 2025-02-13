@@ -36,7 +36,7 @@ public class ProductService {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new SecurityException("User is not authenticated");
         }
-        User user = userService.getUserByUsername(authentication.getName());
+        User user = userService.getUserByUsername();
         product.setUser(user);
         productRepository.save(product);
     }
