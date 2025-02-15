@@ -1,17 +1,11 @@
 package com.springSecurity.JWT.Models;
 
-import com.springSecurity.JWT.Validations.CompanyEIK;
-import com.springSecurity.JWT.Validations.ValidSellerFields;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.util.List;
 
-@ValidSellerFields
-//@CompanyEIK
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,32 +17,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank(message = "Username cannot be blank")
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
-
-    @NotBlank(message = "Password cannot be blank")
-    //@Pattern(regexp = "^([A-Za-z@.!%0-9]{8,}+)$", message = "The password must be at least 8 characters long and contain at least: one uppercase letter, " + "one lowercase letter, one number, and one special character (@, $, !, %, , ?, &).")
+    @Column(nullable = false)
     private String password;
-
-    @NotBlank
+    @Column(nullable = false)
     private String authorities;
-
-    @NotBlank(message = "Email cannot be blank")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Invalid email format")
-    @Email
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
-
-    @NotBlank(message = "Name cannot be blank")
+    @Column(nullable = false)
     private String name;
-
-    @NotBlank(message = "Phone number cannot be blank.")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits.")
+    @Column(nullable = false)
     private String phone;
-
-    @NotBlank(message = "Address cannot be blank")
+    @Column(nullable = false)
     private String address;
 
     //@Column(unique = true) //Махнах ги заради проблема при регистрация на потребители с роля byuer защото като
@@ -56,7 +37,6 @@ public class User {
     private String companyName;
 
     //@Column(unique = true) // както при companyName
-    //@Pattern(regexp = "^[0-9]{9}$")
     private String companyEIK;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Product> productList;
