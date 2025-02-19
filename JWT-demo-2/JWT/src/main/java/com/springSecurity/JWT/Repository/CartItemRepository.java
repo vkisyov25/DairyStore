@@ -2,7 +2,6 @@ package com.springSecurity.JWT.Repository;
 
 import com.springSecurity.JWT.Models.Cart;
 import com.springSecurity.JWT.Models.CartItem;
-import com.springSecurity.JWT.Models.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,8 +12,14 @@ import java.util.List;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     List<CartItem> findByCart(Cart cart);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM CartItem c WHERE c.product.id = :productId")
     void deleteByProductId(@Param("productId") Long productId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM CartItem cartItem WHERE cartItem.cart.id = ?1")
+    void deleteCartItemByCartId(Long id);
 }
