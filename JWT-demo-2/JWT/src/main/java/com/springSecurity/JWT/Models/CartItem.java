@@ -14,8 +14,10 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    private  int quantity;
+    @Column(nullable = false)
+    private int quantity;
+    @Column(nullable = false)
+    private double totalPrice;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
     private Cart cart;
