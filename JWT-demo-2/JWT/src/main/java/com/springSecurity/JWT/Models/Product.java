@@ -24,6 +24,8 @@ public class Product {
     private Double price;
     @Column(nullable = false)
     private String description;
+    @Column(nullable = false)
+    private double discount;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
