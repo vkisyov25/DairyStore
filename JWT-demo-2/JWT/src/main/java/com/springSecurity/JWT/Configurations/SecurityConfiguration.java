@@ -27,16 +27,18 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         authorizeRequest -> authorizeRequest
-                                .requestMatchers("/test/home","/test/login", "/test/register", "/test/tokenExpiration").permitAll()
+                                .requestMatchers("/test/home", "/test/login", "/test/register", "/test/tokenExpiration").permitAll()
                                 .requestMatchers("/products/all").hasAuthority("seller")
                                 .requestMatchers("/products/create").hasAuthority("seller")
-                                .requestMatchers("/user/allInformation").hasAnyAuthority("seller","buyer")
+                                .requestMatchers("/user/allInformation").hasAnyAuthority("seller", "buyer")
                                 .requestMatchers("/test/seller").hasAuthority("seller")
                                 .requestMatchers("/test/buyer").hasAuthority("buyer")
                                 .requestMatchers("/products/listToBuy").hasAuthority("buyer")
                                 .requestMatchers("/cart/add").hasAuthority("buyer")
                                 .requestMatchers("/cart/view").hasAuthority("buyer")
                                 .requestMatchers("/cart/deleteById").hasAuthority("buyer")
+                                .requestMatchers("/order/make").hasAuthority("buyer")
+                                .requestMatchers("/order/latest-order").hasAuthority("buyer")
                                 .anyRequest().authenticated()
 
                 )

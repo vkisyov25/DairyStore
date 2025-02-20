@@ -8,22 +8,27 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
+
         th, td {
             border: 1px solid black;
             padding: 10px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         .container {
             max-width: 800px;
             margin: auto;
         }
+
         .total {
             font-size: 18px;
             font-weight: bold;
@@ -43,6 +48,7 @@
             <th>Type</th>
             <th>Price</th>
             <th>Quantity</th>
+            <th>Discount(%)</th>
             <th>Total Price (лв)</th>
         </tr>
         </thead>
@@ -52,17 +58,17 @@
             <td th:text="${cartItem.product.type}">Product Type</td>
             <td th:text="${cartItem.product.price}">Product Price</td>
             <td th:text="${cartItem.quantity}">Quantity</td>
-            <td th:text="${cartItem.quantity * cartItem.product.price}">Total Price</td>
+            <td th:text="${cartItem.product.getDiscount()}">Discount(%)</td>
+            <td th:text="${cartItem.getTotalPrice()}">Total Price (лв)</td>
             <td>
                 <form th:action="@{/cart/deleteById}" method="post">
-                    <input type="hidden" name="productId" th:value="${cartItem.product.id}" />
+                    <input type="hidden" name="productId" th:value="${cartItem.product.id}"/>
                     <button type="submit">Delete</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
-
     <br>
     <div th:if="${success}">
         <span th:text="${success}"></span>
@@ -70,13 +76,17 @@
     <!-- Изчисляване на общата сума -->
     <div class="total">
         Обща сума за плащане:
-        <span th:text="${#aggregates.sum(productList.![quantity * product.price])}">0</span> лв
+        <!--<span th:text="${#aggregates.sum(productList.![quantity * product.price])}">0</span> лв-->
+        <span th:text="${#aggregates.sum(productList.![totalPrice])}">0</span> лв
 
     </div>
 
-    <div>
-        <button type="submit" value="make order">Make order</button>
-    </div>
+    <!--<div>
+        <form th:action="@{/order/make}" method="post">
+            <button type="submit">Make order</button>
+        </form>
+    </div>-->
+    <a th:href="@{/order/make}">Make Order </a>
 
 
     <br>

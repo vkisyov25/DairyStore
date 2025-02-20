@@ -6,11 +6,11 @@ import lombok.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
 @Builder
-@Table(name = "cartItems")
-public class CartItem {
+@Table(name = "order_items")
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -18,10 +18,12 @@ public class CartItem {
     private int quantity;
     @Column(nullable = false)
     private double totalPrice;
+    @Column(nullable = false, name = "cart_id")
+    private Long cartId;
+    @Column(nullable = false, name = "product_id")
+    private Long productId;
+
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "order_id")
+    private Order order;
 }
