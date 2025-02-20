@@ -6,56 +6,61 @@
 </head>
 <body>
 <form>
-  <label>Създаване на продукт</label>
-  <br>
-  <label for="name">Name</label>
-  <input type="text" id="name">
-  <br>
-  <label for="type">Type</label>
-  <input type="text" id="type">
-  <br>
-  <label for="price">Price</label>
-  <input type="text" id="price">
-  <br>
-  <label for="description">Description</label>
-  <input type="text" id="description">
-  <br>
-  <input type="button" id="saveProduct" value="save">
-  <br>
-  <a th:href="@{/test/seller}">Back</a>
+    <label>Създаване на продукт</label>
+    <br>
+    <label for="name">Name</label>
+    <input type="text" id="name">
+    <br>
+    <label for="type">Type</label>
+    <input type="text" id="type">
+    <br>
+    <label for="price">Price</label>
+    <input type="text" id="price">
+    <br>
+    <label for="description">Description</label>
+    <input type="text" id="description">
+    <br>
+    <label for="discount">Discount(%)</label>
+    <input type="text" id="discount">
+    <br>
+    <input type="button" id="saveProduct" value="save">
+    <br>
+    <a th:href="@{/test/seller}">Back</a>
 </form>
 
 <script>
-  document.getElementById("saveProduct").addEventListener("click",function () {
-    let product = {
-      name: document.getElementById("name").value,
-      type: document.getElementById("type").value,
-      price: document.getElementById("price").value,
-      description: document.getElementById("description").value,
-    }
+    document.getElementById("saveProduct").addEventListener("click", function () {
+        let product = {
+            name: document.getElementById("name").value,
+            type: document.getElementById("type").value,
+            price: document.getElementById("price").value,
+            description: document.getElementById("description").value,
+            discount: document.getElementById("discount").value,
+        }
 
-    fetch("/products/create",{
-      method:"POST",
-      headers:{
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(product)
-    })
-            .then(response =>{
-              if(!response.ok){
-                throw new Error("Грешка при създаването на продукт!")
-              } return response.text();
+        fetch("/products/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(product)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Грешка при създаването на продукт!")
+                }
+                return response.text();
             })
             .then(data => {
-              alert(data)
-              window.location.href="/test/seller";
-              //window.location.href = "/test/seller?message=" + encodeURIComponent(data);
+                alert(data)
+                window.location.href = "/test/seller";
+                //window.location.href = "/test/seller?message=" + encodeURIComponent(data);
             })
-            .catch(error =>{
-              alert(error.message);
-              console.error("Грешка:",error);
+            .catch(error => {
+                alert(error.message);
+                console.error("Грешка:", error);
             });
-  });
+    });
 </script>
 </body>
 </html>
