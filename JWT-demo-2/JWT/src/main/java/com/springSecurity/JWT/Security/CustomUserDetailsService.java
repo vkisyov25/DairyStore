@@ -129,6 +129,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (existsByEmail(user.getEmail())) {
             bindingResult.rejectValue("email", "error.user", "Email already exists.");
         }
+
+        if (existsByUsername(user.getUsername())) {
+            bindingResult.rejectValue("username", "error.user", "Username already exists.");
+        }
     }
 
     public boolean existsByEmail(String email) {
