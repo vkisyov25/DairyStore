@@ -2,16 +2,18 @@ package com.springSecurity.JWT.Security;
 
 import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Models.dtos.CreateUserDto;
+import com.springSecurity.JWT.Models.dtos.LoginUserDto;
 import com.springSecurity.JWT.Repository.UserRepository;
 import com.springSecurity.JWT.Utils.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -21,13 +23,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final JwtUtil jwtUtil;
     private final HttpServletResponse response;
     private final HttpServletRequest request;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository, JwtUtil jwtUtil, HttpServletResponse response, HttpServletRequest request) {
+    public CustomUserDetailsService(UserRepository userRepository, JwtUtil jwtUtil, HttpServletResponse response, HttpServletRequest request, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.response = response;
         this.request = request;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -79,22 +83,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public void create(CreateUserDto createUserDto) {
         User user = mapToUser(createUserDto);
-        user.setPassword(new BCryptPasswordEncoder().encode(createUserDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
         userRepository.save(user);
     }
 
     private User mapToUser(CreateUserDto dto) {
-        return User.builder()
-                .username(dto.getUsername())
-                .password(dto.getPassword())
-                .email(dto.getEmail())
-                .name(dto.getName())
-                .phone(dto.getPhone())
-                .address(dto.getAddress())
-                .companyName(dto.getCompanyName())
-                .companyEIK(dto.getCompanyEIK())
-                .authorities(dto.getAuthorities())
-                .build();
+        return User.builder().username(dto.getUsername()).password(dto.getPassword()).email(dto.getEmail()).name(dto.getName()).phone(dto.getPhone()).address(dto.getAddress()).companyName(dto.getCompanyName()).companyEIK(dto.getCompanyEIK()).authorities(dto.getAuthorities()).build();
     }
 
 
@@ -149,5 +143,20 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public boolean existsByCompanyEIK(String companyEIK) {
         return userRepository.existsByCompanyEIK(companyEIK);
+    }
+
+    public String roleExtraction(@NotNull LoginUserDto loginUserDto) {
+        String username = loginUserDto.getUsername();
+        UserDetails userDetails = loadUserByUsername(username);
+        return userDetails.getAuthorities().iterator().next().getAuthority();
+    }
+
+    public boolean passwordValidator(@NotNull LoginUserDto loginUserDto) {
+        String username = loginUserDto.getUsername();
+        String password = loginUserDto.getPassword();
+        UserDetails userDetails = loadUserByUsername(username);
+        String storedPassword = userDetails.getPassword();
+        return passwordEncoder.matches(password, storedPassword);
+
     }
 }

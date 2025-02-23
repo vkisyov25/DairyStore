@@ -2,16 +2,21 @@ package com.springSecurity.JWT.Controllers;
 
 import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Models.dtos.CreateUserDto;
+import com.springSecurity.JWT.Models.dtos.LoginUserDto;
 import com.springSecurity.JWT.Security.CustomUserDetailsService;
 import com.springSecurity.JWT.Services.EmailService;
 import com.springSecurity.JWT.Services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -20,12 +25,14 @@ public class SecurityController {
     private final CustomUserDetailsService customUserDetailsService;
     private final EmailService emailService;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SecurityController(CustomUserDetailsService customUserDetailsService, EmailService emailService, UserService userService) {
+    public SecurityController(CustomUserDetailsService customUserDetailsService, EmailService emailService, UserService userService, PasswordEncoder passwordEncoder) {
         this.customUserDetailsService = customUserDetailsService;
         this.emailService = emailService;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/home")
@@ -39,7 +46,7 @@ public class SecurityController {
         return "login";
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public String processLogin(@RequestParam String username, Model model) {
         try {
             String role = customUserDetailsService.loadUserByUsername(username).getAuthorities().iterator().next().getAuthority();
@@ -55,7 +62,33 @@ public class SecurityController {
             model.addAttribute("error", "Невалидни данни за вход");
             return "login";
         }
+    }*/
+
+    @PostMapping("/login")
+    public ResponseEntity<?> processLogin(@RequestBody LoginUserDto loginUserDto) {
+        String role = customUserDetailsService.roleExtraction(loginUserDto);
+        try {
+
+            if (!customUserDetailsService.passwordValidator(loginUserDto)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Невалидни данни за вход.");
+            }
+
+            if (role.equals("buyer")) {
+                return ResponseEntity.ok("redirect:/test/buyer");
+            } else if (role.equals("seller")) {
+                return ResponseEntity.ok("redirect:/test/seller");
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Непозната роля.");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Невалидни данни за вход.");
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Възникна неочаквана грешка.");
+        }
+
     }
+
 
     @GetMapping("/register")
     public String displayCreateRegistrationForm(Model model) {
