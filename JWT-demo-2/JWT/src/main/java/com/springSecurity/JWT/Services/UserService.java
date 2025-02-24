@@ -16,6 +16,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+
     public User getUserByUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = null;
@@ -24,5 +25,4 @@ public class UserService {
         }
         return user;
     }
-
 }
