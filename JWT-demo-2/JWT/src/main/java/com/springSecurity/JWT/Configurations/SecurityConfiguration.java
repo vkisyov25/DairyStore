@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/cart/deleteById").hasAuthority("buyer")
                                 .requestMatchers("/order/make").hasAuthority("buyer")
                                 .requestMatchers("/order/latest-order").hasAuthority("buyer")
+                                .requestMatchers("/soldProduct//buyerAnalytics").hasAuthority("buyer")
                                 .requestMatchers("/login.css").permitAll()
                                 .anyRequest().authenticated()
 
