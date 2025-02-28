@@ -1,12 +1,16 @@
 package com.springSecurity.JWT.Services;
 
 import com.springSecurity.JWT.Models.*;
+import com.springSecurity.JWT.Models.dtos.BuyerOrderDto;
+import com.springSecurity.JWT.Models.dtos.OrderProductDto;
 import com.springSecurity.JWT.Models.enums.PaymentMethod;
 import com.springSecurity.JWT.Repository.OrderRepository;
+import com.springSecurity.JWT.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,10 +22,10 @@ public class OrderService {
     private final UserService userService;
     private final CartService cartService;
     private final SoldProductService soldProductService;
-
+    private final ProductRepository productRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, CartItemService cartItemService, OrderItemService orderItemService, DeliveryCompanyService deliveryCompanyService, UserService userService, CartService cartService, SoldProductService soldProductService) {
+    public OrderService(OrderRepository orderRepository, CartItemService cartItemService, OrderItemService orderItemService, DeliveryCompanyService deliveryCompanyService, UserService userService, CartService cartService, SoldProductService soldProductService, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.orderItemService = orderItemService;
         this.cartItemService = cartItemService;
@@ -29,6 +33,7 @@ public class OrderService {
         this.userService = userService;
         this.cartService = cartService;
         this.soldProductService = soldProductService;
+        this.productRepository = productRepository;
     }
 
     public void makeOrder(String deliveryAddress, String deliveryCompanyName, PaymentMethod paymentMethod) {
@@ -85,5 +90,36 @@ public class OrderService {
         User user = userService.getUserByUsername();
         return orderRepository.findTopByUserIdOrderByDateDesc(user.getId())
                 .orElseThrow(() -> new RuntimeException("Не е намерена последна поръчка за потребителя с ID: " + user.getId()));
+    }
+
+    public List<BuyerOrderDto> getCurrentUserOrders() {
+        User user = userService.getUserByUsername();
+        List<Order> orderList = orderRepository.findOrdersByUserId(user.getId());
+        List<BuyerOrderDto> buyerOrderDtoList = new ArrayList<>();
+
+        for (int i = 0; i < orderList.size(); i++) {
+            Order order = orderList.get(i);
+            LocalDateTime orderDate = order.getDate();
+            String addressToDelivery = order.getDeliveryAddress();
+            PaymentMethod paymentMethod = order.getPaymentMethod();
+            String deliveryCompany = order.getDeliveryCompany().getName();
+            double deliveryFee = order.getDeliveryCompany().getDeliveryFee();
+            double priceWithDeliveryFee = order.getTotalPrice();
+
+            List<OrderItem> orderItemList = orderItemService.getOrderItemsByOrderId(order.getId());
+            List<OrderProductDto> orderProductDtoList = new ArrayList<>();
+            for (OrderItem orderItem : orderItemList) {
+                Product product = productRepository.findProductById(orderItem.getProductId());
+                String productName = product.getName();
+                String productType = product.getType();
+                int quantity = orderItem.getQuantity();
+                OrderProductDto orderProductDto = new OrderProductDto(productName, productType, quantity);
+                orderProductDtoList.add(orderProductDto);
+            }
+            BuyerOrderDto buyerOrderDto = new BuyerOrderDto(orderDate, addressToDelivery, paymentMethod, deliveryCompany, deliveryFee, priceWithDeliveryFee, orderProductDtoList); //productName, productType, quantity
+            buyerOrderDtoList.add(buyerOrderDto);
+        }
+
+        return buyerOrderDtoList;
     }
 }
