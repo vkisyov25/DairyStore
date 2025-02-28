@@ -15,6 +15,8 @@
 <a th:href="@{/cart/view}">View shopping cart and make order</a>
 <br>
 <button type="submit" id="viewAnalysesBtn">View analyses</button>
+<br>
+<button type="submit" id="allOrdersBtn">View your all orders</button>
 <br> <br>
 <!-- Тук ще покажем анализа -->
 <div id="analysisResult" style="display: none;">
@@ -23,6 +25,8 @@
     <p><strong>Average purchase price:</strong> <span id="averagePrice">Loading...</span></p>
     <p><strong>Most purchased product type:</strong> <span id="mostPurchased">Loading...</span></p>
 </div>
+<br>
+<div id="orderList" style="display: none;"></div>
 <br>
 <form action="/test/logout" method="post">
     <button type="submit">Logout</button>
@@ -36,6 +40,14 @@
     document.getElementById("viewAnalysesBtn").addEventListener("click", function (event) {
         event.preventDefault();
 
+        let analysisResult = document.getElementById("analysisResult");
+
+        // Ако анализът вече е видим, го скриваме и спираме изпълнението на кода
+        if (analysisResult.style.display === "block") {
+            analysisResult.style.display = "none";
+            return;
+        }
+
         fetch("/soldProduct/buyerAnalytics")
             .then(response => {
                 if (!response.ok) {
@@ -43,11 +55,6 @@
                 }
                 return response.json();
             })
-            /*.then(data => {
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-            });*/
             .then(data => {
                 document.getElementById("totalPrice").textContent = data.totalPurchasePrice.toFixed(2) + " лв.";
                 document.getElementById("averagePrice").textContent = data.averagePurchasePrice.toFixed(2) + " лв.";
@@ -61,6 +68,73 @@
                 document.getElementById("analysisResult").innerHTML = "<p style='color: red;'>Error loading data!</p>";
                 document.getElementById("analysisResult").style.display = "block";
             });
+    })
+
+    document.getElementById("allOrdersBtn").addEventListener("click", function (event) {
+        event.preventDefault();
+        const container = document.getElementById("orderList");
+
+        if (container.style.display === "block") {
+            container.style.display = "none";
+            return;
+        }
+
+        fetch("/order/viewAll")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return response.json();
+
+            })
+            .then(date => {
+                const container = document.getElementById("orderList");
+                container.innerHTML = "";
+
+                date.forEach(order => {
+                    console.log("Обработва се поръчка:", order);
+                    // Обработка на списъка с продукти
+                    let productsHtml = "<ul>";
+                    if (order.orderProductDtoList && order.orderProductDtoList.length > 0) {
+                        order.orderProductDtoList.forEach(product => {
+                            console.log("Продукт:", product);  // Виж продукта
+                            productsHtml += `
+                        <ol>
+                            <strong>Име:</strong> ${product.productName}
+                            <br>
+                            <strong>Тип:</strong> ${product.productType}
+                            <br>
+                            <strong>Количество:</strong> ${product.quantity} броя
+                        </ol>
+                    `;
+                        });
+                    } else {
+                        productsHtml += "<li>Няма продукти в тази поръчка.</li>";
+                    }
+
+                    productsHtml += "</ul>";
+
+                    const divElement = document.createElement("div");
+                    divElement.innerHTML = `
+
+                    <p><strong>Дата на поръчката:</strong><span>${order.orderDate}</span></p>
+                    <p><strong>Адрес на доставка:</strong><span>${order.addressToDelivery}</span></p>
+                    <p><strong>Начин на плащане:</strong><span>${order.paymentMethod}</span></p>
+                    <p><strong>Фирма доставчик:</strong><span>${order.deliveryCompany}</span></p>
+                    <p><strong>Доставка:</strong><span>${order.deliveryFee.toFixed(2)}</span> лв</p>
+                    <p><strong>Цена с включена доставка:</strong><span>${order.priceWithDeliveryFee.toFixed(2)}</span> лв</p>
+                    <br>
+                    <p>${productsHtml}</p>
+                    <br>
+                    `;
+
+                    container.appendChild(divElement);
+                })
+                container.style.display = "block";
+            })
+
+            .catch(err => console.error(err));
     })
 </script>
 </body>
