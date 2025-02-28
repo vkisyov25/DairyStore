@@ -59,7 +59,7 @@ public class SoldProductService {
                 .orElse(""); // Премахва Optional и връща само стойността
 
 
-        int ordersCount = orderRepository.getOrdersByUserId(user.getId()).size();
+        int ordersCount = orderRepository.findOrdersByUserId(user.getId()).size();
 
         double averagePurchasePrice = totalPrice / ordersCount;
 

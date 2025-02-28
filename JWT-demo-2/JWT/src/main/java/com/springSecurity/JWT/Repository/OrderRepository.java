@@ -13,5 +13,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findTopByUserIdOrderByDateDesc(Long userId);
 
     @Query("SELECT order FROM Order order WHERE order.userId =?1")
-    List<Order> getOrdersByUserId(Long user_id);
+    List<Order> findOrdersByUserId(Long user_id);
 }
