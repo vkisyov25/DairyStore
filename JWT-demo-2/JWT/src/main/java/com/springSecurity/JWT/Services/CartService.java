@@ -4,23 +4,16 @@ import com.springSecurity.JWT.Models.Cart;
 import com.springSecurity.JWT.Models.Product;
 import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Repository.CartRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
     private final UserService userService;
     private final ProductService productService;
     private final CartItemService cartItemService;
-
-    @Autowired
-    public CartService(CartRepository cartRepository, UserService userService, ProductService productService, CartItemService cartItemService) {
-        this.cartRepository = cartRepository;
-        this.userService = userService;
-        this.productService = productService;
-        this.cartItemService = cartItemService;
-    }
 
     public void addToCart(Long productId, int quantity) {
         User user = userService.getUserByUsername();

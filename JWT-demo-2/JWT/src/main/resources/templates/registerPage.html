@@ -1,97 +1,97 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>CreateForm</title>
-  <script>
-    function toggleCompanyFields() {
-      const role = document.getElementById("role").value;
-      const companyFields = document.getElementById("companyFields");
-      const isCompanyCheckbox = document.getElementById("isCompany");
-      if (role === "seller") {
-        companyFields.style.display = "block";
-        isCompanyCheckbox.checked = true; // Чеква автоматично, когато е seller
-      } else if (role === "buyer" && document.getElementById("isCompany").checked) {
-        companyFields.style.display = "block";
-      } else {
-        companyFields.style.display = "none";
-      }
-    }
-  </script>
+    <meta charset="UTF-8">
+    <title>CreateForm</title>
+    <script>
+        function toggleCompanyFields() {
+            const role = document.getElementById("role").value;
+            const companyFields = document.getElementById("companyFields");
+            const isCompanyCheckbox = document.getElementById("isCompany");
+            if (role === "seller") {
+                companyFields.style.display = "block";
+                isCompanyCheckbox.checked = true; // Чеква автоматично, когато е seller
+            } else if (role === "buyer" && document.getElementById("isCompany").checked) {
+                companyFields.style.display = "block";
+            } else {
+                companyFields.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
 <form action="#" th:action="@{/test/register}" th:object="${user}" method="post">
 
-  <label for="username">Username</label>
-  <input type="text" id = "username" th:field="*{username}">
-  <div th:if="${#fields.hasErrors('username')}">
-       <p th:errors="*{username}"></p>
-  </div>
-  <br>
-
-  <label>Password</label>
-  <input type="password" th:field="*{password}">
-  <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-  <br>
-
-  <label>Role:</label>
-  <select id="role" th:field="*{authorities}" onchange="toggleCompanyFields()">
-    <option value="buyer">Buyer</option>
-    <option value="seller">Seller</option>
-  </select>
-  <div th:if="${#fields.hasErrors('authorities')}" th:errors="*{authorities}"></div>
-  <br>
-
-  <label for="email">Email</label>
-  <input type="email" th:field="*{email}" id="email" required />
-  <div th:if="${#fields.hasErrors('email')}" class="error">
-    <p th:errors="*{email}"></p>
-  </div>
-  <br>
-
-  <label>Full name</label>
-  <input type="text" th:field="*{name}">
-  <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-  <br>
-
-  <label>Phone</label>
-  <input type="text" th:field="*{phone}">
-  <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
-  <br>
-
-  <label>Address</label>
-  <input type="text" th:field="*{address}">
-  <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
-  <br>
-
-  <!-- Полета за фирма -->
-  <div id="companyFields" style="display: none;">
-    <label for="companyName">Company Name</label>
-    <input type="text" id="companyName"  th:class="error" th:field="*{companyName}">
-    <div th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></div>
-    <br>
-
-    <label for="companyEIK">Company EIK</label>
-    <input type="text" id="companyEIK" th:field="*{companyEIK}">
-    <div th:if="${#fields.hasErrors('companyEIK')}">
-      <p th:errors="*{companyEIK}"> </p>
+    <label for="username">Username</label>
+    <input type="text" id="username" th:field="*{username}">
+    <div th:if="${#fields.hasErrors('username')}">
+        <p th:errors="*{username}"></p>
     </div>
     <br>
-  </div>
 
-  <!-- Поглед върху фирмата за buyer -->
-  <label>Is your company a firm?</label>
-  <input type="checkbox" id="isCompany" onchange="toggleCompanyFields()">
-  <br>
+    <label>Password</label>
+    <input type="password" th:field="*{password}">
+    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+    <br>
+
+    <label>Role:</label>
+    <select id="role" th:field="*{authorities}" onchange="toggleCompanyFields()">
+        <option value="buyer">Buyer</option>
+        <option value="seller">Seller</option>
+    </select>
+    <div th:if="${#fields.hasErrors('authorities')}" th:errors="*{authorities}"></div>
+    <br>
+
+    <label for="email">Email</label>
+    <input type="email" th:field="*{email}" id="email" required/>
+    <div th:if="${#fields.hasErrors('email')}" class="error">
+        <p th:errors="*{email}"></p>
+    </div>
+    <br>
+
+    <label>Full name</label>
+    <input type="text" th:field="*{name}">
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    <br>
+
+    <label>Phone</label>
+    <input type="text" th:field="*{phone}">
+    <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+    <br>
+
+    <label>Address</label>
+    <input type="text" th:field="*{address}">
+    <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+    <br>
+
+    <!-- Полета за фирма -->
+    <div id="companyFields" style="display: none;">
+        <label for="companyName">Company Name</label>
+        <input type="text" id="companyName" th:class="error" th:field="*{companyName}">
+        <div th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></div>
+        <br>
+
+        <label for="companyEIK">Company EIK</label>
+        <input type="text" id="companyEIK" th:field="*{companyEIK}">
+        <div th:if="${#fields.hasErrors('companyEIK')}">
+            <p th:errors="*{companyEIK}"></p>
+        </div>
+        <br>
+    </div>
+
+    <!-- Поглед върху фирмата за buyer -->
+    <label>Is your company a firm?</label>
+    <input type="checkbox" id="isCompany" onchange="toggleCompanyFields()">
+    <br>
 
 
-  <input type="submit" value="Save">
+    <input type="submit" value="Save">
 </form>
 
 <!-- Увери се, че JavaScript се изпълнява при зареждане -->
 <script>
-  // Проверява избраната роля при зареждане
-  document.addEventListener("DOMContentLoaded", toggleCompanyFields);
+    // Проверява избраната роля при зареждане
+    document.addEventListener("DOMContentLoaded", toggleCompanyFields);
 </script>
 </body>
 </html>

@@ -4,7 +4,7 @@ import com.springSecurity.JWT.Models.Order;
 import com.springSecurity.JWT.Models.dtos.BuyerOrderDto;
 import com.springSecurity.JWT.Models.enums.PaymentMethod;
 import com.springSecurity.JWT.Services.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,13 +17,9 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/order")
+@RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-
-    @Autowired
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @GetMapping("/make")
     public String displayMakeOrderPage() {

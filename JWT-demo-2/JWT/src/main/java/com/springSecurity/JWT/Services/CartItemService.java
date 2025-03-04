@@ -4,19 +4,15 @@ import com.springSecurity.JWT.Models.Cart;
 import com.springSecurity.JWT.Models.CartItem;
 import com.springSecurity.JWT.Models.Product;
 import com.springSecurity.JWT.Repository.CartItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CartItemService {
     private final CartItemRepository cartItemRepository;
-
-    @Autowired
-    public CartItemService(CartItemRepository cartItemRepository) {
-        this.cartItemRepository = cartItemRepository;
-    }
 
     public void saveCartItems(Cart cart, Product product, int quantity, double totalPrice) {
         //Създава и добавя в базата данни CartItem

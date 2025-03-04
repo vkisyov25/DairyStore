@@ -6,7 +6,7 @@ import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Services.CartItemService;
 import com.springSecurity.JWT.Services.CartService;
 import com.springSecurity.JWT.Services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,17 +19,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/cart")
+@RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
     private final CartItemService cartItemService;
     private final UserService userService;
-
-    @Autowired
-    public CartController(CartService cartService, CartItemService cartItemService, UserService userService) {
-        this.cartService = cartService;
-        this.cartItemService = cartItemService;
-        this.userService = userService;
-    }
 
     @PostMapping("/add")
     public String addToCart(@RequestParam int quantity, @RequestParam Long productId, RedirectAttributes redirectAttributes) {
