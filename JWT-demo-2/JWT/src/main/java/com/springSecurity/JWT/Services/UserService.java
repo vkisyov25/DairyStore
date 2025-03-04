@@ -3,19 +3,15 @@ package com.springSecurity.JWT.Services;
 import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Models.dtos.UserInformationDto;
 import com.springSecurity.JWT.Repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    private UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
 
     public User getUserByUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -64,6 +60,20 @@ public class UserService {
         if (userInformationDto.getCompanyEIK() != null && !userInformationDto.getCompanyEIK().isEmpty()) {
             user.setCompanyEIK(userInformationDto.getCompanyEIK());
         }
+
+        /*public void updateCurrentUserInformation(UserInformationDto userInformationDto) {
+            User user = getUserByUsername();
+
+            Optional.ofNullable(userInformationDto.getUsername()).filter(s -> !s.isEmpty()).ifPresent(user::setUsername);
+            Optional.ofNullable(userInformationDto.getName()).filter(s -> !s.isEmpty()).ifPresent(user::setName);
+            Optional.ofNullable(userInformationDto.getEmail()).filter(s -> !s.isEmpty()).ifPresent(user::setEmail);
+            Optional.ofNullable(userInformationDto.getPhone()).filter(s -> !s.isEmpty()).ifPresent(user::setPhone);
+            Optional.ofNullable(userInformationDto.getAddress()).filter(s -> !s.isEmpty()).ifPresent(user::setAddress);
+            Optional.ofNullable(userInformationDto.getCompanyName()).filter(s -> !s.isEmpty()).ifPresent(user::setCompanyName);
+            Optional.ofNullable(userInformationDto.getCompanyEIK()).filter(s -> !s.isEmpty()).ifPresent(user::setCompanyEIK);
+
+            userRepository.save(user);
+        }*/
 
         userRepository.save(user);
 

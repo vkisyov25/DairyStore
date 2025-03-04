@@ -2,19 +2,18 @@ package com.springSecurity.JWT.Controllers;
 
 import com.springSecurity.JWT.Models.dtos.BuyerAnalyticsDto;
 import com.springSecurity.JWT.Services.SoldProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+
+@RestController
 @RequestMapping("/soldProduct")
+@RequiredArgsConstructor
 public class SoldProductController {
     private final SoldProductService soldProductService;
-
-    public SoldProductController(SoldProductService soldProductService) {
-        this.soldProductService = soldProductService;
-    }
 
     @GetMapping("/buyerAnalytics")
     public ResponseEntity<BuyerAnalyticsDto> analyzeUserShoppingBehavior() {

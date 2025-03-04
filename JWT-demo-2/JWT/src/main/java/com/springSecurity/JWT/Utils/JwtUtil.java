@@ -1,18 +1,23 @@
 package com.springSecurity.JWT.Utils;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 @Component
 public class JwtUtil {
     private static final String SECRET_KEY = "2e73012638c9f832c35c3f45e3b2e257b9204f85ea13a1a0bdbf2542e45bc6f3";
+
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
@@ -36,6 +41,7 @@ public class JwtUtil {
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
+
     private Date extractExpiration(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
@@ -43,6 +49,7 @@ public class JwtUtil {
                 .getBody()
                 .getExpiration();
     }
+
     public String extractUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
@@ -51,6 +58,7 @@ public class JwtUtil {
                 .getBody()
                 .getSubject();
     }
+
     public String getRoleFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)  // Тайният ключ
@@ -60,6 +68,7 @@ public class JwtUtil {
         List<String> roles = claims.get("roles", List.class);  // Вземи ролите като списък
         return roles != null && !roles.isEmpty() ? roles.get(0) : null;  // Върни първата роля, ако съществува
     }
+
     public Collection<? extends GrantedAuthority> getAuthoritiesFromToken(String token) {
         Claims claims = extractAllClaims(token);
         // Извличаме ролите като Object и ги конвертираме в List<String>
@@ -77,6 +86,7 @@ public class JwtUtil {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
+
     public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)

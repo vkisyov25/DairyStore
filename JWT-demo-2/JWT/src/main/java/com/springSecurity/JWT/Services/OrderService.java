@@ -1,12 +1,18 @@
 package com.springSecurity.JWT.Services;
 
-import com.springSecurity.JWT.Models.*;
+import com.springSecurity.JWT.Models.Cart;
+import com.springSecurity.JWT.Models.CartItem;
+import com.springSecurity.JWT.Models.DeliveryCompany;
+import com.springSecurity.JWT.Models.Order;
+import com.springSecurity.JWT.Models.OrderItem;
+import com.springSecurity.JWT.Models.Product;
+import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Models.dtos.BuyerOrderDto;
 import com.springSecurity.JWT.Models.dtos.OrderProductDto;
 import com.springSecurity.JWT.Models.enums.PaymentMethod;
 import com.springSecurity.JWT.Repository.OrderRepository;
 import com.springSecurity.JWT.Repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CartItemService cartItemService;
@@ -23,18 +30,6 @@ public class OrderService {
     private final CartService cartService;
     private final SoldProductService soldProductService;
     private final ProductRepository productRepository;
-
-    @Autowired
-    public OrderService(OrderRepository orderRepository, CartItemService cartItemService, OrderItemService orderItemService, DeliveryCompanyService deliveryCompanyService, UserService userService, CartService cartService, SoldProductService soldProductService, ProductRepository productRepository) {
-        this.orderRepository = orderRepository;
-        this.orderItemService = orderItemService;
-        this.cartItemService = cartItemService;
-        this.deliveryCompanyService = deliveryCompanyService;
-        this.userService = userService;
-        this.cartService = cartService;
-        this.soldProductService = soldProductService;
-        this.productRepository = productRepository;
-    }
 
     public void makeOrder(String deliveryAddress, String deliveryCompanyName, PaymentMethod paymentMethod) {
         User user = userService.getUserByUsername();

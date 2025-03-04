@@ -3,7 +3,7 @@ package com.springSecurity.JWT.Services;
 import com.springSecurity.JWT.Models.Product;
 import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,15 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final UserService userService;
-
-    @Autowired
-    public ProductService(ProductRepository productRepository, UserService userService) {
-        this.productRepository = productRepository;
-        this.userService = userService;
-    }
 
     public List<Product> getAllProductByUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

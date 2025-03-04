@@ -8,7 +8,7 @@ import com.springSecurity.JWT.Models.dtos.BuyerAnalyticsDto;
 import com.springSecurity.JWT.Repository.OrderRepository;
 import com.springSecurity.JWT.Repository.ProductRepository;
 import com.springSecurity.JWT.Repository.SoldProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,19 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class SoldProductService {
     private final SoldProductRepository soldProductRepository;
     private final UserService userService;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-
-    @Autowired
-    public SoldProductService(SoldProductRepository soldProductRepository, UserService userService, ProductRepository productRepository, OrderRepository orderRepository) {
-        this.soldProductRepository = soldProductRepository;
-        this.userService = userService;
-        this.productRepository = productRepository;
-        this.orderRepository = orderRepository;
-    }
 
     public void saveSoldProduct(Cart cart, int quantity, Long productId, User user, Product product, double totalPrice) {
         SoldProduct soldProduct = SoldProduct.builder().quantity(quantity).product_id(productId).cart_id(cart.getId()).finalPrice(totalPrice).buyer_id(user.getId()).seller_id(product.getUser().getId()).build();
