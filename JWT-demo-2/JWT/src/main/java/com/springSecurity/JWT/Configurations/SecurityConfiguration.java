@@ -43,6 +43,11 @@ public class SecurityConfiguration {
                                 .requestMatchers("/user/edit").hasAnyAuthority("seller", "buyer")
                                 .requestMatchers("/user/deleteCompany").hasAuthority("buyer")
                                 .requestMatchers("/login.css").permitAll()
+                                .requestMatchers("/login.html").permitAll()
+                                .requestMatchers("/registerPage.css").permitAll()
+                                .requestMatchers("/registerPage.html").permitAll()
+                                .requestMatchers("/homePage.css").permitAll()
+                                .requestMatchers("/homePage.html").permitAll()
                                 .anyRequest().authenticated()
 
                 )

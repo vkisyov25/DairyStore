@@ -1,57 +1,26 @@
-<!--<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Login</title>
-</head>
-<body>
-<h2>Влезте в профила си</h2>
-<form action="/test/login" method="post">
-    <div>
-        <label for="username">Потребителско име:</label>
-        <input type="text" id="username" name="username" required>
-    </div>
-    <div>
-        <label for="password">Парола:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    <div>
-        <button type="submit">Вход</button>
-    </div>
-</form>
-<p th:if="${error}" th:text="${error}"></p>
-
-<div th:if="${success}">
-    <span th:text="${success}"></span>
-</div>
-
-</body>
-</html>-->
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="/login.css">
 </head>
 <body>
-<h2 class="title">Влезте в профила си</h2>
-<form>
-    <div class="username">
-        <label for="username">Потребителско име:</label>
-        <input type="text" id="username" name="username" required>
-    </div>
-    <div class="password">
-        <label for="password">Парола:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    <div>
-        <button class="submit" type="submit" id="submitBtn">Вход</button>
-    </div>
-
-</form>
-
-<!--registration successfully-->
-<div th:if="${success}">
-    <span th:text="${success}"></span>
+<div class="login-container">
+    <h2 class="title">Влезте в профила си</h2>
+    <form>
+        <div class="username">
+            <label for="username">Потребителско име:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="password">
+            <label for="password">Парола:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div>
+            <button class="submit" type="submit" id="submitBtn">Вход</button>
+        </div>
+    </form>
 </div>
 
 <script>
