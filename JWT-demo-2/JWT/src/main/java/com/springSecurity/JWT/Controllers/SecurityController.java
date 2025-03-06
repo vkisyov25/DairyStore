@@ -1,6 +1,5 @@
 package com.springSecurity.JWT.Controllers;
 
-import com.springSecurity.JWT.Models.User;
 import com.springSecurity.JWT.Models.dtos.CreateUserDto;
 import com.springSecurity.JWT.Models.dtos.LoginUserDto;
 import com.springSecurity.JWT.Security.CustomUserDetailsService;
@@ -14,13 +13,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/test")
@@ -29,35 +31,6 @@ public class SecurityController {
     private final CustomUserDetailsService customUserDetailsService;
     private final EmailService emailService;
     private final UserService userService;
-
-    @GetMapping("/home")
-    public String home(Model model) {
-        model.addAttribute("message", "Добре дошли в моята електронна борса за продажба на млечни продукти!");
-        return "homePage";
-    }
-
-    @GetMapping("/login")
-    public String displayLoginPage() {
-        return "login";
-    }
-
-    /*@PostMapping("/login")
-    public String processLogin(@RequestParam String username, Model model) {
-        try {
-            String role = customUserDetailsService.loadUserByUsername(username).getAuthorities().iterator().next().getAuthority();
-
-            if (role.equals("buyer")) {
-                return "redirect:/test/buyer";
-            } else if (role.equals("seller")) {
-                return "redirect:/test/seller";
-            }
-            model.addAttribute("error", "Непозната роля.");
-            return "login";
-        } catch (AuthenticationException e) {
-            model.addAttribute("error", "Невалидни данни за вход");
-            return "login";
-        }
-    }*/
 
     @PostMapping("/login")
     public ResponseEntity<?> processLogin(@RequestBody LoginUserDto loginUserDto) {
@@ -84,24 +57,23 @@ public class SecurityController {
 
     }
 
-
-    @GetMapping("/register")
-    public String displayCreateRegistrationForm(Model model) {
-        model.addAttribute("user", new User());
-        return "registerPage";
-    }
-
     @PostMapping("/register")
-    public String createRegistration(@Valid @ModelAttribute("user") CreateUserDto createUserDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> createRegistration(@Valid @RequestBody CreateUserDto createUserDto, BindingResult bindingResult) {
         customUserDetailsService.validateUser(createUserDto, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "registerPage";
+            Map<String, List<String>> errors = bindingResult.getFieldErrors()
+                    .stream()
+                    .collect(Collectors.groupingBy(
+                            FieldError::getField,
+                            Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())
+                    ));
+
+            return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
 
         customUserDetailsService.create(createUserDto);
         emailService.sendRegistrationEmail(createUserDto.getEmail(), createUserDto.getName());
-        redirectAttributes.addFlashAttribute("success", "Registration successful!");
-        return "redirect:/test/login";
+        return ResponseEntity.ok(Map.of("message", "Успешна регистрация"));
     }
 
     @GetMapping("/seller")
