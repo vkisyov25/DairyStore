@@ -1,0 +1,102 @@
+body {
+    background-color: #d1cdcd;
+}
+
+.menu {
+    position: fixed; /* Закрепване в горната част */
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f2a900; /* Тъмен фон */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center; /* Центриране на бутоните */
+    gap: 20px; /* Разстояние между бутоните */
+}
+
+.navbar a,
+.navbar button {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border: none;
+    background-color: #007bff; /* Син фон за бутоните */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.navbar button {
+    background-color: #28a745; /* Зелен фон за бутона */
+}
+
+.navbar a:hover,
+.navbar button:hover {
+    opacity: 0.8;
+}
+
+.product-form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 500px; /* Увеличаваме ширината */
+    width: 90%; /* За да изглежда добре и на малки екрани */
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.product-form h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.product-form label {
+    font-weight: bold;
+    margin-top: 10px;
+    color: #555;
+}
+
+.product-form input,
+.product-form select,
+.product-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.product-form textarea {
+    height: 80px;
+    resize: none;
+}
+
+.product-form .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.product-form button {
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.product-form button:hover {
+    background: #218838;
+}
+

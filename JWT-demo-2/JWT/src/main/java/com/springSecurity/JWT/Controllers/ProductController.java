@@ -1,11 +1,15 @@
 package com.springSecurity.JWT.Controllers;
 
 import com.springSecurity.JWT.Models.Product;
+import com.springSecurity.JWT.Models.dtos.CreateProductDto;
 import com.springSecurity.JWT.Services.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/products")
@@ -28,22 +34,24 @@ public class ProductController {
 
     }
 
-    @GetMapping("/create")
-    public String displayCreateProductPage(Model model) {
-        model.addAttribute("product", new Product());
-        return "createProductPage";
-    }
-
     @PostMapping("/create")
-    public ResponseEntity<?> createNewProduct(@RequestBody Product product) {
-        productService.createProduct(product);
-        return ResponseEntity.ok("Product created successfully!");
+    public ResponseEntity<?> createNewProduct(@Valid @RequestBody CreateProductDto createProductDto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+
+            Map<String, String> errors = bindingResult.getFieldErrors()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            FieldError::getField,
+                            fieldError -> fieldError.getDefaultMessage(),
+                            (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
+                    ));
+
+            return ResponseEntity.badRequest().body(Map.of("errors", errors));
+        }
+        productService.createProduct(createProductDto);
+        return ResponseEntity.ok(Map.of("message", "Продуктът е създаден успешно"));
     }
-   /* @PostMapping("/create")
-    public String createProduct(@ModelAttribute Product product) {
-        productService.creteProduct(product);
-        return "sellerPage";
-    }*/
 
     @GetMapping("/listToBuy")
     public String displayListToBuyPage() {

@@ -2,6 +2,7 @@ package com.springSecurity.JWT.Services;
 
 import com.springSecurity.JWT.Models.Product;
 import com.springSecurity.JWT.Models.User;
+import com.springSecurity.JWT.Models.dtos.CreateProductDto;
 import com.springSecurity.JWT.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -26,13 +27,18 @@ public class ProductService {
         return new ArrayList<>();
     }
 
-    public void createProduct(Product product) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new SecurityException("User is not authenticated");
-        }
+    public void createProduct(CreateProductDto createProductDto) {
         User user = userService.getUserByUsername();
-        product.setUser(user);
+        Product product = Product.builder()
+                .name(createProductDto.getName())
+                .type(createProductDto.getType())
+                .weight(createProductDto.getWeight())
+                .price(createProductDto.getPrice())
+                .description(createProductDto.getDescription())
+                .discount(createProductDto.getDiscount())
+                .quantity(createProductDto.getQuantity())
+                .user(user).build();
+
         productRepository.save(product);
     }
 

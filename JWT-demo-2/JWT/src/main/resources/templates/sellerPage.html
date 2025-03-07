@@ -3,29 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <title>Seller</title>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/sellerPage.css">
 </head>
 <body>
 
-<h2>
-    <div th:text="${seller}"></div>
-</h2>
-<br>
+<div class="menu">
+    <h2>
+        <div th:text="${seller}"></div>
+    </h2>
+    <br>
+    <a href="/userInformationPage.html">Моят профил</a>
+    <br>
+    <br>
+    <button type="button" onclick="createProduct()">Създай продукт</button>
+    <br>
+    <br>
+    <a th:href="@{/products/all}">View your products</a>
+    <br>
+    <br>
+    <form th:action="@{/test/logout}" method="post">
+        <button type="submit" value="Sign Out">Logout</button>
+    </form>
+</div>
 
-<!-- <a th:href="@{/user/allInformation}" class="btn btn-primary">My profile information</a>-->
-<a href="/userInformationPage.html" class="btn btn-primary">My profile information</a>
-<br>
-<br>
-<a th:href="@{/products/create}" class="btn btn-primary">Create product for sale</a>
-<br>
-<br>
-<a th:href="@{/products/all}" class="btn btn-primary">View your products</a>
-<br>
-<br>
-<form th:action="@{/test/logout}" method="post">
-    <button type="submit" value="Sign Out">Logout</button>
-</form>
+<!--<div id="createProduct" style="display: none;">
+    <label>Създаване на продукт</label>
+    <br>
+    <label for="name">Име</label>
+    <input type="text" id="name">
+    <span class="error-message" id="error-name"></span>
+    <br>
+    <label for="type">Тип</label>
+    <select id="type">
+        <option value="">&#45;&#45; Избери тип &#45;&#45;</option>
+        <option value="кашкавал">кашкавал</option>
+        <option value="сирене">сирене</option>
+        <option value="масло">масло</option>
+        <option value="прясно мляко">прясно мляко</option>
+        <option value="кисело мляко">кисело мляко</option>
+        <option value="извара">извара</option>
+        <option value="айран">айран</option>
+    </select>
+    <span class="error-message" id="error-type"></span>
+    <br>
+    <label for="weight">Тегло</label>
+    <input type="text" id="weight">
+    <span class="error-message" id="error-weight"></span>
+    <br>
+    <label for="price">Цена</label>
+    <input type="text" id="price">
+    <span class="error-message" id="error-price"></span>
+    <br>
+    <label for="description">Описание</label>
+    <input type="text" id="description">
+    <span class="error-message" id="error-description"></span>
+    <br>
+    <label for="discount">Отстъпка(%)</label>
+    <input type="text" id="discount">
+    <span class="error-message" id="error-discount"></span>
+    <br>
+    <label for="quantity">Количество</label>
+    <input type="text" id="quantity">
+    <span class="error-message" id="error-quantity"></span>
+    <br>
+    <input type="button" id="saveProduct" onclick="saveProduct()" value="save">
+    <br>
+</div>-->
+<div id="createProduct" class="product-form">
+    <h2>Създаване на продукт</h2>
 
+    <label for="name">Име</label>
+    <input type="text" id="name">
+    <span class="error-message" id="error-name"></span>
+
+    <label for="type">Тип</label>
+    <select id="type">
+        <option value="">-- Избери тип --</option>
+        <option value="кашкавал">кашкавал</option>
+        <option value="сирене">сирене</option>
+        <option value="масло">масло</option>
+        <option value="прясно мляко">прясно мляко</option>
+        <option value="кисело мляко">кисело мляко</option>
+        <option value="извара">извара</option>
+        <option value="айран">айран</option>
+    </select>
+    <span class="error-message" id="error-type"></span>
+
+    <label for="weight">Тегло</label>
+    <input type="text" id="weight">
+    <span class="error-message" id="error-weight"></span>
+
+    <label for="price">Цена</label>
+    <input type="text" id="price">
+    <span class="error-message" id="error-price"></span>
+
+    <label for="description">Описание</label>
+    <textarea id="description"></textarea>
+    <span class="error-message" id="error-description"></span>
+
+    <label for="discount">Отстъпка (%)</label>
+    <input type="text" id="discount">
+    <span class="error-message" id="error-discount"></span>
+
+    <label for="quantity">Количество</label>
+    <input type="text" id="quantity">
+    <span class="error-message" id="error-quantity"></span>
+
+    <button id="saveProduct" onclick="saveProduct()">Запази</button>
+</div>
+
+
+<script>
+    function createProduct() {
+        const createProductDiv = document.getElementById("createProduct");
+        if (createProductDiv.style.display === "none") {
+            createProductDiv.style.display = "block";
+        } else {
+            createProductDiv.style.display = "none";
+        }
+    }
+
+    function saveProduct() {
+        const createProductDiv = document.getElementById("createProduct");
+        let obj = {
+            name: document.getElementById("name").value,
+            type: document.getElementById("type").value,
+            weight: document.getElementById("weight").value,
+            price: document.getElementById("price").value,
+            description: document.getElementById("description").value,
+            discount: document.getElementById("discount").value,
+            quantity: document.getElementById("quantity").value
+        }
+
+        fetch("/products/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            console.log(data);
+            if (data.errors) {
+                displayErrors(data.errors);
+            } else {
+                alert(data.message);
+                createProductDiv.style.display = "none"; // Скрива формата
+                clearForm(); // Изчиства стойностите във формата
+                /*createProduct()*/
+            }
+        }).catch(error => {
+            console.error("Грешка:", error);
+            alert("Възникна грешка при изпълнението на заявката.");
+        });
+    }
+
+    function displayErrors(errors) {
+        // Изчистваме предишните грешки
+        document.querySelectorAll(".error-message").forEach(span => {
+            span.textContent = "";
+        });
+
+        // Обхождаме грешките и ги показваме под съответните полета
+        Object.keys(errors).forEach(field => {
+            const errorSpan = document.getElementById(`error-${field}`);
+            if (errorSpan) {
+                errorSpan.textContent = Array.isArray(errors[field])
+                    ? errors[field][0] // Вземаме само първата грешка за всяко поле
+                    : errors[field];
+                errorSpan.style.color = "red";
+            }
+        });
+
+
+    }
+
+    function clearForm() {
+        document.querySelectorAll("#createProduct input").forEach(input => {
+            input.value = "";
+        });
+        document.getElementById("type").value = ""; // Нулиране на select-а
+
+        document.querySelectorAll(".error-message").forEach(span => {
+            span.textContent = "";
+        });
+    }
+</script>
 </body>
 </html>
 
