@@ -11,21 +11,118 @@
     <div th:text="${seller}"></div>
 </h2>
 <br>
+<div>
+    <!-- <a th:href="@{/user/allInformation}" class="btn btn-primary">My profile information</a>-->
+    <a href="/userInformationPage.html" class="btn btn-primary">My profile information</a>
+    <br>
+    <br>
+    <a th:href="@{/products/create}" class="btn btn-primary">Create product for sale</a>
+    <br>
+    <br>
+    <!--<a th:href="@{/products/all}" class="btn btn-primary">View your products</a>-->
+    <button type="button" onclick="createProduct()">My products</button>
+    <br>
+</div>
 
-<!-- <a th:href="@{/user/allInformation}" class="btn btn-primary">My profile information</a>-->
-<a href="/userInformationPage.html" class="btn btn-primary">My profile information</a>
-<br>
-<br>
-<a th:href="@{/products/create}" class="btn btn-primary">Create product for sale</a>
-<br>
-<br>
-<a th:href="@{/products/all}" class="btn btn-primary">View your products</a>
-<br>
+<div id="createProduct" style="display: none;">
+    <label>Създаване на продукт</label>
+    <br>
+    <label for="name">Име</label>
+    <input type="text" id="name">
+    <span class="error-message" id="error-name"></span>
+    <br>
+    <label for="type">Тип</label>
+    <input type="text" id="type">
+    <span class="error-message" id="error-type"></span>
+    <br>
+    <label for="weight">Тегло</label>
+    <input type="text" id="weight">
+    <span class="error-message" id="error-weight"></span>
+    <br>
+    <label for="price">Цена</label>
+    <input type="text" id="price">
+    <span class="error-message" id="error-price"></span>
+    <br>
+    <label for="description">Описание</label>
+    <input type="text" id="description">
+    <span class="error-message" id="error-description"></span>
+    <br>
+    <label for="discount">Отстъпка(%)</label>
+    <input type="text" id="discount">
+    <span class="error-message" id="error-discount"></span>
+    <br>
+    <label for="quantity">Количество</label>
+    <input type="text" id="quantity">
+    <span class="error-message" id="error-quantity"></span>
+    <br>
+    <input type="button" id="saveProduct" onclick="saveProduct()" value="save">
+    <br>
+</div>
 <br>
 <form th:action="@{/test/logout}" method="post">
     <button type="submit" value="Sign Out">Logout</button>
 </form>
+<script>
+    function createProduct() {
+        const createProductDiv = document.getElementById("createProduct");
+        if (createProductDiv.style.display === "none") {
+            createProductDiv.style.display = "block";
+        } else {
+            createProductDiv.style.display = "none";
+        }
+    }
 
+    function saveProduct() {
+        let obj = {
+            name: document.getElementById("name"),
+            type: document.getElementById("type"),
+            weight: document.getElementById("weight"),
+            price: document.getElementById("price"),
+            description: document.getElementById("description"),
+            discount: document.getElementById("discount"),
+            quantity: document.getElementById("quantity")
+        }
+
+        fetch("/products/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        }).then(response => {
+            console.log("response", response)
+            return response.json();
+        }).then(data => {
+            if (data.errors) {
+                displayErrors(data.errors);
+            } else {
+                alert(data.message)
+            }
+        }).catch(error => {
+            console.error("Грешка:", error);
+            alert("Възникна грешка при изпълнението на заявката.");
+        });
+    }
+
+    function displayErrors(errors) {
+        // Изчистваме предишните грешки
+        document.querySelectorAll(".error-message").forEach(span => {
+            span.textContent = "";
+        });
+
+        // Обхождаме грешките и ги показваме под съответните полета
+        Object.keys(errors).forEach(field => {
+            const errorSpan = document.getElementById(`error-${field}`);
+            if (errorSpan) {
+                errorSpan.textContent = Array.isArray(errors[field])
+                    /*? errors[field].join(" ") // Обединява грешките в един текст*/
+                    ? errors[field][0] // Вземаме първото съобщение от масива
+                    : errors[field];
+                errorSpan.style.color = "red";
+            }
+        });
+    }
+</script>
 </body>
 </html>
 

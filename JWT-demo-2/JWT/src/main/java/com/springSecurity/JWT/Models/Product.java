@@ -10,12 +10,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "products")
 public class Product {
     @Id
@@ -26,11 +32,15 @@ public class Product {
     @Column(nullable = false)
     private String type;
     @Column(nullable = false)
-    private Double price;
+    private double weight;
+    @Column(nullable = false)
+    private double price;
     @Column(nullable = false)
     private String description;
     @Column(nullable = false)
     private double discount;
+    @Column(nullable = false)
+    private int quantity;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
