@@ -48,6 +48,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/registerPage.html").permitAll()
                                 .requestMatchers("/homePage.css").permitAll()
                                 .requestMatchers("/homePage.html").permitAll()
+                                .requestMatchers("/sellerPage.css").hasAuthority("seller")
                                 .anyRequest().authenticated()
 
                 )
