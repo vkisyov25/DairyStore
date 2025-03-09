@@ -37,7 +37,7 @@ body {
 
 .product-form {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
     max-width: 500px; /* Увеличаваме ширината */
