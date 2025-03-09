@@ -8,10 +8,10 @@
 </head>
 <body>
 <div id="data-container"></div>
-<div id="back-buttons"></div>
 <button type="submit" id="editBtn">Редактиране</button>
 <button id="saveBtn" style="display:none;" onclick="saveData()">Запази</button>
-<div id="errorMessages"></div>
+<div id="back-buttons"></div>
+</body>
 <script>
     console.log("Скриптът е зареден!");
 
@@ -83,35 +83,51 @@
         const container = document.getElementById("data-container");
         container.innerHTML = "";  // Изчистваме предишното съдържание
 
-        let content = `
+        fetch("/user/allInformation")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Грешка: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                let content = `
                  <h2>Моят профил - Редактиране</h2>
-                 <label><strong>Име:</strong></label>
+                 <label><strong>Име:</strong>${data.name}</label><br>
                  <input type="text" id="name"><br>
-
-                 <label><strong>Имейл:</strong></label>
+                 <span class="error-message" id="error-name"></span><br>
+                 <label><strong>Имейл:</strong>${data.email}</label><br>
                  <input type="email" id="email"><br>
-
-                 <label><strong>Телефон:</strong></label>
+                 <span class="error-message" id="error-email"></span><br>
+                 <label><strong>Телефон:</strong>${data.phone}</label><br>
                  <input type="text" id="phone"><br>
-
-                 <label><strong>Адрес:</strong></label>
+                 <span class="error-message" id="error-phone"></span><br>
+                 <label><strong>Адрес:</strong>${data.address}</label><br>
                  <input type="text" id="address"><br>
-
-                 <label><strong>Фирма:</strong></label>
+                 <span class="error-message" id="error-address"></span><br>
+                 <label><strong>Фирма:</strong>${data.companyName}</label><br>
                  <input type="text" id="companyName"><br>
-
-                 <label><strong>ЕИК:</strong></label>
+                 <span class="error-message" id="error-companyName"></span><br>
+                 <label><strong>ЕИК:</strong>${data.companyEIK}</label><br>
                  <input type="text" id="companyEIK"><br>
+                 <span class="error-message" id="error-companyEIK"></span><br>
              `;
 
-        container.innerHTML = content;  // Поставяме новото съдържание в контейнера
+                container.innerHTML = content;  // Поставяме новото съдържание в контейнера
 
-        // Скриваме бутона "Редактиране" и показваме бутона "Запази"
-        document.getElementById("editBtn").style.display = "none";
-        document.getElementById("saveBtn").style.display = "inline-block";
+                // Скриваме бутона "Редактиране" и показваме бутона "Запази"
+                document.getElementById("editBtn").style.display = "none";
+                document.getElementById("saveBtn").style.display = "inline-block";
+            })
+            .catch(error => {
+                console.error(error);
+            })
+
     });
 
     function saveData() {
+        let role = document.getElementById("role");
         let companyName = document.getElementById("companyName") && document.getElementById("companyName").value.trim() !== ""
             ? document.getElementById("companyName").value.trim()
             : null;
@@ -168,26 +184,21 @@
     }
 
     function displayErrors(errors) {
-        const errorDiv = document.getElementById("errorMessages");
+        // Изчистваме предишните грешки
+        document.querySelectorAll(".error-message").forEach(span => {
+            span.textContent = "";
+        });
 
-        if (!errorDiv) {
-            console.error("Error div not found on the page.");
-            return;  // Ако няма такъв елемент, не правим нищо
-        }
-
-        errorDiv.innerHTML = "";
-        // Проверка дали има грешки в масива
-        if (errors && errors.length > 0) {
-            errors.forEach(error => {
-                console.log("Displaying error:", error);  // Лог за всяка грешка
-                const p = document.createElement("p");
-                p.textContent = error;
-                p.style.color = "red";
-                errorDiv.appendChild(p);
-            });
-        } else {
-            console.log("No errors found to display.");
-        }
+        // Обхождаме грешките и ги показваме под съответните полета
+        Object.keys(errors).forEach(field => {
+            const errorSpan = document.getElementById(`error-${field}`);
+            if (errorSpan) {
+                errorSpan.textContent = Array.isArray(errors[field])
+                    ? errors[field][0] // Вземаме само първата грешка за всяко поле
+                    : errors[field];
+                errorSpan.style.color = "red";
+            }
+        });
     }
 
     function deleteCompanyInfo() {
@@ -217,7 +228,5 @@
                 alert("Възникна грешка при изтриването.");
             });
     }
-
 </script>
-</body>
 </html>
