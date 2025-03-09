@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -37,14 +37,16 @@ public class UserController {
 
     @PostMapping("/edit")
     public ResponseEntity<?> editUserInformation(@Valid @RequestBody UserInformationDto userInformationDto, BindingResult bindingResult) {
+        userService.validateUserInformationDto(userInformationDto, bindingResult);
         if (bindingResult.hasErrors()) {
-            // Събиране на всички грешки в списък
-            List<String> errors = bindingResult.getAllErrors()
+            Map<String, String> errors = bindingResult.getFieldErrors()
                     .stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toMap(
+                            FieldError::getField,
+                            fieldError -> fieldError.getDefaultMessage(),
+                            (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
+                    ));
 
-            // Връщане на грешките като JSON
             return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
 
