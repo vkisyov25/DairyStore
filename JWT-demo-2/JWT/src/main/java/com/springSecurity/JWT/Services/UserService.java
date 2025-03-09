@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 @Service
 @RequiredArgsConstructor
@@ -84,5 +85,45 @@ public class UserService {
         user.setCompanyName(null);
         user.setCompanyEIK(null);
         userRepository.save(user);
+    }
+
+    public void validateUserInformationDto(UserInformationDto user, BindingResult bindingResult) {
+
+        if (getUserByUsername().getAuthorities().equals("seller")) {
+            if (!user.getCompanyName().isEmpty()) {
+                if (userRepository.existsByCompanyName(user.getCompanyName())) {
+                    bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
+                }
+            }
+
+            if (user.getCompanyEIK() != null) {
+                if (userRepository.existsByCompanyEIK(user.getCompanyEIK())) {
+                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
+                }
+            }
+
+        }
+
+        if (getUserByUsername().getAuthorities().equals("buyer")) {
+            if (!user.getCompanyName().isEmpty()) {
+                if (userRepository.existsByCompanyName(user.getCompanyName()) && !user.getCompanyName().isEmpty()) {
+                    bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
+                }
+            }
+
+            if (user.getCompanyEIK() != null) {
+                if (userRepository.existsByCompanyEIK(user.getCompanyEIK()) && !user.getCompanyEIK().isEmpty()) {
+                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
+                }
+            }
+
+        }
+
+        if (user.getEmail() != null) {
+            if (userRepository.existsByEmail(user.getEmail())) {
+                bindingResult.rejectValue("email", "error.user", "Email already exists.");
+            }
+        }
+
     }
 }
