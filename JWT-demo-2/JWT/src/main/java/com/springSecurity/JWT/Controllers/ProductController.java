@@ -1,7 +1,7 @@
 package com.springSecurity.JWT.Controllers;
 
-import com.springSecurity.JWT.Models.Product;
 import com.springSecurity.JWT.Models.dtos.CreateProductDto;
+import com.springSecurity.JWT.Models.dtos.SellerViewProductDto;
 import com.springSecurity.JWT.Services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +26,9 @@ import java.util.stream.Collectors;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/all")
-    public String getProductsByUsername(Model model) {
-        List<Product> products = productService.getAllProductByUsername();
-        model.addAttribute("productList", products);
-        return "listOfProduct";
-
+    @GetMapping("/all") //"/my-products"
+    public ResponseEntity<List<SellerViewProductDto>> getCurrentUserProducts() {
+        return ResponseEntity.ok().body(productService.getCurrentUserProducts());
     }
 
     @PostMapping("/create")

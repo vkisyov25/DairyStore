@@ -18,7 +18,7 @@
     <button type="button" onclick="createProduct()">Създай продукт</button>
     <br>
     <br>
-    <a th:href="@{/products/all}">View your products</a>
+    <button type="button" onclick="viewYourProducts()">My products</button>
     <br>
     <br>
     <form th:action="@{/test/logout}" method="post">
@@ -41,7 +41,7 @@
         <option value="прясно мляко">прясно мляко</option>
         <option value="кисело мляко">кисело мляко</option>
         <option value="извара">извара</option>
-        <option value="айран">айран</option>
+        <option value="айрян">айрян</option>
     </select>
     <span class="error-message" id="error-type"></span>
     <br>
@@ -69,7 +69,26 @@
     <br>
 </div>
 
+<div class="table-container">
+    <table id="product-table" style="display: none;">
+        <thead>
+        <tr>
+            <th>Име</th>
+            <th>Тип</th>
+            <th>Тегло (г)</th>
+            <th>Цена</th>
+            <th>Описание</th>
+            <th>Отстъпка (%)</th>
+            <th>Количество</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
 
+        </tbody>
+    </table>
+</div>
 <script>
     function createProduct() {
         clearForm();
@@ -146,6 +165,51 @@
         document.querySelectorAll(".error-message").forEach(span => {
             span.textContent = "";
         });
+    }
+
+    function viewYourProducts() {
+        const table = document.getElementById("product-table");
+        table.classList.toggle("show-table"); // Добавя/премахва класа за показване
+
+        if (table.style.display === "none") {
+            table.style.display = "block";
+        } else {
+            table.style.display = "none";
+        }
+
+        fetch("/products/all")
+            .then(response => {
+                if (!response.ok) {
+                    return new Error("Response is not okay")
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                const tableBody = document.getElementById("tbody")
+                tableBody.innerHTML = "";
+                data.forEach(product => {
+                    const row = document.createElement("tr")
+                    row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.type}</td>
+                    <td>${product.weight}</td>
+                    <td>${product.price}</td>
+                    <td>${product.description}</td>
+                    <td>${product.discount}</td>
+                    <td>${product.quantity}</td>
+                    <td><button id="editProductBtn" onclick="editProduct()">Редактирай</button></td>
+                    <td><button id="editProductBtn" onclick="deleteProduct()">Изтрий</button></td>
+                    `;
+
+                    tableBody.appendChild(row);
+
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            });
+
     }
 </script>
 </body>
