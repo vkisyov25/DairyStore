@@ -19,6 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select product from Product product where product.id = ?1")
     Product findProductById(Long id);
 
-    @Query("SELECT new com.springSecurity.JWT.Models.dtos.SellerViewProductDto(product.name, product.type, product.weight, product.price, product.description, product.discount, product.quantity) FROM Product product WHERE product.user.username =?1")
+    @Query("SELECT new com.springSecurity.JWT.Models.dtos.SellerViewProductDto(product.id, product.name, product.type, product.weight, product.price, product.description, product.discount, product.quantity) FROM Product product WHERE product.user.username =?1")
     List<SellerViewProductDto> findBySellerUsername(String username);
 }
