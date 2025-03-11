@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class SellerViewProductDto {
+    private Long id;
     private String name;
     private String type;
     private double weight;
