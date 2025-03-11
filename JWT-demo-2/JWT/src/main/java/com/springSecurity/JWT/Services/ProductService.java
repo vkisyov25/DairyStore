@@ -47,4 +47,11 @@ public class ProductService {
     public Product getProductById(Long productId) {
         return productRepository.findProductById(productId);
     }
+
+    public void deleteById(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new RuntimeException("Продуктът с ID " + id + " не съществува!");
+        }
+        productRepository.deleteById(id);
+    }
 }
