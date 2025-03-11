@@ -2,6 +2,7 @@ package com.springSecurity.JWT.Configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,6 +50,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/homePage.css").permitAll()
                                 .requestMatchers("/homePage.html").permitAll()
                                 .requestMatchers("/sellerPage.css").hasAuthority("seller")
+                                .requestMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority("seller")
                                 .anyRequest().authenticated()
 
                 )

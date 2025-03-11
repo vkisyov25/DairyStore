@@ -18,7 +18,7 @@
     <button type="button" onclick="createProduct()">Създай продукт</button>
     <br>
     <br>
-    <button type="button" onclick="viewYourProducts()">My products</button>
+    <button type="button" onclick="viewYourProducts()">Моите продукти</button>
     <br>
     <br>
     <form th:action="@{/test/logout}" method="post">
@@ -93,7 +93,9 @@
     function createProduct() {
         clearForm();
         const createProductDiv = document.getElementById("createProduct");
+        const table = document.getElementById("product-table");
         if (createProductDiv.style.display === "none") {
+            table.style.display = "none";
             createProductDiv.style.display = "block";
         } else {
             createProductDiv.style.display = "none";
@@ -170,13 +172,14 @@
     function viewYourProducts() {
         const table = document.getElementById("product-table");
         table.classList.toggle("show-table"); // Добавя/премахва класа за показване
-
+        const createProductDiv = document.getElementById("createProduct");
         if (table.style.display === "none") {
             table.style.display = "block";
+            createProductDiv.style.display = "none";
         } else {
             table.style.display = "none";
         }
-
+        table.style.display = "block"
         fetch("/products/all")
             .then(response => {
                 if (!response.ok) {
@@ -199,7 +202,7 @@
                     <td>${product.discount}</td>
                     <td>${product.quantity}</td>
                     <td><button id="editProductBtn" onclick="editProduct()">Редактирай</button></td>
-                    <td><button id="editProductBtn" onclick="deleteProduct()">Изтрий</button></td>
+                    <td><button id="deleteProductBtn" onclick="deleteProduct(${product.id})">Изтрий</button></td>
                     `;
 
                     tableBody.appendChild(row);
@@ -209,8 +212,38 @@
             .catch(error => {
                 console.error('Error:', error)
             });
+    }
+
+    function deleteProduct(id) {
+        fetch(`/products/${id}`, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Неуспешно изтриване на продукта!");
+                }
+                return response.text();
+            })
+            .then(data => {
+                alert("Продуктът е изтрит успешно!");
+                removeProductFromTable(id);
+                viewYourProducts();
+            })
+            .catch(error => {
+                console.error("Грешка при изтриване:", error);
+                alert("Възникна грешка при изтриването на продукта.");
+            });
 
     }
+
+    function removeProductFromTable(id) {
+        const row = document.getElementById("product-${id}");
+        if (row) {
+            row.remove();
+        }
+    }
+
+
 </script>
 </body>
 </html>
