@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>InvalidToken</title>
+</head>
+<body>
+<h3>Your token has expired.</h3>
+<h3>You have to log in again.</h3>
+<a th:href="@{/test/login}">Login </a>
+
+
+<div th:if="${token}">
+    <span th:text="${token}"></span>
+</div>
+</body>
+</html>

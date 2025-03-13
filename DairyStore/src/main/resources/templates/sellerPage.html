@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seller</title>
+    <link rel="stylesheet" href="/sellerPage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+<body>
+
+<div class="menu">
+    <h2>
+        <div th:text="${seller}"></div>
+    </h2>
+    <br>
+    <i class="fa-solid fa-circle-user" onclick="openUserProfile()"></i>
+    <br>
+    <br>
+    <button type="button" onclick="createProduct()">Създай продукт</button>
+    <br>
+    <br>
+    <button type="button" onclick="viewYourProducts()">Моите продукти</button>
+    <br>
+    <br>
+    <form th:action="@{/test/logout}" method="post">
+        <button type="submit" value="Sign Out">Logout</button>
+    </form>
+</div>
+<div id="createProduct" class="product-form" style="display: none;">
+    <h2>Създаване на продукт</h2>
+
+    <label for="name">Име</label>
+    <input type="text" id="name">
+    <span class="error-message" id="error-name"></span>
+    <br>
+    <label for="type">Тип</label>
+    <select id="type">
+        <option value="">-- Избери тип --</option>
+        <option value="кашкавал">кашкавал</option>
+        <option value="сирене">сирене</option>
+        <option value="масло">масло</option>
+        <option value="прясно мляко">прясно мляко</option>
+        <option value="кисело мляко">кисело мляко</option>
+        <option value="извара">извара</option>
+        <option value="айрян">айрян</option>
+    </select>
+    <span class="error-message" id="error-type"></span>
+    <br>
+    <label for="weight">Тегло</label>
+    <input type="text" id="weight">
+    <span class="error-message" id="error-weight"></span>
+    <br>
+    <label for="price">Цена</label>
+    <input type="text" id="price">
+    <span class="error-message" id="error-price"></span>
+    <br>
+    <label for="description">Описание</label>
+    <textarea id="description"></textarea>
+    <span class="error-message" id="error-description"></span>
+    <br>
+    <label for="discount">Отстъпка (%)</label>
+    <input type="text" id="discount">
+    <span class="error-message" id="error-discount"></span>
+    <br>
+    <label for="quantity">Количество</label>
+    <input type="text" id="quantity">
+    <span class="error-message" id="error-quantity"></span>
+    <br>
+    <button id="saveProduct" onclick="saveProduct()">Запази</button>
+    <br>
+</div>
+
+<div class="table-container" id="table">
+    <table id="product-table" style="display: none;">
+        <thead>
+        <tr>
+            <th>Име</th>
+            <th>Тип</th>
+            <th>Тегло (г)</th>
+            <th>Цена</th>
+            <th>Описание</th>
+            <th>Отстъпка (%)</th>
+            <th>Количество</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+</div>
+
+<div id="editProduct" style="display: none;"></div>
+<script>
+    function openUserProfile() {
+        window.location.href = "/userInformationPage.html";
+    }
+
+    function createProduct() {
+        clearForm();
+        const createProductDiv = document.getElementById("createProduct");
+        const table = document.getElementById("product-table");
+        if (createProductDiv.style.display === "none") {
+            createProductDiv.style.display = "block";
+            table.style.display = "none";
+            document.getElementById("editProduct").style.display = "none"
+        } else {
+            createProductDiv.style.display = "none";
+        }
+    }
+
+    function saveProduct() {
+        const createProductDiv = document.getElementById("createProduct");
+        let obj = {
+            name: document.getElementById("name").value,
+            type: document.getElementById("type").value,
+            weight: document.getElementById("weight").value,
+            price: document.getElementById("price").value,
+            description: document.getElementById("description").value,
+            discount: document.getElementById("discount").value,
+            quantity: document.getElementById("quantity").value
+        }
+        console.log(obj);
+
+        fetch("/products/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            console.log(data);
+            if (data.errors) {
+                displayErrors(data.errors);
+            } else {
+                alert(data.message);
+                createProductDiv.style.display = "none"; // Скрива формата
+                clearForm(); // Изчиства стойностите във формата
+                /*createProduct()*/
+            }
+        }).catch(error => {
+            console.error("Грешка:", error);
+            alert("Възникна грешка при изпълнението на заявката.");
+        });
+    }
+
+    function displayErrors(errors) {
+        // Изчистваме предишните грешки
+        document.querySelectorAll(".error-message").forEach(span => {
+            span.textContent = "";
+        });
+
+        // Обхождаме грешките и ги показваме под съответните полета
+        Object.keys(errors).forEach(field => {
+            const errorSpan = document.getElementById(`error-${field}`);
+            if (errorSpan) {
+                errorSpan.textContent = Array.isArray(errors[field])
+                    ? errors[field][0] // Вземаме само първата грешка за всяко поле
+                    : errors[field];
+                errorSpan.style.color = "red";
+            }
+        });
+
+
+    }
+
+    function clearForm() {
+        document.querySelectorAll("#createProduct input").forEach(input => {
+            input.value = "";
+        });
+        document.getElementById("type").value = ""; // Нулиране на select-а
+        document.getElementById("description").value = ""; // Нулиране на select-а
+
+        document.querySelectorAll(".error-message").forEach(span => {
+            span.textContent = "";
+        });
+    }
+
+    function viewYourProducts() {
+        const table = document.getElementById("product-table");
+        const createProductDiv = document.getElementById("createProduct");
+        if (table.style.display === "none") {
+            table.style.display = "block";
+            createProductDiv.style.display = "none";
+            document.getElementById("editProduct").style.display = "none";
+        } else {
+            table.style.display = "none";
+        }
+
+        fetch("/products/all")
+            .then(response => {
+                if (!response.ok) {
+                    return new Error("Response is not okay")
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                const tableBody = document.getElementById("tbody")
+                tableBody.innerHTML = "";
+                data.forEach(product => {
+                    const row = document.createElement("tr")
+                    row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.type}</td>
+                    <td>${product.weight}</td>
+                    <td>${product.price}</td>
+                    <td>${product.description}</td>
+                    <td>${product.discount}</td>
+                    <td>${product.quantity}</td>
+                    <td><button id="editProductBtn" onclick="editProduct(${product.id})">Редактирай</button></td>
+                    <td><button id="deleteProductBtn" onclick="deleteProduct(${product.id})">Изтрий</button></td>
+                    `;
+
+                    tableBody.appendChild(row);
+
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            });
+    }
+
+    function deleteProduct(id) {
+        if (!confirm("Сигурни ли сте, че искате да изтриете продукта")) {
+            return;
+        }
+        document.getElementById("product-table").style.display = "none";
+        fetch(`/products/${id}`, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Неуспешна заявка");
+                }
+                return response.text();
+            })
+            .then(() => {
+                removeProductFromTable(id);
+                viewYourProducts();
+                alert("Продуктът е изтрит успешно!");
+            })
+            .catch(error => {
+                console.error("Грешка при изтриване:", error);
+                alert("Възникна грешка при изтриването на продукта.");
+            });
+
+    }
+
+    function removeProductFromTable() {
+        const row = document.getElementById("product-${id}");
+        if (row) {
+            row.remove();
+        }
+    }
+
+    function editProduct(id) {
+        let editProductDiv = document.getElementById("editProduct");
+        if (editProductDiv.style.display === "none") {
+            editProductDiv.style.display = "block"
+            document.getElementById("product-table").style.display = "none";
+        }
+        fetch(`/products/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Неуспешна заявка")
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data)
+                editProductDiv.innerHTML = `
+
+             <h2>Продукт - редактиране</h2>
+             <label><strong>Име:</strong></label><br>
+             <input type="text" id="productName" value="${data.name}" required><br>
+             <span class="error-message" id="name-error"></span><br>
+             <label><strong>Тип:</strong></label><br>
+             <select id="productType">
+                <option value="${data.type}">${data.type}</option>
+                <option value="кашкавал">кашкавал</option>
+                 <option value="сирене">сирене</option>
+                <option value="масло">масло</option>
+                <option value="прясно мляко">прясно мляко</option>
+                <option value="кисело мляко">кисело мляко</option>
+                <option value="извара">извара</option>
+                <option value="айрян">айрян</option>
+            </select>
+            <span class="error-message" id="type-error"></span><br>
+            <br>
+             <label><strong>Тегло:</strong></label><br>
+             <input type="number" id="productWeight" value="${data.weight}" required><br>
+             <span class="error-message" id="weight-error"></span><br>
+             <label><strong>Цена:</strong></label><br>
+             <input type="number" id="productPrice" value="${data.price}" required><br>
+             <span class="error-message" id="price-error"></span><br>
+             <label><strong>Описание:</strong></label><br>
+             <input type="text" id="productDescription"value="${data.description}" required><br>
+             <span class="error-message" id="description-error"></span><br>
+             <label><strong>Отстъпка (%):</strong></label><br>
+             <input type="number" id="productDiscount" value="${data.discount}"><br>
+             <span class="error-message" id="discount-error"></span><br>
+             <label><strong>Количество:</strong></label><br>
+             <input type="number" id="productQuantity" value="${data.quantity}"><br>
+             <span class="error-message" id="quantity-error"></span><br>
+             <button type="submit" onclick="saveEditedProduct(${data.id})">Запази</button>
+             <button type="submit" onclick="viewYourProducts()">Отказ</button>
+
+         `;
+            })
+            .catch(error => {
+                console.error(error)
+                alert("Грешка в заявката")
+            })
+
+
+    }
+
+    function saveEditedProduct(id) {
+        if (!confirm("Сигурни ли сте, че искате да запазите промените")) {
+            return;
+        }
+
+        let obj = {
+            id: id,
+            name: document.getElementById("productName").value,
+            type: document.getElementById("productType").value,
+            weight: document.getElementById("productWeight").value,
+            price: document.getElementById("productPrice").value,
+            description: document.getElementById("productDescription").value,
+            discount: document.getElementById("productDiscount").value,
+            quantity: document.getElementById("productQuantity").value
+        }
+
+        console.log(obj);
+
+        fetch("/products/edit", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                console.log(data.errors);
+                if (data.errors) {
+                    editProductDisplayErrors(data.errors)
+                } else {
+                    viewYourProducts();
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                alert(error);
+            })
+    }
+
+    function editProductDisplayErrors(errors) {
+        // Почистваме всички предишни грешки
+        const errorSpans = document.querySelectorAll('.error-message');
+        errorSpans.forEach(span => span.textContent = '');
+
+        // Итериране през грешките и показване на грешката в съответния span
+        for (const [field, message] of Object.entries(errors)) {
+            const errorElement = document.getElementById(`${field}-error`); // Вземаме span с ID, което съвпада с полето
+            if (errorElement) {
+                errorElement.textContent = message; // Поставяме съобщението за грешка в span
+            }
+        }
+    }
+
+
+</script>
+</body>
+</html>
+
