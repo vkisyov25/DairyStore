@@ -54,4 +54,23 @@ public class ProductService {
         }
         productRepository.deleteById(id);
     }
+
+    public SellerViewProductDto getById(Long id) {
+        return productRepository.findByProductId(id);
+    }
+
+    public void saveEditedProduct(SellerViewProductDto sellerViewProductDto) {
+        Product product = productRepository.findProductById(sellerViewProductDto.getId());
+
+        product.setId(sellerViewProductDto.getId());
+        product.setName(sellerViewProductDto.getName());
+        product.setType(sellerViewProductDto.getType());
+        product.setWeight(sellerViewProductDto.getWeight());
+        product.setPrice(sellerViewProductDto.getPrice());
+        product.setDescription(sellerViewProductDto.getDescription());
+        product.setDiscount(sellerViewProductDto.getDiscount());
+        product.setQuantity(sellerViewProductDto.getQuantity());
+
+        productRepository.save(product);
+    }
 }

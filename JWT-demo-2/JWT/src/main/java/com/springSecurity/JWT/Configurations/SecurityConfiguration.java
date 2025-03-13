@@ -51,6 +51,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("/homePage.html").permitAll()
                                 .requestMatchers("/sellerPage.css").hasAuthority("seller")
                                 .requestMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority("seller")
+                                .requestMatchers(HttpMethod.GET, "/products/{id}").hasAuthority("seller")
+                                .requestMatchers("/products/edit").hasAuthority("seller")
                                 .anyRequest().authenticated()
 
                 )
