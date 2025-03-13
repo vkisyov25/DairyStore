@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,5 +73,28 @@ public class ProductController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SellerViewProductDto> getProductById(@PathVariable Long id) {
+        SellerViewProductDto byId = productService.getById(id);
+        return ResponseEntity.ok(byId);
+    }
+
+    @PutMapping("/edit")
+    public ResponseEntity<?> saveEditedProduct(@Valid @RequestBody SellerViewProductDto sellerViewProductDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = bindingResult.getFieldErrors()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            FieldError::getField,
+                            fieldError -> fieldError.getDefaultMessage(),
+                            (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
+                    ));
+            return ResponseEntity.badRequest().body(Map.of("errors", errors));
+        }
+
+        productService.saveEditedProduct(sellerViewProductDto);
+        return ResponseEntity.ok(Map.of("message", "Продуктът е успешно редактиран"));
     }
 }
