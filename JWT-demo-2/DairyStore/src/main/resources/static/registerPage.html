@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CreateForm</title>
+    <link rel="stylesheet" href="/registerPage.css">
+
+</head>
+<body>
+<div class="form-container">
+    <h2>Регистрация</h2>
+    <label for="username">Username</label>
+    <input type="text" id="username">
+    <span class="error-message" id="error-username"></span>
+    <br>
+    <label for="password">Password</label>
+    <input type="password" id="password">
+    <span class="error-message" id="error-password"></span>
+    <br>
+    <label>Role:</label>
+    <select id="role" onchange="toggleCompanyFields()">
+        <option value="buyer">Buyer</option>
+        <option value="seller">Seller</option>
+    </select>
+    <br>
+    <label for="email">Email</label>
+    <input type="email" id="email" required/>
+    <span class="error-message" id="error-email"></span>
+    <br>
+    <label>Full name</label>
+    <input type="text" id="name">
+    <span class="error-message" id="error-name"></span>
+    <br>
+    <label>Phone</label>
+    <input type="text" id="phone">
+    <span class="error-message" id="error-phone"></span>
+    <br>
+    <label>Address</label>
+    <input type="text" id="address">
+    <span class="error-message" id="error-address"></span>
+    <br>
+
+    <!-- Полета за фирма -->
+    <div id="companyFields" style="display: none;">
+        <label for="companyName">Company Name</label>
+        <input type="text" id="companyName">
+        <span class="error-message" id="error-companyName"></span>
+        <br>
+        <label for="companyEIK">Company EIK</label>
+        <input type="text" id="companyEIK">
+        <span class="error-message" id="error-companyEIK"></span>
+        <div id="eikErrorMessage" style="color: red;"></div>
+        <br>
+    </div>
+
+
+    <div id="isCompanyForm">
+        <label>Искаш ли да добавиш своята фирма?</label>
+        <input type="checkbox" id="isCompany" onchange="toggleCompanyFields()">
+    </div>
+    <br>
+    <div id="errorMessages"></div>
+    <br>
+
+    <input class="submitBtn" type="submit" onclick="saveUser()" value="запази">
+</div>
+<script>
+    function toggleCompanyFields() {
+        const role = document.getElementById("role").value;
+        const companyFields = document.getElementById("companyFields");
+        const isCompanyForm = document.getElementById("isCompanyForm");
+
+        if (role === "seller") {
+            companyFields.style.display = "block";
+            isCompanyForm.style.display = "none"
+        } else if (role === "buyer") {
+            isCompanyForm.style.display = "block"
+            if (document.getElementById("isCompany").checked) {
+                companyFields.style.display = "block";
+            } else {
+                companyFields.style.display = "none";
+            }
+        } else {
+            companyFields.style.display = "none";
+        }
+    }
+
+    function saveUser() {
+        let obj = {
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value,
+            authorities: document.getElementById("role").value,
+            email: document.getElementById("email").value,
+            name: document.getElementById("name").value,
+            phone: document.getElementById("phone").value,
+            address: document.getElementById("address").value,
+            companyName: document.getElementById("companyName").value,
+            companyEIK: document.getElementById("companyEIK").value
+        }
+
+        fetch("/test/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        }).then(response => {
+            return response.json()
+        }).then(data => {
+            console.log(data.errors)
+            if (data.errors) {
+                displayErrors(data.errors);
+            } else {
+                alert(data.message);
+                window.location.href = "/login.html";
+            }
+        }).catch(error => {
+            console.error("Error:", error);
+        })
+
+
+    }
+
+    function displayErrors(errors) {
+        // Изчистваме предишните грешки
+        document.querySelectorAll(".error-message").forEach(span => {
+            span.textContent = "";
+        });
+
+        // Обхождаме грешките и ги показваме под съответните полета
+        Object.keys(errors).forEach(field => {
+            const errorSpan = document.getElementById(`error-${field}`);
+            if (errorSpan) {
+                errorSpan.textContent = Array.isArray(errors[field])
+                    ? errors[field].join(" ") // Обединява грешките в един текст
+                    : errors[field];
+                errorSpan.style.color = "red";
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>
