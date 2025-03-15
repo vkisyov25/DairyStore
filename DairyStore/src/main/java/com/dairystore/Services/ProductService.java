@@ -3,7 +3,7 @@ package com.dairystore.Services;
 import com.dairystore.Models.Product;
 import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.CreateProductDto;
-import com.dairystore.Models.dtos.SellerViewProductDto;
+import com.dairystore.Models.dtos.ViewProductDto;
 import com.dairystore.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserService userService;
 
-    public List<SellerViewProductDto> getCurrentUserProducts() {
+    public List<ViewProductDto> getCurrentUserProducts() {
         User user = userService.getUserByUsername();
         return productRepository.findBySellerUsername(user.getUsername());
     }
@@ -55,22 +55,26 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public SellerViewProductDto getById(Long id) {
+    public ViewProductDto getById(Long id) {
         return productRepository.findByProductId(id);
     }
 
-    public void saveEditedProduct(SellerViewProductDto sellerViewProductDto) {
-        Product product = productRepository.findProductById(sellerViewProductDto.getId());
+    public void saveEditedProduct(ViewProductDto viewProductDto) {
+        Product product = productRepository.findProductById(viewProductDto.getId());
 
-        product.setId(sellerViewProductDto.getId());
-        product.setName(sellerViewProductDto.getName());
-        product.setType(sellerViewProductDto.getType());
-        product.setWeight(sellerViewProductDto.getWeight());
-        product.setPrice(sellerViewProductDto.getPrice());
-        product.setDescription(sellerViewProductDto.getDescription());
-        product.setDiscount(sellerViewProductDto.getDiscount());
-        product.setQuantity(sellerViewProductDto.getQuantity());
+        product.setId(viewProductDto.getId());
+        product.setName(viewProductDto.getName());
+        product.setType(viewProductDto.getType());
+        product.setWeight(viewProductDto.getWeight());
+        product.setPrice(viewProductDto.getPrice());
+        product.setDescription(viewProductDto.getDescription());
+        product.setDiscount(viewProductDto.getDiscount());
+        product.setQuantity(viewProductDto.getQuantity());
 
         productRepository.save(product);
+    }
+
+    public List<ViewProductDto> getProductsForSale() {
+        return productRepository.findProductsForSale();
     }
 }
