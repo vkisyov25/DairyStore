@@ -3,21 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Buyer</title>
+    <link rel="stylesheet" href="/buyerPage.css">
 </head>
 <body>
-<label th:text="${buyer}"></label>
-<br>
-<br>
-<a href="/userInformationPage.html">My profile information</a>
-<br>
-<a th:href="@{/products/listToBuy}">Add product in the shopping cart</a>
-<br>
-<a th:href="@{/cart/view}">View shopping cart and make order</a>
-<br>
-<button type="submit" id="viewAnalysesBtn">View analyses</button>
-<br>
-<button type="submit" id="allOrdersBtn">View your all orders</button>
-<br> <br>
+<div id="menu">
+    <label th:text="${buyer}"></label>
+    <br>
+    <a href="/userInformationPage.html">My profile information</a>
+    <br>
+    <br>
+    <a th:href="@{/products/listToBuy}">Add product in the shopping cart</a>
+    <br>
+    <br>
+    <button id="loadProducts" onclick="loadProductsForSale()">Продукти за покуване</button>
+    <br>
+    <br>
+    <a th:href="@{/cart/view}">View shopping cart and make order</a>
+    <br>
+    <br>
+    <button type="submit" id="viewAnalysesBtn">View analyses</button>
+    <br>
+    <br>
+    <button type="submit" id="allOrdersBtn">View your all orders</button>
+    <br>
+    <br>
+    <form action="/test/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<table id="product-table" style="display: none;">
+    <thead>
+    <tr>
+        <th>Име</th>
+        <th>Тип</th>
+        <th>Тегло (г)</th>
+        <th>Цена</th>
+        <th>Описание</th>
+        <th>Отстъпка (%)</th>
+        <th>Количество</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+
+    </tbody>
+</table>
+
+
 <!-- Тук ще покажем анализа -->
 <div id="analysisResult" style="display: none;">
     <h3>Buyer Analysis</h3>
@@ -25,27 +58,71 @@
     <p><strong>Average purchase price:</strong> <span id="averagePrice">Loading...</span></p>
     <p><strong>Most purchased product type:</strong> <span id="mostPurchased">Loading...</span></p>
 </div>
-<br>
+
+
 <div id="orderList" style="display: none;"></div>
-<br>
-<form action="/test/logout" method="post">
-    <button type="submit">Logout</button>
-</form>
+
 
 <div th:if="${success}">
     <span th:text="${success}"></span>
 </div>
 
 <script>
+    function loadProductsForSale() {
+        let table = document.getElementById("product-table");
+        if (table.style.display === "none") {
+            table.style.display = "block";
+            document.getElementById("analysisResult").style.display = "none";
+            document.getElementById("orderList").style.display = "none";
+        } else {
+            table.style.display = "none";
+        }
+
+        fetch("/products/for-sale")
+            .then(response => {
+                if (!response.ok) {
+                    return new Error("Невалидна заявка")
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                const tableBody = document.getElementById("tbody")
+                tableBody.innerHTML = "";
+                data.forEach(product => {
+                    const row = document.createElement("tr")
+                    row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.type}</td>
+                    <td>${product.weight}</td>
+                    <td>${product.price}</td>
+                    <td>${product.description}</td>
+                    <td>${product.discount}</td>
+                    <td>${product.quantity}</td>
+                    <td><button id="editProductBtn" onclick="addToCart(${product.id})">Добави в количка</button></td>
+                    `;
+
+                    tableBody.appendChild(row);
+
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            });
+    }
+
     document.getElementById("viewAnalysesBtn").addEventListener("click", function (event) {
         event.preventDefault();
 
         let analysisResult = document.getElementById("analysisResult");
 
         // Ако анализът вече е видим, го скриваме и спираме изпълнението на кода
-        if (analysisResult.style.display === "block") {
+        if (analysisResult.style.display === "none") {
+            analysisResult.style.display = "block";
+            document.getElementById("product-table").style.display = "none";
+            document.getElementById("orderList");
+        } else {
             analysisResult.style.display = "none";
-            return;
         }
 
         fetch("/soldProduct/buyerAnalytics")
@@ -74,9 +151,12 @@
         event.preventDefault();
         const container = document.getElementById("orderList");
 
-        if (container.style.display === "block") {
+        if (container.style.display === "none") {
+            container.style.display = "block";
+            document.getElementById("product-table").style.display = "none";
+            document.getElementById("orderList").style.display = "none";
+        } else {
             container.style.display = "none";
-            return;
         }
 
         fetch("/order/viewAll")

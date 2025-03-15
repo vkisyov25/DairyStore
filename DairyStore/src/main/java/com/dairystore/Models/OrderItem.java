@@ -28,11 +28,22 @@ public class OrderItem {
     private int quantity;
     @Column(nullable = false)
     private double totalPrice;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = false)
+    private String type;
+    @Column(nullable = false)
+    private double weight;
+    @Column(nullable = false)
+    private double price;
+    @Column(nullable = false)
+    private String description;
+    @Column(nullable = false)
+    private double discount;
+    @Column(nullable = false)
+    private Long seller_id;
     @Column(nullable = false, name = "cart_id")
     private Long cartId;
-    @Column(nullable = false, name = "product_id")
-    private Long productId;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;
