@@ -1,13 +1,12 @@
 package com.dairystore.Controllers;
 
 import com.dairystore.Models.dtos.CreateProductDto;
-import com.dairystore.Models.dtos.SellerViewProductDto;
+import com.dairystore.Models.dtos.ViewProductDto;
 import com.dairystore.Services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -19,19 +18,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/all") //"/my-products"
-    public ResponseEntity<List<SellerViewProductDto>> getCurrentUserProducts() {
+    public ResponseEntity<List<ViewProductDto>> getCurrentUserProducts() {
         return ResponseEntity.ok().body(productService.getCurrentUserProducts());
     }
 
@@ -76,13 +76,13 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SellerViewProductDto> getProductById(@PathVariable Long id) {
-        SellerViewProductDto byId = productService.getById(id);
+    public ResponseEntity<ViewProductDto> getProductById(@PathVariable Long id) {
+        ViewProductDto byId = productService.getById(id);
         return ResponseEntity.ok(byId);
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<?> saveEditedProduct(@Valid @RequestBody SellerViewProductDto sellerViewProductDto, BindingResult bindingResult) {
+    public ResponseEntity<?> saveEditedProduct(@Valid @RequestBody ViewProductDto viewProductDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors()
                     .stream()
@@ -94,7 +94,11 @@ public class ProductController {
             return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
 
-        productService.saveEditedProduct(sellerViewProductDto);
+        productService.saveEditedProduct(viewProductDto);
         return ResponseEntity.ok(Map.of("message", "Продуктът е успешно редактиран"));
+    }
+    @GetMapping("/for-sale")
+    public ResponseEntity<List<ViewProductDto>> loadProductForSale(){
+        return ResponseEntity.ok().body(productService.getProductsForSale());
     }
 }
