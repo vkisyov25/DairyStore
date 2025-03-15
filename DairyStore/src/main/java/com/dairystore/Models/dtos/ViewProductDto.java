@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SellerViewProductDto {
+public class ViewProductDto {
     private Long id;
     @NotBlank(message = "Полето име не може да бъде празно")
     private String name;
