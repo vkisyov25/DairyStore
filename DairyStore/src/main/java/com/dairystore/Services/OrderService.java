@@ -46,7 +46,7 @@ public class OrderService {
                 .deliveryAddress(deliveryAddress)
                 .deliveryCompany(deliveryCompany)
                 .date(LocalDateTime.now())
-                .userId(user.getId())
+                /*.userId(user.getId())*/
                 .build();
 
         OrderItem orderItem = null;
@@ -54,7 +54,7 @@ public class OrderService {
             orderItem = OrderItem.builder().
                     quantity(cartItem.getQuantity())
                     .cartId(cartItem.getCart().getId())
-                    .productId(cartItem.getProduct().getId())
+                   /* .productId(cartItem.getProduct().getId())*/
                     .totalPrice(cartItem.getTotalPrice())
                     .order(order)
                     .build();
@@ -63,7 +63,7 @@ public class OrderService {
             soldProductService.saveSoldProduct(cartItem.getCart(), cartItem.getQuantity(), cartItem.getProduct().getId(), cartItem.getCart().getUser(), cartItem.getProduct(), cartItem.getTotalPrice());
         }
         finalPrice += deliveryFee;
-        order.setTotalPrice(finalPrice);
+        /*order.setTotalPrice(finalPrice);*/
         orderRepository.save(order);
 
         /*//Създава и добавя в базата данни SoldProduct
@@ -99,20 +99,20 @@ public class OrderService {
             PaymentMethod paymentMethod = order.getPaymentMethod();
             String deliveryCompany = order.getDeliveryCompany().getName();
             double deliveryFee = order.getDeliveryCompany().getDeliveryFee();
-            double priceWithDeliveryFee = order.getTotalPrice();
+           /* double priceWithDeliveryFee = order.getTotalPrice();*/
 
             List<OrderItem> orderItemList = orderItemService.getOrderItemsByOrderId(order.getId());
             List<OrderProductDto> orderProductDtoList = new ArrayList<>();
             for (OrderItem orderItem : orderItemList) {
-                Product product = productRepository.findProductById(orderItem.getProductId());
-                String productName = product.getName();
-                String productType = product.getType();
+                /*Product product = productRepository.findProductById(orderItem.getProductId());*/
+               /* String productName = product.getName();
+                String productType = product.getType();*/
                 int quantity = orderItem.getQuantity();
-                OrderProductDto orderProductDto = new OrderProductDto(productName, productType, quantity);
-                orderProductDtoList.add(orderProductDto);
+                /*OrderProductDto orderProductDto = new OrderProductDto(productName, productType, quantity);
+                orderProductDtoList.add(orderProductDto);*/
             }
-            BuyerOrderDto buyerOrderDto = new BuyerOrderDto(orderDate, addressToDelivery, paymentMethod, deliveryCompany, deliveryFee, priceWithDeliveryFee, orderProductDtoList); //productName, productType, quantity
-            buyerOrderDtoList.add(buyerOrderDto);
+           /* BuyerOrderDto buyerOrderDto = new BuyerOrderDto(orderDate, addressToDelivery, paymentMethod, deliveryCompany, deliveryFee, priceWithDeliveryFee, orderProductDtoList);*/ //productName, productType, quantity
+            /*buyerOrderDtoList.add(buyerOrderDto);*/
         }
 
         return buyerOrderDtoList;
