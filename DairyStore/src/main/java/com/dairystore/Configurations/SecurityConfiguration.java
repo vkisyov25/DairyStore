@@ -50,6 +50,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("/homePage.css").permitAll()
                                 .requestMatchers("/homePage.html").permitAll()
                                 .requestMatchers("/sellerPage.css").hasAuthority("seller")
+                                .requestMatchers("/products/for-sale").hasAuthority("buyer")
+                                .requestMatchers("/buyerPage.css").hasAuthority("buyer")
                                 .requestMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority("seller")
                                 .requestMatchers(HttpMethod.GET, "/products/{id}").hasAuthority("seller")
                                 .requestMatchers("/products/edit").hasAuthority("seller")
