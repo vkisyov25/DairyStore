@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Buyer</title>
     <link rel="stylesheet" href="/buyerPage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <div id="menu">
@@ -15,7 +16,7 @@
     <button id="loadProducts" onclick="loadProductsForSale()">Продукти за покуване</button>
     <br>
     <br>
-    <a th:href="@{/cart/view}">View shopping cart and make order</a>
+    <i class="fa-solid fa-cart-shopping" onclick="viewShoppingCart()"></i>
     <br>
     <br>
     <button type="submit" id="viewAnalysesBtn">View analyses</button>
@@ -47,6 +48,30 @@
     </tbody>
 </table>
 
+<div id="shopping-car-div" style="display: none;">
+    <table id="cart_table" style="display: none;">
+        <thead>
+        <tr>
+            <th>Име</th>
+            <th>Тип</th>
+            <th>Тегло (kг)</th>
+            <th>Цена</th>
+            <th>Количество</th>
+            <th>Отстъпка (%)</th>
+            <th>Обща цена</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="tb">
+
+        </tbody>
+    </table>
+
+    <div id="total-price"></div>
+    <button>Направи поръчка</button>
+    <button onclick="loadProductsForSale()">Добави още продукти</button>
+</div>
+
 
 <!-- Тук ще покажем анализа -->
 <div id="analysisResult" style="display: none;">
@@ -71,6 +96,7 @@
             table.style.display = "block";
             document.getElementById("analysisResult").style.display = "none";
             document.getElementById("orderList").style.display = "none";
+            document.getElementById("shopping-car-div").style.display = "none";
         } else {
             table.style.display = "none";
         }
@@ -120,7 +146,7 @@
             });
     }
 
-    function addToCart(id, quantity){
+    function addToCart(id, quantity) {
         console.log(quantity);
         // URL на контролера, където е "/add"
         const url = '/cart/add';
@@ -153,6 +179,53 @@
                 alert(error);
             });
     }
+
+    function viewShoppingCart() {
+        document.getElementById("cart_table").style.display = "block";
+        const shoppingCart = document.getElementById("shopping-car-div");
+        if (shoppingCart.style.display === "none") {
+            shoppingCart.style.display = "block";
+            document.getElementById("analysisResult").style.display = "none";
+            document.getElementById("orderList").style.display = "none";
+            document.getElementById("product-table").style.display = "none";
+        }
+
+        fetch("/cart/view")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Невалидна заявка")
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                const tableBody = document.getElementById("tb");
+                tableBody.innerHTML = "";
+                let totalPrice = 0;
+                data.forEach(cartProduct => {
+                    const row = document.createElement("tr");
+                    totalPrice += cartProduct.totalPricePerProduct;
+                    row.innerHTML = `
+                        <td>${cartProduct.name}</td>
+                        <td>${cartProduct.type}</td>
+                        <td>${cartProduct.weight}</td>
+                        <td>${cartProduct.price}</td>
+                        <td>${cartProduct.quantity}</td>
+                        <td>${cartProduct.discount}</td>
+                        <td>${cartProduct.totalPricePerProduct}</td>
+                        <td><button type="submit" onclick="deleteProductFromCart(${cartProduct.id})">Изтрий</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                })
+                console.log("Обща сума на покупката", totalPrice);
+                document.getElementById("total-price").textContent = "Дължима сума без вкючена доставка: " + totalPrice;
+
+            })
+            .catch(error => {
+                alert(error);
+            })
+    }
+
 
     document.getElementById("viewAnalysesBtn").addEventListener("click", function (event) {
         event.preventDefault();

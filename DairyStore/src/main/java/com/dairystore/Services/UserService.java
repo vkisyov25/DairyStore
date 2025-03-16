@@ -82,8 +82,8 @@ public class UserService {
 
     public void deleteCompanyInfoOnTheCurrentUser() {
         User user = getUserByUsername();
-        user.setCompanyName(null);
-        user.setCompanyEIK(null);
+        user.setCompanyName("");
+        user.setCompanyEIK("");
         userRepository.save(user);
     }
 

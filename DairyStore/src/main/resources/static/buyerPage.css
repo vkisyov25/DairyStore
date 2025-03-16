@@ -1,4 +1,4 @@
-#menu{
+#menu {
     position: fixed; /* Закрепване в горната част */
     top: 0;
     left: 0;
@@ -9,6 +9,11 @@
     justify-content: center;
     gap: 20px; /* Разстояние между бутоните */
 }
+
+#menu i {
+    font-size: 28px;
+}
+
 #product-table {
     border-collapse: collapse;
     background-color: white;
@@ -43,4 +48,55 @@
 
 #product-table td {
     font-size: 16px;
+}
+
+
+#cart_table {
+    border-collapse: collapse;
+    background-color: white;
+    margin-top: 70px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border: 3px solid black;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-left: auto; /* Центриране на таблицата */
+    margin-right: auto; /* Центриране на таблицата */
+}
+
+#cart_table th, #product-table td {
+    border: 2px solid black;
+    padding: 14px;
+    text-align: left;
+    font-size: 18px;
+}
+
+#cart_table th {
+    background-color: #f27900;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+#cart_table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#cart_table tr:hover {
+    background-color: #f1f1f1;
+}
+
+#cart_table td {
+    font-size: 16px;
+}
+
+#shopping-car-div {
+    width: 800px;
+    font-size: 20px;
+    margin-left: 600px;
+}
+
+#total-price {
+    padding: 20px;
+    margin-left: 300px;
+    font-weight: bold;
 }
