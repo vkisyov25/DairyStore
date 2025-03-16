@@ -1,6 +1,7 @@
 package com.dairystore.Controllers;
 
 import com.dairystore.Models.dtos.CreateProductDto;
+import com.dairystore.Models.dtos.ProductForSaleDto;
 import com.dairystore.Models.dtos.ViewProductDto;
 import com.dairystore.Services.ProductService;
 import jakarta.validation.Valid;
@@ -97,8 +98,9 @@ public class ProductController {
         productService.saveEditedProduct(viewProductDto);
         return ResponseEntity.ok(Map.of("message", "Продуктът е успешно редактиран"));
     }
+
     @GetMapping("/for-sale")
-    public ResponseEntity<List<ViewProductDto>> loadProductForSale(){
+    public ResponseEntity<List<ProductForSaleDto>> loadProductsForSale() {
         return ResponseEntity.ok().body(productService.getProductsForSale());
     }
 }
