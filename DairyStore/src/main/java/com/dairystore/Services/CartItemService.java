@@ -15,13 +15,16 @@ public class CartItemService {
     private final CartItemRepository cartItemRepository;
 
     public void saveCartItems(Cart cart, Product product, int quantity, double totalPrice) {
-        //Създава и добавя в базата данни CartItem
-        CartItem cartItem = new CartItem();
-        cartItem.setCart(cart);
-        cartItem.setProduct(product);
-        cartItem.setQuantity(quantity);
-        cartItem.setTotalPrice(totalPrice);
-        cartItemRepository.save(cartItem);
+        if (cartItemRepository.existsByProductId(product.getId())) {
+            cartItemRepository.updateProductQuantity(product.getId(), quantity);
+        } else {
+            CartItem cartItem = new CartItem();
+            cartItem.setCart(cart);
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItem.setTotalPrice(totalPrice);
+            cartItemRepository.save(cartItem);
+        }
     }
 
     public void deleteCartItemsByProductId(long id) {

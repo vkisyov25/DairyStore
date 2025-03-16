@@ -22,4 +22,13 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Modifying
     @Query("DELETE FROM CartItem cartItem WHERE cartItem.cart.id = ?1")
     void deleteCartItemByCartId(Long id);
+
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM CartItem p WHERE p.product.id = :productId")
+    boolean existsByProductId(Long productId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE CartItem p SET p.quantity = p.quantity + :quantity WHERE p.product.id = :productId")
+    void updateProductQuantity(@Param("productId") Long productId, @Param("quantity") int quantity);
+
 }

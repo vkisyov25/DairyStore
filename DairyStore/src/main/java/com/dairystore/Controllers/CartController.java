@@ -7,6 +7,8 @@ import com.dairystore.Services.CartItemService;
 import com.dairystore.Services.CartService;
 import com.dairystore.Services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +28,13 @@ public class CartController {
     private final UserService userService;
 
     @PostMapping("/add")
-    public String addToCart(@RequestParam int quantity, @RequestParam Long productId, RedirectAttributes redirectAttributes) {
-        cartService.addToCart(productId, quantity);
-        redirectAttributes.addFlashAttribute("success", "Successfully added product in the cart");
-        return "redirect:/products/listToBuy";
-
+    public ResponseEntity<String> addToCart(@RequestParam Long productId, @RequestParam int quantity) {
+        try {
+            cartService.addToCart(productId, quantity);
+            return ResponseEntity.status(HttpStatus.OK).body("Продуктът беше добавен успешно!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/view")
