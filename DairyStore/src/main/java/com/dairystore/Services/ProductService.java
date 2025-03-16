@@ -3,11 +3,13 @@ package com.dairystore.Services;
 import com.dairystore.Models.Product;
 import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.CreateProductDto;
+import com.dairystore.Models.dtos.ProductForSaleDto;
 import com.dairystore.Models.dtos.ViewProductDto;
 import com.dairystore.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -74,7 +76,35 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public List<ViewProductDto> getProductsForSale() {
-        return productRepository.findProductsForSale();
+    public List<ProductForSaleDto> getProductsForSale() {
+        List<ViewProductDto> productsForSale = productRepository.findProductsForSale();
+        List<ProductForSaleDto> productForSaleDtoList = new ArrayList<>();
+        for (int i = 0; i < productsForSale.size(); i++) {
+            int quantity = productsForSale.get(i).getQuantity();
+            String availability = "";
+            if (quantity >= 1) {
+                availability = "В наличност";
+            } else {
+                availability = "Изчерпано";
+            }
+
+            ProductForSaleDto productForSaleDto = ProductForSaleDto.builder()
+                    .id(productsForSale.get(i).getId())
+                    .name(productsForSale.get(i).getName())
+                    .type(productsForSale.get(i).getType())
+                    .weight(productsForSale.get(i).getWeight())
+                    .price(productsForSale.get(i).getPrice())
+                    .description(productsForSale.get(i).getDescription())
+                    .availability(availability)
+                    .build();
+
+            productForSaleDtoList.add(productForSaleDto);
+        }
+
+        return productForSaleDtoList;
+    }
+
+    public void save(Product product) {
+        productRepository.save(product);
     }
 }
