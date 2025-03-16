@@ -27,8 +27,11 @@ public class CartItemService {
         }
     }
 
-    public void deleteCartItemsByProductId(long id) {
-        cartItemRepository.deleteByProductId(id);
+    public void deleteCartItemsByProductId(long productId) throws Exception {
+        if (!cartItemRepository.existsByProductId(productId)) {
+            throw new Exception("Продуктът не съществува в базата данни");
+        }
+        cartItemRepository.deleteByProductId(productId);
     }
 
     public List<CartItem> getCartItemsByCart(Cart cart) {
