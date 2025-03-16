@@ -12,9 +12,6 @@
     <a href="/userInformationPage.html">My profile information</a>
     <br>
     <br>
-    <a th:href="@{/products/listToBuy}">Add product in the shopping cart</a>
-    <br>
-    <br>
     <button id="loadProducts" onclick="loadProductsForSale()">Продукти за покуване</button>
     <br>
     <br>
@@ -40,7 +37,7 @@
         <th>Тегло (г)</th>
         <th>Цена</th>
         <th>Описание</th>
-        <th>Отстъпка (%)</th>
+        <th>Наличност</th>
         <th>Количество</th>
         <th></th>
     </tr>
@@ -90,24 +87,70 @@
                 const tableBody = document.getElementById("tbody")
                 tableBody.innerHTML = "";
                 data.forEach(product => {
-                    const row = document.createElement("tr")
-                    row.innerHTML = `
-                    <td>${product.name}</td>
-                    <td>${product.type}</td>
-                    <td>${product.weight}</td>
-                    <td>${product.price}</td>
-                    <td>${product.description}</td>
-                    <td>${product.discount}</td>
-                    <td>${product.quantity}</td>
-                    <td><button id="editProductBtn" onclick="addToCart(${product.id})">Добави в количка</button></td>
-                    `;
+                    const row = document.createElement("tr");
+                    let quantityInputId = `quantity-${product.id}`;
 
+                    let content = `
+                        <td>${product.name}</td>
+                        <td>${product.type}</td>
+                        <td>${product.weight}</td>
+                        <td>${product.price}</td>
+                        <td>${product.description}</td>
+                        <td>${product.availability}</td>
+                        <td><input type="number" id="${quantityInputId}" name="quantity" value="1" min="1"></td>
+                        `;
+
+                    if (product.availability === "В наличност") {
+                        content += `
+                        <td><button onclick="addToCart(${product.id}, document.getElementById('${quantityInputId}').value)">Добави в количка</button></td>
+                        `;
+                    } else {
+                        content += `
+                        <td><button disabled>Добави в количка</button></td>
+                        `;
+                    }
+
+                    row.innerHTML = content;
                     tableBody.appendChild(row);
 
                 });
             })
             .catch(error => {
                 console.error('Error:', error)
+            });
+    }
+
+    function addToCart(id, quantity){
+        console.log(quantity);
+        // URL на контролера, където е "/add"
+        const url = '/cart/add';
+
+        // Данни, които ще изпратим
+        const params = new URLSearchParams();
+        params.append('productId', id);
+        params.append('quantity', quantity);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',  // Content-Type за параметрите
+            },
+            body: params.toString()  // Преобразуваме обектите в string формат
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(errorMessage => {
+                        throw new Error(errorMessage);
+                    });
+                }
+                return response.text();
+            })
+            .then(data => {
+                alert(data)
+            })
+            .catch(error => {
+                console.error('Грешка при изпращане на заявката:', error);
+                alert(error);
             });
     }
 
