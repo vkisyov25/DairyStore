@@ -60,7 +60,7 @@ public class CartService {
                     totalPricePerProduct = Math.round(totalPricePerProduct * 100.0) / 100.0;
 
                     return ShoppingCartDto.builder()
-                            .id(cartItem.getId())
+                            .id(cartItem.getProduct().getId())
                             .name(cartItem.getProduct().getName())
                             .type(cartItem.getProduct().getType())
                             .weight(cartItem.getProduct().getWeight())
