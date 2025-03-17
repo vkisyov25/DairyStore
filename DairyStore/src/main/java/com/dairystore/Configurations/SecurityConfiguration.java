@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/cart/add").hasAuthority("buyer")
                                 .requestMatchers("/cart/view").hasAuthority("buyer")
                                 .requestMatchers(HttpMethod.DELETE,"/cart/{productId}").hasAuthority("buyer")
+                                .requestMatchers("/order/delivery-companies").hasAuthority("buyer")
                                 .requestMatchers("/order/make").hasAuthority("buyer")
                                 .requestMatchers("/order/latest-order").hasAuthority("buyer")
                                 .requestMatchers("/soldProduct/buyerAnalytics").hasAuthority("buyer")
