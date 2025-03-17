@@ -1,5 +1,6 @@
 package com.dairystore.Controllers;
 
+import com.dairystore.Models.DeliveryCompany;
 import com.dairystore.Models.Order;
 import com.dairystore.Models.dtos.BuyerOrderDto;
 import com.dairystore.Models.enums.PaymentMethod;
@@ -21,9 +22,9 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @GetMapping("/make")
-    public String displayMakeOrderPage() {
-        return "makeOrderPage";
+    @GetMapping("/delivery-companies")
+    public ResponseEntity<List<DeliveryCompany>> deliveryCompanies() {
+        return ResponseEntity.ok().body(orderService.allDeliveryCompanies());
     }
 
     @PostMapping("/make")

@@ -5,6 +5,8 @@ import com.dairystore.Repository.DeliveryCompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DeliveryCompanyService {
@@ -12,5 +14,9 @@ public class DeliveryCompanyService {
 
     public DeliveryCompany getDeliveryCompanyByName(String name) {
         return deliveryCompanyRepository.findDeliveryCompanyByName(name);
+    }
+
+    public List<DeliveryCompany> getDeliveryCompanies(){
+        return deliveryCompanyRepository.findAll();
     }
 }

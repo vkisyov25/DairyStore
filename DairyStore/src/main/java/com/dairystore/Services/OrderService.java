@@ -117,4 +117,7 @@ public class OrderService {
 
         return buyerOrderDtoList;
     }
+    public List<DeliveryCompany> allDeliveryCompanies(){
+        return deliveryCompanyService.getDeliveryCompanies();
+    }
 }

@@ -3,6 +3,7 @@ package com.dairystore.Services;
 import com.dairystore.Models.Cart;
 import com.dairystore.Models.CartItem;
 import com.dairystore.Models.Product;
+import com.dairystore.Models.User;
 import com.dairystore.Repository.CartItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartItemService {
     private final CartItemRepository cartItemRepository;
+    private final UserService userService;
 
     public void saveCartItems(Cart cart, Product product, int quantity, double totalPrice) {
-        if (cartItemRepository.existsByProductId(product.getId())) {
-            cartItemRepository.updateProductQuantity(product.getId(), quantity);
+        Long cartId = cart.getId();
+        Long productId = product.getId();
+        if (cartItemRepository.existsByProductIdAndCartId(productId, cartId)) {
+                cartItemRepository.updateProductQuantity(product.getId(), quantity,cart.getId());
         } else {
             CartItem cartItem = new CartItem();
             cartItem.setCart(cart);
@@ -28,10 +32,12 @@ public class CartItemService {
     }
 
     public void deleteCartItemsByProductId(long productId) throws Exception {
-        if (!cartItemRepository.existsByProductId(productId)) {
+        User user = userService.getUserByUsername();
+        Long cart_id = user.getCart().getId();
+        if (!cartItemRepository.existsByProductIdAndCartId(productId, cart_id)) {
             throw new Exception("Продуктът не съществува в базата данни");
         }
-        cartItemRepository.deleteByProductId(productId);
+        cartItemRepository.deleteByProductId(productId,cart_id);
     }
 
     public List<CartItem> getCartItemsByCart(Cart cart) {

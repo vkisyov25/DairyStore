@@ -120,3 +120,45 @@
     cursor: pointer;
 }
 
+#order-input {
+    background-color: #f8f8f8; /* Светъл фон за формата */
+    padding: 30px;
+    width: 400px; /* Широчина на формата */
+    margin: 50px auto; /* Центриране на страницата */
+    border-radius: 10px; /* Заоблени ъгли */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Лека сянка */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#order-input label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#order-input input,
+#order-input select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#order-input button {
+    background-color: #f27900; /* Оранжев бутон */
+    color: white;
+    font-size: 18px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#order-input button:hover {
+    background-color: #d66700;
+}
+
+

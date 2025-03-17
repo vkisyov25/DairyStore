@@ -68,8 +68,12 @@
     </table>
 
     <div id="total-price"></div>
-    <button>Направи поръчка</button>
+    <button id="inputOrderInfoBtn" onclick="inputOrderInfo()">Премини към поръчка</button>
     <button onclick="loadProductsForSale()">Добави още продукти</button>
+
+    <div id="order-input" style="display: none;">
+    </div>
+
 </div>
 
 <div id="cartNotification" class="cart-popup" style="display: none;">
@@ -95,7 +99,9 @@
 </div>
 
 <script>
+    let priceWithoutDeliveryFee = 0;
     function loadProductsForSale() {
+        document.getElementById("order-input").style.display="none";
         let table = document.getElementById("product-table");
         table.style.display = "none";
         if (table.style.display === "none") {
@@ -192,6 +198,7 @@
     }
 
     function viewShoppingCart() {
+        document.getElementById("inputOrderInfoBtn").style.display = "block";
         document.getElementById("cart_table").style.display = "block";
         const shoppingCart = document.getElementById("shopping-car-div");
         if (shoppingCart.style.display === "none") {
@@ -229,8 +236,8 @@
                     tableBody.appendChild(row);
                 })
                 console.log("Обща сума на покупката", totalPrice);
-                document.getElementById("total-price").textContent = "Дължима сума без вкючена доставка: " + totalPrice;
-
+                document.getElementById("total-price").textContent = "Дължима сума без вкючена доставка: " + totalPrice.toFixed(2);
+                priceWithoutDeliveryFee = totalPrice;
             })
             .catch(error => {
                 alert(error);
@@ -248,8 +255,8 @@
                 }
                 return response.text();
             })
-            .then(data=>{
-                alert(data);
+            .then(()=>{
+                /*alert(data);*/
                 viewShoppingCart();
             })
             .catch(error =>{
@@ -258,6 +265,74 @@
 
     }
 
+    function inputOrderInfo(){
+        document.getElementById("inputOrderInfoBtn").style.display = "none";
+        document.getElementById("order-input").style.display = "block";
+
+        fetch("/order/delivery-companies")
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("Невалидна заявка");
+                }
+                return response.json();
+            })
+            .then(data =>{
+                console.log(data);
+                let orderInputDiv = document.getElementById("order-input");
+                orderInputDiv.innerHTML = `
+                 <label for="deliveryAddress">Адрес на доставка</label>
+                 <input type="text" id="deliveryAddress" required><br>
+                 <label for="deliveryCompany">Фирма доставчик</label>
+                 <select id="deliveryCompany" required>
+                    <option value="">-- Избери --</option>
+                 </select><br>
+                 <p>Такса за доставка: <span id="deliveryFee">-</span> лв.</p><br>
+                 <p>Цена с включена доставка: <span id="totalPrice">-</span> лв.</p><br>
+                 <button type="submit" onclick="makeOrder()">Поръчай</button>
+                `;
+
+                const selectElement = document.getElementById("deliveryCompany");
+                const feeElement = document.getElementById("deliveryFee");
+
+                // Добавяме опциите в селекта
+                data.forEach(service => {
+                    let option = document.createElement("option");
+                    option.value = service.id;
+                    option.textContent = service.name;
+                    selectElement.appendChild(option);
+                });
+
+                // Добавяме event listener, който сменя таксата при избор
+                selectElement.addEventListener("change", function () {
+                    const selectedId = Number(this.value);
+                    const selectedService = data.find(service => service.id === selectedId);
+
+                    // Ако има валидна фирма, показваме таксата, иначе оставяме "-"
+                    feeElement.textContent = selectedService ? `${selectedService.deliveryFee}` : "-";
+
+
+                    let deliveryFee = parseFloat(document.getElementById("deliveryFee").textContent) || 0;
+                    let totalWithDeliveryFee = priceWithoutDeliveryFee + deliveryFee;
+
+                    document.getElementById("totalPrice").textContent = totalWithDeliveryFee.toFixed(2) + "";
+                });
+
+            })
+            .catch(error =>{
+                console.log(error);
+            })
+    }
+    function makeOrder(){
+        let address = document.getElementById("deliveryAddress").value;
+        let company = document.getElementById("deliveryCompany").value;
+
+        if (!address || !company) {
+            alert("Моля, попълнете всички задължителни полета!");
+            return;
+        }
+
+        console.log("Поръчката е направена успешно!");
+    }
     document.getElementById("viewAnalysesBtn").addEventListener("click", function (event) {
         event.preventDefault();
 
