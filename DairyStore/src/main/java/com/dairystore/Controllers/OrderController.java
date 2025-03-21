@@ -25,6 +25,7 @@ public class OrderController {
     @GetMapping("/delivery-companies")
     public ResponseEntity<List<DeliveryCompany>> deliveryCompanies() {
         return ResponseEntity.ok().body(orderService.allDeliveryCompanies());
+
     }
 
     @GetMapping("/check-availability")
@@ -34,7 +35,7 @@ public class OrderController {
             return ResponseEntity.ok().body("Всичко е в наличност");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        }
+
     }
 
     @PostMapping("/make")

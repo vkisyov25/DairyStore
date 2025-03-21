@@ -36,7 +36,9 @@ public class CartItemService {
         if (!cartItemRepository.existsByProductIdAndCartId(productId, cart_id)) {
             throw new Exception("Продуктът не съществува в базата данни");
         }
+
         cartItemRepository.deleteByProductId(productId, cart_id);
+
     }
 
     public List<CartItem> getCartItemsByCart(Cart cart) {
