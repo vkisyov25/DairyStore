@@ -140,9 +140,4 @@ public class OrderService {
             }
         }
     }
-  
-    public List<DeliveryCompany> allDeliveryCompanies(){
-        return deliveryCompanyService.getDeliveryCompanies();
-    }
-
 }
