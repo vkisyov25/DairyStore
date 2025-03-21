@@ -1,7 +1,6 @@
 package com.dairystore.Services;
 
 import com.dairystore.Models.Cart;
-import com.dairystore.Models.CartItem;
 import com.dairystore.Models.DeliveryCompany;
 import com.dairystore.Models.Order;
 import com.dairystore.Models.OrderItem;
@@ -9,9 +8,11 @@ import com.dairystore.Models.Product;
 import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.BuyerOrderDto;
 import com.dairystore.Models.dtos.OrderProductDto;
+import com.dairystore.Models.dtos.ShoppingCartDto;
 import com.dairystore.Models.enums.PaymentMethod;
 import com.dairystore.Repository.OrderRepository;
 import com.dairystore.Repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,52 +32,59 @@ public class OrderService {
     private final SoldProductService soldProductService;
     private final ProductRepository productRepository;
 
-    public void makeOrder(String deliveryAddress, String deliveryCompanyName, PaymentMethod paymentMethod) {
+    public void checkAvailable() throws Exception {
+        List<ShoppingCartDto> shoppingCartDtoList = cartService.viewShoppingCart();
+        for (int i = 0; i < shoppingCartDtoList.size(); i++) {
+            Product product = productRepository.findProductById(shoppingCartDtoList.get(i).getId());
+            int quantity = product.getQuantity();
+            int receivedQuantity = shoppingCartDtoList.get(i).getQuantity();
+            if (receivedQuantity > quantity) {
+                throw new Exception("Няма достатъчно количество от този продукт: име: " + product.getName() + " тип: " + product.getType() + " тегло: " + product.getWeight()
+                        + " цена: " + product.getPrice() + " количество: " + product.getQuantity() + " отстъпка: " + product.getDiscount());
+            }
+
+        }
+    }
+
+    public void makeOrder(String deliveryAddress, String deliveryCompanyName, PaymentMethod paymentMethod, String paymentIntentId) throws Exception {
         User user = userService.getUserByUsername();
         Cart cart = cartService.getCartByUser(user);
-        //List<CartItem> cartItemList = cartService.getCartItems(userService.getUserByUsername()); // cartItem на текуция потребител
-        List<CartItem> cartItemList = cartItemService.getCartItemsByCart(cart); // cartItem на текуция потребител
+
+        List<ShoppingCartDto> shoppingCartDtoList = cartService.viewShoppingCart();
+        updateProductQuantities(shoppingCartDtoList);
 
         DeliveryCompany deliveryCompany = deliveryCompanyService.getDeliveryCompanyByName(deliveryCompanyName);
-        double deliveryFee = deliveryCompany.getDeliveryFee();
-        double finalPrice = 0;
 
         Order order = Order.builder()
                 .paymentMethod(paymentMethod)
                 .deliveryAddress(deliveryAddress)
                 .deliveryCompany(deliveryCompany)
                 .date(LocalDateTime.now())
-                /*.userId(user.getId())*/
+                .userId(user.getId())
+                .paymentIntentId(paymentIntentId)
+                .deliveryCompany(deliveryCompany)
                 .build();
 
         OrderItem orderItem = null;
-        for (CartItem cartItem : cartItemList) {
-            orderItem = OrderItem.builder().
-                    quantity(cartItem.getQuantity())
-                    .cartId(cartItem.getCart().getId())
-                   /* .productId(cartItem.getProduct().getId())*/
-                    .totalPrice(cartItem.getTotalPrice())
+        for (int i = 0; i < shoppingCartDtoList.size(); i++) {
+            Product product = productRepository.findProductById(shoppingCartDtoList.get(i).getId());
+            orderItem = OrderItem.builder()
+                    .quantity(shoppingCartDtoList.get(i).getQuantity())
+                    .totalPrice(shoppingCartDtoList.get(i).getTotalPricePerProduct())
+                    .name(shoppingCartDtoList.get(i).getName())
+                    .type(shoppingCartDtoList.get(i).getType())
+                    .weight(shoppingCartDtoList.get(i).getWeight())
+                    .price(shoppingCartDtoList.get(i).getPrice())
+                    .discount(shoppingCartDtoList.get(i).getDiscount())
+                    .cartId(cart.getId())
                     .order(order)
+                    .seller_id(product.getUser().getId())
+                    .description(product.getDescription())
                     .build();
-            finalPrice += cartItem.getTotalPrice();
             orderItemService.saveOrderItem(orderItem);
-            soldProductService.saveSoldProduct(cartItem.getCart(), cartItem.getQuantity(), cartItem.getProduct().getId(), cartItem.getCart().getUser(), cartItem.getProduct(), cartItem.getTotalPrice());
         }
-        finalPrice += deliveryFee;
-        /*order.setTotalPrice(finalPrice);*/
-        orderRepository.save(order);
 
-        /*//Създава и добавя в базата данни SoldProduct
-        SoldProduct soldProduct = SoldProduct.builder()
-                .quantity(quantity)
-                .product_id(productId)
-                .cart_id(cart.getId())
-                .finalPrice(totalPrice)
-                .buyer_id(user.getId())
-                .seller_id(product.getUser().getId())
-                .build();
-        soldProductRepository.save(soldProduct);*/
-        //TODO: Is this a good practise
+        orderRepository.save(order);
         cartItemService.deleteCartItemByCartId(cart.getId());
 
     }
@@ -99,7 +107,7 @@ public class OrderService {
             PaymentMethod paymentMethod = order.getPaymentMethod();
             String deliveryCompany = order.getDeliveryCompany().getName();
             double deliveryFee = order.getDeliveryCompany().getDeliveryFee();
-           /* double priceWithDeliveryFee = order.getTotalPrice();*/
+            /* double priceWithDeliveryFee = order.getTotalPrice();*/
 
             List<OrderItem> orderItemList = orderItemService.getOrderItemsByOrderId(order.getId());
             List<OrderProductDto> orderProductDtoList = new ArrayList<>();
@@ -111,13 +119,25 @@ public class OrderService {
                 /*OrderProductDto orderProductDto = new OrderProductDto(productName, productType, quantity);
                 orderProductDtoList.add(orderProductDto);*/
             }
-           /* BuyerOrderDto buyerOrderDto = new BuyerOrderDto(orderDate, addressToDelivery, paymentMethod, deliveryCompany, deliveryFee, priceWithDeliveryFee, orderProductDtoList);*/ //productName, productType, quantity
+            /* BuyerOrderDto buyerOrderDto = new BuyerOrderDto(orderDate, addressToDelivery, paymentMethod, deliveryCompany, deliveryFee, priceWithDeliveryFee, orderProductDtoList);*/ //productName, productType, quantity
             /*buyerOrderDtoList.add(buyerOrderDto);*/
         }
 
         return buyerOrderDtoList;
     }
-    public List<DeliveryCompany> allDeliveryCompanies(){
+
+    public List<DeliveryCompany> allDeliveryCompanies() {
         return deliveryCompanyService.getDeliveryCompanies();
+    }
+
+    @Transactional
+    private void updateProductQuantities(List<ShoppingCartDto> shoppingCartDtoList) throws Exception {
+        for (ShoppingCartDto item : shoppingCartDtoList) {
+            int updatedRows = productRepository.updateProductQuantity(item.getId(), item.getQuantity());
+
+            if (updatedRows == 0) {
+                throw new Exception("Недостатъчно количество от продукта с име: " + item.getName());
+            }
+        }
     }
 }
