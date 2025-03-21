@@ -185,6 +185,13 @@
             <version>6.5.2.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>25.0.0</version> <!-- или последната версия -->
+        </dependency>
+
+
     </dependencies>
 
     <build>
