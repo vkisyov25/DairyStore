@@ -3,7 +3,7 @@ package com.dairystore.Controllers;
 import com.dairystore.Models.DeliveryCompany;
 import com.dairystore.Models.Order;
 import com.dairystore.Models.dtos.BuyerOrderDto;
-import com.dairystore.Models.enums.PaymentMethod;
+import com.dairystore.Models.dtos.OrderRequestDto;
 import com.dairystore.Services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -25,12 +25,27 @@ public class OrderController {
     @GetMapping("/delivery-companies")
     public ResponseEntity<List<DeliveryCompany>> deliveryCompanies() {
         return ResponseEntity.ok().body(orderService.allDeliveryCompanies());
+
+    }
+
+    @GetMapping("/check-availability")
+    public ResponseEntity<?> checkAvailable() {
+        try {
+            orderService.checkAvailable();
+            return ResponseEntity.ok().body("Всичко е в наличност");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+
     }
 
     @PostMapping("/make")
-    public String makeOrder(@RequestParam String deliveryAddress, @RequestParam String deliveryCompanyName, @RequestParam PaymentMethod paymentMethod) {
-        orderService.makeOrder(deliveryAddress, deliveryCompanyName, paymentMethod);
-        return "redirect:/order/latest-order";
+    public ResponseEntity<?> makeOrder(@RequestBody OrderRequestDto orderRequestDto) {
+        try {
+            orderService.makeOrder(orderRequestDto.getDeliveryAddress(), orderRequestDto.getDeliveryCompanyName(), orderRequestDto.getPaymentMethod(), orderRequestDto.getPaymentIntentId());
+            return ResponseEntity.ok().body("Поръчката е направена успешно!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/latest-order")

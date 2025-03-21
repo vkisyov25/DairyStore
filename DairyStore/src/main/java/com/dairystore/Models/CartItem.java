@@ -20,8 +20,6 @@ public class CartItem {
     private Long id;
     @Column(nullable = false)
     private int quantity;
-    @Column(nullable = false)
-    private double totalPrice;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
     private Cart cart;

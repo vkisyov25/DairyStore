@@ -28,6 +28,8 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "orders")
 public class Order {
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    List<OrderItem> orderItemList;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -40,10 +42,10 @@ public class Order {
     private LocalDateTime date;
     @Column(nullable = false, name = "user_id")
     private Long userId;
+    @Column(nullable = false)
+    private String paymentIntentId;
     @ManyToOne
     @JoinColumn(name = "delivery_company_id")
     private DeliveryCompany deliveryCompany;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    List<OrderItem> orderItemList;
 
 }

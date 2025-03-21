@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authorizeRequest -> authorizeRequest
                                 .requestMatchers("/test/home", "/test/login", "/test/register", "/test/tokenExpiration").permitAll()
+                                .requestMatchers("/order/check-availability").hasAuthority("buyer")
                                 .requestMatchers("/products/all").hasAuthority("seller")
                                 .requestMatchers("/products/create").hasAuthority("seller")
                                 .requestMatchers("/user/allInformation").hasAnyAuthority("seller", "buyer")
@@ -56,6 +57,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority("seller")
                                 .requestMatchers(HttpMethod.GET, "/products/{id}").hasAuthority("seller")
                                 .requestMatchers("/products/edit").hasAuthority("seller")
+                                .requestMatchers("/api/payments/create-payment-intent").hasAuthority("buyer")
                                 .anyRequest().authenticated()
 
                 )
