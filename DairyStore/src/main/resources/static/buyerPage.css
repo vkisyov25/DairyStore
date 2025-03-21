@@ -100,6 +100,7 @@
     margin-left: 300px;
     font-weight: bold;
 }
+
 .cart-popup {
     display: none;
     position: fixed;
@@ -113,6 +114,7 @@
     text-align: center;
     z-index: 1000;
 }
+
 .cart-popup button {
     margin: 10px;
     padding: 10px;
@@ -120,14 +122,14 @@
     cursor: pointer;
 }
 
+
 #order-input {
-    background-color: #f8f8f8; /* Светъл фон за формата */
+    background-color: #f8f8f8;
     padding: 30px;
-    width: 400px; /* Широчина на формата */
-    margin: 50px auto; /* Центриране на страницата */
-    border-radius: 10px; /* Заоблени ъгли */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Лека сянка */
-    display: flex;
+    width: 400px;
+    margin: 50px auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     flex-direction: column;
     gap: 15px;
 }
@@ -147,7 +149,7 @@
 }
 
 #order-input button {
-    background-color: #f27900; /* Оранжев бутон */
+    background-color: #f27900;
     color: white;
     font-size: 18px;
     padding: 10px;
@@ -158,7 +160,36 @@
 }
 
 #order-input button:hover {
-    background-color: #d66700;
+    background-color: #99f200;
 }
 
+#payment-form {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
 
+#payment-form button {
+    background-color: #d66700;
+    color: white;
+    border: none;
+    margin-left: 100px;
+    margin-top: 50px; /* Добавя разстояние над бутона */
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+#payment-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+p {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+}
