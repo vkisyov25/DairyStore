@@ -20,13 +20,12 @@ public class CartItemService {
         Long cartId = cart.getId();
         Long productId = product.getId();
         if (cartItemRepository.existsByProductIdAndCartId(productId, cartId)) {
-                cartItemRepository.updateProductQuantity(product.getId(), quantity,cart.getId());
+            cartItemRepository.updateProductQuantity(product.getId(), quantity, cart.getId());
         } else {
             CartItem cartItem = new CartItem();
             cartItem.setCart(cart);
             cartItem.setProduct(product);
             cartItem.setQuantity(quantity);
-            cartItem.setTotalPrice(totalPrice);
             cartItemRepository.save(cartItem);
         }
     }
@@ -37,7 +36,7 @@ public class CartItemService {
         if (!cartItemRepository.existsByProductIdAndCartId(productId, cart_id)) {
             throw new Exception("Продуктът не съществува в базата данни");
         }
-        cartItemRepository.deleteByProductId(productId,cart_id);
+        cartItemRepository.deleteByProductId(productId, cart_id);
     }
 
     public List<CartItem> getCartItemsByCart(Cart cart) {
