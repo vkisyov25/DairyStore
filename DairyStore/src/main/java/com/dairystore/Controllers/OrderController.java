@@ -49,28 +49,19 @@ public class OrderController {
 
         }
     }
-        @PostMapping("/make")
-        public ResponseEntity<?> makeOrder (@RequestBody OrderRequestDto orderRequestDto){
-            try {
-                orderService.makeOrder(orderRequestDto.getDeliveryAddress(), orderRequestDto.getDeliveryCompanyName(), orderRequestDto.getPaymentMethod(), orderRequestDto.getPaymentIntentId());
-                return ResponseEntity.ok().body("Поръчката е направена успешно!");
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
-        }
 
-        @GetMapping("/latest-order")
-        public String viewOrder (Model model){
-            Order order = orderService.getLatestOrder();
-            model.addAttribute("order", order);
-            return "currentOrder";
-        }
-
-
-        @GetMapping("/viewAll")
-        public ResponseEntity<List<BuyerOrderDto>> displayAllOrders () {
-            List<BuyerOrderDto> buyerOrderDtoList = orderService.getCurrentUserOrders();
-            return ResponseEntity.ok(buyerOrderDtoList);
-
-        }
+    @GetMapping("/latest-order")
+    public String viewOrder (Model model){
+        Order order = orderService.getLatestOrder();
+        model.addAttribute("order", order);
+        return "currentOrder";
     }
+
+
+    @GetMapping("/viewAll")
+    public ResponseEntity<List<BuyerOrderDto>> displayAllOrders () {
+        List<BuyerOrderDto> buyerOrderDtoList = orderService.getCurrentUserOrders();
+        return ResponseEntity.ok(buyerOrderDtoList);
+
+    }
+}
