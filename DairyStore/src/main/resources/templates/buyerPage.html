@@ -20,7 +20,7 @@
     <i class="fa-solid fa-cart-shopping" onclick="viewShoppingCart()"></i>
     <br>
     <br>
-    <button type="submit" id="viewAnalysesBtn">View analyses</button>
+    <button type="submit" id="viewAnalysesBtn" onclick="viewAnalysis()">View analyses</button>
     <br>
     <br>
     <button type="submit" id="allOrdersBtn">View your all orders</button>
@@ -95,13 +95,7 @@
 </form>-->
 
 
-<!-- Тук ще покажем анализа -->
-<div id="analysisResult" style="display: none;">
-    <h3>Buyer Analysis</h3>
-    <p><strong>Total spent:</strong> <span id="totalPrice">Loading...</span></p>
-    <p><strong>Average purchase price:</strong> <span id="averagePrice">Loading...</span></p>
-    <p><strong>Most purchased product type:</strong> <span id="mostPurchased">Loading...</span></p>
-</div>
+<div id="analysisResult" style="display: none;"></div>
 
 
 <div id="orderList" style="display: none;"></div>
@@ -367,7 +361,6 @@
                 });
 
 
-
                 paymentMethod.addEventListener("change", function () {
                     if (paymentMethod.value === "CARD") {
                         document.getElementById("payment-form").style.display = "block";
@@ -517,21 +510,19 @@
     }
 
 
-    document.getElementById("viewAnalysesBtn").addEventListener("click", function (event) {
-        event.preventDefault();
-
+    function viewAnalysis() {
         let analysisResult = document.getElementById("analysisResult");
 
-        // Ако анализът вече е видим, го скриваме и спираме изпълнението на кода
         if (analysisResult.style.display === "none") {
             analysisResult.style.display = "block";
             document.getElementById("product-table").style.display = "none";
-            document.getElementById("orderList");
+            document.getElementById("orderList").style.display = "none";
+            document.getElementById("shopping-car-div").style.display = "none";
         } else {
             analysisResult.style.display = "none";
         }
 
-        fetch("/soldProduct/buyerAnalytics")
+        fetch("/analytics/buyer")
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -539,19 +530,22 @@
                 return response.json();
             })
             .then(data => {
-                document.getElementById("totalPrice").textContent = data.totalPurchasePrice.toFixed(2) + " лв.";
-                document.getElementById("averagePrice").textContent = data.averagePurchasePrice.toFixed(2) + " лв.";
-                document.getElementById("mostPurchased").textContent = data.mostPurchasedType;
+                console.log(data)
+                analysisResult.innerHTML = `
+                <h3>Анализ на купувача</h3>
+                <p><strong>Обща сума:</strong> <span>${data.totalPurchasePrice.toFixed(2)} лв.</span></p>
+                <p><strong>Средна цена на покупка:</strong> <span>${data.averagePurchasePrice.toFixed(2)} лв.</span></p>
+                <p><strong>Най-често купуван продукт:</strong> <span>${data.mostPurchasedType}</span></p>
+            `;
 
-                // Показваме резултата
-                document.getElementById("analysisResult").style.display = "block";
+
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
                 document.getElementById("analysisResult").innerHTML = "<p style='color: red;'>Error loading data!</p>";
                 document.getElementById("analysisResult").style.display = "block";
             });
-    })
+    }
 
     document.getElementById("allOrdersBtn").addEventListener("click", function (event) {
         event.preventDefault();

@@ -1,23 +1,22 @@
 package com.dairystore.Controllers;
 
 import com.dairystore.Models.dtos.BuyerAnalyticsDto;
-import com.dairystore.Services.SoldProductService;
+import com.dairystore.Services.UserAnalyticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
-@RequestMapping("/soldProduct")
 @RequiredArgsConstructor
-public class SoldProductController {
-    private final SoldProductService soldProductService;
+@RequestMapping("/analytics")
+public class UserAnalyticsController {
+    private final UserAnalyticsService userAnalyticsService;
 
-    @GetMapping("/buyerAnalytics")
+    @GetMapping("/buyer")
     public ResponseEntity<BuyerAnalyticsDto> analyzeUserShoppingBehavior() {
-        BuyerAnalyticsDto analytics = soldProductService.analyzeUserShoppingBehavior();
+        BuyerAnalyticsDto analytics = userAnalyticsService.analyzeUserShoppingBehavior();
         return ResponseEntity.ok(analytics);
     }
 }

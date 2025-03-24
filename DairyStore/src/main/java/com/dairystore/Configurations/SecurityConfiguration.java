@@ -42,7 +42,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/order/delivery-companies").hasAuthority("buyer")
                                 .requestMatchers("/order/make").hasAuthority("buyer")
                                 .requestMatchers("/order/latest-order").hasAuthority("buyer")
-                                .requestMatchers("/soldProduct/buyerAnalytics").hasAuthority("buyer")
+                                .requestMatchers("/analytics/buyer").hasAuthority("buyer")
                                 .requestMatchers("/user/edit").hasAnyAuthority("seller", "buyer")
                                 .requestMatchers("/user/deleteCompany").hasAuthority("buyer")
                                 .requestMatchers("/login.css").permitAll()

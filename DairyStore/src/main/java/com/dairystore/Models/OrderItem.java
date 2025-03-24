@@ -41,7 +41,7 @@ public class OrderItem {
     @Column(nullable = false)
     private double discount;
     @Column(nullable = false)
-    private Long seller_id;
+    private Long sellerId;
     @Column(nullable = false, name = "cart_id")
     private Long cartId;
     @ManyToOne(cascade = CascadeType.ALL)

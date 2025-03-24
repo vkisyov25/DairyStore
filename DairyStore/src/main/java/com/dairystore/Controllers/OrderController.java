@@ -38,6 +38,17 @@ public class OrderController {
 
         }
     }
+
+    @PostMapping("/make")
+    public ResponseEntity<?> makeOrder(@RequestBody OrderRequestDto orderRequestDto) {
+        try {
+            orderService.makeOrder(orderRequestDto.getDeliveryAddress(), orderRequestDto.getDeliveryCompanyName(), orderRequestDto.getPaymentMethod(), orderRequestDto.getPaymentIntentId());
+            return ResponseEntity.ok().body("Поръчката е направена успешно!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+    }
         @PostMapping("/make")
         public ResponseEntity<?> makeOrder (@RequestBody OrderRequestDto orderRequestDto){
             try {
