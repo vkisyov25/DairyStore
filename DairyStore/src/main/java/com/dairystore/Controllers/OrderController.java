@@ -35,7 +35,7 @@ public class OrderController {
             return ResponseEntity.ok().body("Всичко е в наличност");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-
+        }
     }
 
     @PostMapping("/make")
