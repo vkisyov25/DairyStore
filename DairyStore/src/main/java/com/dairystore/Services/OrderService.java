@@ -29,7 +29,6 @@ public class OrderService {
     private final DeliveryCompanyService deliveryCompanyService;
     private final UserService userService;
     private final CartService cartService;
-    private final SoldProductService soldProductService;
     private final ProductRepository productRepository;
 
     public void checkAvailable() throws Exception {
@@ -78,7 +77,7 @@ public class OrderService {
                     .discount(shoppingCartDtoList.get(i).getDiscount())
                     .cartId(cart.getId())
                     .order(order)
-                    .seller_id(product.getUser().getId())
+                    .sellerId(product.getUser().getId())
                     .description(product.getDescription())
                     .build();
             orderItemService.saveOrderItem(orderItem);
@@ -140,9 +139,8 @@ public class OrderService {
             }
         }
     }
-  
-    public List<DeliveryCompany> allDeliveryCompanies(){
-        return deliveryCompanyService.getDeliveryCompanies();
-    }
 
+    public List<Order> getOrdersByUserId(Long userId) {
+        return orderRepository.findOrdersByUserId(userId);
+    }
 }
