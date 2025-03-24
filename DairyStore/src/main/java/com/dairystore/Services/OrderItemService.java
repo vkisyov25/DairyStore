@@ -19,4 +19,8 @@ public class OrderItemService {
     public List<OrderItem> getOrderItemsByOrderId(Long orderId) {
         return orderItemRepository.findOrderItemsByOrderId(orderId);
     }
+
+    public List<OrderItem> getOrderItemsByCartId(Long cartId) {
+        return orderItemRepository.findOrderItemsByCartId(cartId);
+    }
 }
