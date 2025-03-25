@@ -1,6 +1,7 @@
 package com.dairystore.Models;
 
 import com.dairystore.Models.enums.PaymentMethod;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +30,7 @@ import java.util.List;
 @Table(name = "orders")
 public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    List<OrderItem> orderItemList;
+    private List<OrderItem> orderItemList;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -46,6 +47,7 @@ public class Order {
     private String paymentIntentId;
     @ManyToOne
     @JoinColumn(name = "delivery_company_id")
+    @JsonIgnore
     private DeliveryCompany deliveryCompany;
 
 }
