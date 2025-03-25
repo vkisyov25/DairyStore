@@ -25,7 +25,6 @@ public class OrderController {
     @GetMapping("/delivery-companies")
     public ResponseEntity<List<DeliveryCompany>> deliveryCompanies() {
         return ResponseEntity.ok().body(orderService.allDeliveryCompanies());
-
     }
 
     @GetMapping("/check-availability")
@@ -51,7 +50,7 @@ public class OrderController {
     }
 
     @GetMapping("/latest-order")
-    public String viewOrder (Model model){
+    public String viewOrder(Model model) {
         Order order = orderService.getLatestOrder();
         model.addAttribute("order", order);
         return "currentOrder";
@@ -59,8 +58,8 @@ public class OrderController {
 
 
     @GetMapping("/viewAll")
-    public ResponseEntity<List<BuyerOrderDto>> displayAllOrders () {
-        List<BuyerOrderDto> buyerOrderDtoList = orderService.getCurrentUserOrders();
+    public ResponseEntity<List<BuyerOrderDto>> displayAllOrders() {
+        List<BuyerOrderDto> buyerOrderDtoList = orderService.getOrders();
         return ResponseEntity.ok(buyerOrderDtoList);
 
     }
