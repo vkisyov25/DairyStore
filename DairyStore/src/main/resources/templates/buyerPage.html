@@ -23,7 +23,7 @@
     <button type="submit" id="viewAnalysesBtn" onclick="viewAnalysis()">View analyses</button>
     <br>
     <br>
-    <button type="submit" id="allOrdersBtn">View your all orders</button>
+    <button type="submit" id="allOrdersBtn" onclick="viewOrders()">View your all orders</button>
     <br>
     <br>
     <form action="/test/logout" method="post">
@@ -300,7 +300,6 @@
                 }
                 return response.json();
             })
-
             .then(data => {
                 console.log(data);
                 let orderInputDiv = document.getElementById("order-input");
@@ -547,14 +546,14 @@
             });
     }
 
-    document.getElementById("allOrdersBtn").addEventListener("click", function (event) {
-        event.preventDefault();
+    function viewOrders(){
         const container = document.getElementById("orderList");
 
         if (container.style.display === "none") {
             container.style.display = "block";
             document.getElementById("product-table").style.display = "none";
             document.getElementById("orderList").style.display = "none";
+            document.getElementById("analysisResult").style.display = "none";
         } else {
             container.style.display = "none";
         }
@@ -580,6 +579,7 @@
                         order.orderProductDtoList.forEach(product => {
                             console.log("Продукт:", product);  // Виж продукта
                             productsHtml += `
+                        <h3>-----------------------------------------------</h3>
                         <ol>
                             <strong>Име:</strong> ${product.productName}
                             <br>
@@ -587,6 +587,7 @@
                             <br>
                             <strong>Количество:</strong> ${product.quantity} броя
                         </ol>
+                        <h3>-----------------------------------------------</h3>
                     `;
                         });
                     } else {
@@ -615,7 +616,7 @@
             })
 
             .catch(err => console.error(err));
-    })
+    }
 </script>
 </body>
 </html>

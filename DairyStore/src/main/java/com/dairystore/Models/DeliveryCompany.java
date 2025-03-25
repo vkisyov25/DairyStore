@@ -1,5 +1,6 @@
 package com.dairystore.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +27,7 @@ public class DeliveryCompany {
     @Column(nullable = false)
     private double deliveryFee;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deliveryCompany")
+    @JsonIgnore
     private List<Order> orderList;
 
 }

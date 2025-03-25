@@ -12,11 +12,11 @@ import java.util.List;
 public class DeliveryCompanyService {
     private final DeliveryCompanyRepository deliveryCompanyRepository;
 
-    public DeliveryCompany getDeliveryCompanyByName(String name) {
-        return deliveryCompanyRepository.findDeliveryCompanyByName(name);
+    public List<DeliveryCompany> getDeliveryCompanies() {
+        return deliveryCompanyRepository.findAll();
     }
 
-    public List<DeliveryCompany> getDeliveryCompanies(){
-        return deliveryCompanyRepository.findAll();
+    public DeliveryCompany getDeliveryCompanyById(Long companyId) {
+        return deliveryCompanyRepository.findDeliveryCompanyById(companyId);
     }
 }
