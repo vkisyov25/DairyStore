@@ -23,6 +23,9 @@
     <button type="button" onclick="viewYourProducts()">Моите продукти</button>
     <br>
     <br>
+    <button type="button" onclick="viewSellerAnalysis()">Анализи</button>
+    <br>
+    <br>
     <form th:action="@{/test/logout}" method="post">
         <button type="submit" value="Sign Out">Logout</button>
     </form>
@@ -93,6 +96,7 @@
 </div>
 
 <div id="editProduct" style="display: none;"></div>
+<div id="sellerAnalysis" style="display: none"></div>
 <script>
     function openUserProfile() {
         window.location.href = "/userInformationPage.html";
@@ -379,6 +383,35 @@
     }
 
 
+    function viewSellerAnalysis() {
+        let sellerAnalysis = document.getElementById("sellerAnalysis");
+        if (sellerAnalysis.style.display === "none") {
+            sellerAnalysis.style.display = "block";
+        } else {
+            sellerAnalysis.style.display = "none";
+        }
+
+        fetch("/analysis/seller")
+            .then(response => {
+                console.log(response);
+                if (!response.ok) {
+                    throw new Error("Невалидна заявка");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                sellerAnalysis.innerHTML = `
+                <h3>Анализ на продавача</h3>
+                <p><strong>Печалба:</strong> <span>${data.totalEarnings.toFixed(2)} лв.</span></p>
+                <p><strong>Най-продаваният продукт:</strong> <span>${data.topSellingProduct}</span></p>
+                <p><strong>Брой купувачи, който са купили от продуктите ви:</strong> <span>${data.buyerCount}</span></p>
+                `;
+            })
+            .catch(error =>{
+                alert(error);
+            })
+    }
 </script>
 </body>
 </html>
