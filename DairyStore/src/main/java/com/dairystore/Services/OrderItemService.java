@@ -23,4 +23,8 @@ public class OrderItemService {
     public List<OrderItem> getOrderItemsByCartId(Long cartId) {
         return orderItemRepository.findOrderItemsByCartId(cartId);
     }
+
+    public List<OrderItem> getOrderItemsBySellerId(Long sellerId) {
+        return orderItemRepository.findOrderItemsBySellerId(sellerId);
+    }
 }
