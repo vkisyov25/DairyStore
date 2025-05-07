@@ -521,7 +521,7 @@
             analysisResult.style.display = "none";
         }
 
-        fetch("/analytics/buyer")
+        fetch("/analysis/buyer")
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -546,7 +546,7 @@
             });
     }
 
-    function viewOrders(){
+    function viewOrders() {
         const container = document.getElementById("orderList");
 
         if (container.style.display === "none") {
