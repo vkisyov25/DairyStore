@@ -16,18 +16,26 @@ public class CartItemService {
     private final CartItemRepository cartItemRepository;
     private final UserService userService;
 
-    public void saveCartItems(Cart cart, Product product, int quantity, double totalPrice) {
+    public void saveCartItems(Cart cart, Product product, int quantity) {
         Long cartId = cart.getId();
         Long productId = product.getId();
         if (cartItemRepository.existsByProductIdAndCartId(productId, cartId)) {
-            cartItemRepository.updateProductQuantity(product.getId(), quantity, cart.getId());
+           updateCartItemQuantity(cart,product,quantity);
         } else {
-            CartItem cartItem = new CartItem();
-            cartItem.setCart(cart);
-            cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
-            cartItemRepository.save(cartItem);
+          createCartItem(cart,product,quantity);
         }
+    }
+
+    private void updateCartItemQuantity(Cart cart, Product product, int quantity) {
+        cartItemRepository.updateProductQuantity(product.getId(), quantity, cart.getId());
+    }
+
+    private void createCartItem(Cart cart, Product product, int quantity) {
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setProduct(product);
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
     }
 
     public void deleteCartItemsByProductId(long productId) throws Exception {
