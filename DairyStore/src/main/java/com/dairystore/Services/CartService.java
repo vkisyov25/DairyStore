@@ -25,32 +25,14 @@ public class CartService {
         User user = userService.getUserByUsername();
         Product product = productService.getProductById(productId);
         validateProductQuantity(quantity, product);
-
-        double totalPrice = calculateTotalPrice(quantity, user, product);
-
         Cart cart = findOrCreateCart(user);
-
-        cartItemService.saveCartItems(cart, product, quantity, totalPrice);
-
+        cartItemService.saveCartItems(cart, product, quantity);
     }
 
-    private  void validateProductQuantity(int quantity, Product product) throws Exception {
+    private void validateProductQuantity(int quantity, Product product) throws Exception {
         if (quantity > product.getQuantity()) {
             throw new Exception("Няма достатъчно количество от продукта в наличност!");
         }
-    }
-
-
-    private double calculateTotalPrice(int quantity, User user, Product product) {
-        double totalPrice = 0;
-        if (!user.getCompanyName().isEmpty()) {
-            totalPrice = product.getPrice() * quantity - ((product.getPrice() * quantity) * (product.getDiscount() / 100));
-            totalPrice = Math.round(totalPrice * 100.0) / 100.0;
-        } else {
-            totalPrice = product.getPrice() * quantity;
-            totalPrice = Math.round(totalPrice * 100.0) / 100.0;
-        }
-        return totalPrice;
     }
 
     @NotNull
