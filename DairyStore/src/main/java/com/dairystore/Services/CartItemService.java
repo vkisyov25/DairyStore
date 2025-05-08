@@ -20,9 +20,9 @@ public class CartItemService {
         Long cartId = cart.getId();
         Long productId = product.getId();
         if (cartItemRepository.existsByProductIdAndCartId(productId, cartId)) {
-           updateCartItemQuantity(cart,product,quantity);
+            updateCartItemQuantity(cart, product, quantity);
         } else {
-          createCartItem(cart,product,quantity);
+            createCartItem(cart, product, quantity);
         }
     }
 
@@ -38,15 +38,18 @@ public class CartItemService {
         cartItemRepository.save(cartItem);
     }
 
-    public void deleteCartItemsByProductId(long productId) throws Exception {
+    public void deleteCartItemByProductId(long productId) throws Exception {
         User user = userService.getUserByUsername();
         Long cart_id = user.getCart().getId();
+        isExist(productId, cart_id);
+        cartItemRepository.deleteByProductId(productId, cart_id);
+
+    }
+
+    private void isExist(Long productId, Long cart_id) throws Exception {
         if (!cartItemRepository.existsByProductIdAndCartId(productId, cart_id)) {
             throw new Exception("Продуктът не съществува в базата данни");
         }
-
-        cartItemRepository.deleteByProductId(productId, cart_id);
-
     }
 
     public List<CartItem> getCartItemsByCart(Cart cart) {
