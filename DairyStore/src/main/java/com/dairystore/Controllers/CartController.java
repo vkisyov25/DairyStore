@@ -50,7 +50,7 @@ public class CartController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<?> deleteProductById(@PathVariable Long productId) {
         try {
-            cartItemService.deleteCartItemsByProductId(productId);
+            cartItemService.deleteCartItemByProductId(productId);
             return ResponseEntity.ok().body("Продуктът е изтрит успешно");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
