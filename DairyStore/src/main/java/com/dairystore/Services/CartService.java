@@ -69,23 +69,33 @@ public class CartService {
         List<CartItem> cartItemList = cartItemService.getCartItemsByCart(user.getCart());
 
         return cartItemList.stream()
-                .map(cartItem -> {
-                    double discount = user.getCompanyName().isEmpty() ? 0 : cartItem.getProduct().getDiscount();
-                    double totalPricePerProduct = (cartItem.getQuantity() * cartItem.getProduct().getPrice()) - ((cartItem.getQuantity() * cartItem.getProduct().getPrice()) * (discount / 100));
-                    totalPricePerProduct = Math.round(totalPricePerProduct * 100.0) / 100.0;
-
-                    return ShoppingCartDto.builder()
-                            .id(cartItem.getProduct().getId())
-                            .name(cartItem.getProduct().getName())
-                            .type(cartItem.getProduct().getType())
-                            .weight(cartItem.getProduct().getWeight())
-                            .discount(discount)
-                            .price(cartItem.getProduct().getPrice())
-                            .quantity(cartItem.getQuantity())
-                            .totalPricePerProduct(totalPricePerProduct)
-                            .build();
-                })
+                .map(cartItem -> mapToShoppingCartDto(user, cartItem))
                 .collect(Collectors.toList());
+    }
+
+    private ShoppingCartDto mapToShoppingCartDto(User user, CartItem cartItem) {
+        Product product = cartItem.getProduct();
+        int quantity = cartItem.getQuantity();
+        double discount = user.getCompanyName().isEmpty() ? 0 : product.getDiscount();
+        double totalPricePerProduct = calculateTotalPricePerProduct(user, product, quantity);
+
+        return ShoppingCartDto.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .type(product.getType())
+                .weight(product.getWeight())
+                .discount(discount)
+                .price(product.getPrice())
+                .quantity(quantity)
+                .totalPricePerProduct(totalPricePerProduct)
+                .build();
+    }
+
+    private double calculateTotalPricePerProduct(User user, Product product, int quantity) {
+        double basePrice = product.getPrice() * quantity;
+        double discountAmount = user.getCompanyName().isEmpty() ? 0 : basePrice * (product.getDiscount() / 100);
+        double total = basePrice - discountAmount;
+        return Math.round(total * 100.0) / 100.0;
     }
 
     public Cart getCartByUser(User user) {
