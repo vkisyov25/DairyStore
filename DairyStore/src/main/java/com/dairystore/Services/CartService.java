@@ -7,6 +7,7 @@ import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.ShoppingCartDto;
 import com.dairystore.Repository.CartRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,10 +24,24 @@ public class CartService {
     public void addToCart(Long productId, int quantity) throws Exception {
         User user = userService.getUserByUsername();
         Product product = productService.getProductById(productId);
+        validateProductQuantity(quantity, product);
+
+        double totalPrice = calculateTotalPrice(quantity, user, product);
+
+        Cart cart = findOrCreateCart(user);
+
+        cartItemService.saveCartItems(cart, product, quantity, totalPrice);
+
+    }
+
+    private  void validateProductQuantity(int quantity, Product product) throws Exception {
         if (quantity > product.getQuantity()) {
             throw new Exception("Няма достатъчно количество от продукта в наличност!");
         }
+    }
 
+
+    private double calculateTotalPrice(int quantity, User user, Product product) {
         double totalPrice = 0;
         if (!user.getCompanyName().isEmpty()) {
             totalPrice = product.getPrice() * quantity - ((product.getPrice() * quantity) * (product.getDiscount() / 100));
@@ -35,18 +50,18 @@ public class CartService {
             totalPrice = product.getPrice() * quantity;
             totalPrice = Math.round(totalPrice * 100.0) / 100.0;
         }
+        return totalPrice;
+    }
 
+    @NotNull
+    private Cart findOrCreateCart(User user) {
         Cart cart = cartRepository.findByUser(user);
         if (cart == null) {
             cart = new Cart();
             cart.setUser(user);
             cartRepository.save(cart);
         }
-
-        cartItemService.saveCartItems(cart, product, quantity, totalPrice);
-
-        /*product.setQuantity(product.getQuantity() - quantity);
-        productService.save(product);*/
+        return cart;
     }
 
     public List<ShoppingCartDto> viewShoppingCart() {
