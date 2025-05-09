@@ -7,6 +7,7 @@ import com.dairystore.Models.OrderItem;
 import com.dairystore.Models.Product;
 import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.BuyerOrderDto;
+import com.dairystore.Models.dtos.OrderItemResultDto;
 import com.dairystore.Models.dtos.OrderProductDto;
 import com.dairystore.Models.dtos.ShoppingCartDto;
 import com.dairystore.Models.enums.PaymentMethod;
@@ -31,6 +32,19 @@ public class OrderService {
     private final CartService cartService;
     private final ProductRepository productRepository;
 
+    private static Order createOrder(String deliveryAddress, PaymentMethod paymentMethod, String paymentIntentId, User user, DeliveryCompany deliveryCompany) {
+        Order order = Order.builder()
+                .paymentMethod(paymentMethod)
+                .deliveryAddress(deliveryAddress)
+                .deliveryCompany(deliveryCompany)
+                .date(LocalDateTime.now())
+                .userId(user.getId())
+                .paymentIntentId(paymentIntentId)
+                .deliveryCompany(deliveryCompany)
+                .build();
+        return order;
+    }
+
     public void checkAvailable() throws Exception {
         List<ShoppingCartDto> shoppingCartDtoList = cartService.viewShoppingCart();
         for (int i = 0; i < shoppingCartDtoList.size(); i++) {
@@ -48,22 +62,22 @@ public class OrderService {
     public void makeOrder(String deliveryAddress, String deliveryCompanyId, PaymentMethod paymentMethod, String paymentIntentId) throws Exception {
         User user = userService.getUserByUsername();
         Cart cart = cartService.getCartByUser(user);
-
         List<ShoppingCartDto> shoppingCartDtoList = cartService.viewShoppingCart();
+
         updateProductQuantities(shoppingCartDtoList);
 
         DeliveryCompany deliveryCompany = deliveryCompanyService.getDeliveryCompanyById(Long.parseLong(deliveryCompanyId));
 
-        Order order = Order.builder()
-                .paymentMethod(paymentMethod)
-                .deliveryAddress(deliveryAddress)
-                .deliveryCompany(deliveryCompany)
-                .date(LocalDateTime.now())
-                .userId(user.getId())
-                .paymentIntentId(paymentIntentId)
-                .deliveryCompany(deliveryCompany)
-                .build();
+        Order order = createOrder(deliveryAddress, paymentMethod, paymentIntentId, user, deliveryCompany);
 
+        createOrderItem(cart, shoppingCartDtoList, order);
+
+        orderRepository.save(order);
+        cartItemService.deleteCartItemByCartId(cart.getId());
+
+    }
+
+    private void createOrderItem(Cart cart, List<ShoppingCartDto> shoppingCartDtoList, Order order) {
         OrderItem orderItem = null;
         for (int i = 0; i < shoppingCartDtoList.size(); i++) {
             Product product = productRepository.findProductById(shoppingCartDtoList.get(i).getId());
@@ -82,51 +96,6 @@ public class OrderService {
                     .build();
             orderItemService.saveOrderItem(orderItem);
         }
-
-        orderRepository.save(order);
-        cartItemService.deleteCartItemByCartId(cart.getId());
-
-    }
-
-    public Order getLatestOrder() {
-        User user = userService.getUserByUsername();
-        return orderRepository.findTopByUserIdOrderByDateDesc(user.getId())
-                .orElseThrow(() -> new RuntimeException("Не е намерена последна поръчка за потребителя с ID: " + user.getId()));
-    }
-
-    public List<BuyerOrderDto> getOrders() {
-        User user = userService.getUserByUsername();
-        List<Order> orderList = orderRepository.findOrdersByUserId(user.getId());
-        List<BuyerOrderDto> buyerOrderDtoList = new ArrayList<>();
-
-        for (int i = 0; i < orderList.size(); i++) {
-            Order order = orderList.get(i);
-            LocalDateTime orderDate = order.getDate();
-            String addressToDelivery = order.getDeliveryAddress();
-            PaymentMethod paymentMethod = order.getPaymentMethod();
-            String deliveryCompany = order.getDeliveryCompany().getName();
-            double deliveryFee = order.getDeliveryCompany().getDeliveryFee();
-            double priceWithDeliveryFee = deliveryFee;
-
-            List<OrderItem> orderItemList = orderItemService.getOrderItemsByOrderId(order.getId());
-            List<OrderProductDto> orderProductDtoList = new ArrayList<>();
-            for (OrderItem orderItem : orderItemList) {
-                String productName = orderItem.getName();
-                String productType = orderItem.getType();
-                int quantity = orderItem.getQuantity();
-                OrderProductDto orderProductDto = new OrderProductDto(productName, productType, quantity);
-                orderProductDtoList.add(orderProductDto);
-                priceWithDeliveryFee += orderItem.getPrice();
-            }
-            BuyerOrderDto buyerOrderDto = new BuyerOrderDto(orderDate, addressToDelivery, paymentMethod, deliveryCompany, deliveryFee, priceWithDeliveryFee, orderProductDtoList); //productName, productType, quantity
-            buyerOrderDtoList.add(buyerOrderDto);
-        }
-
-        return buyerOrderDtoList;
-    }
-
-    public List<DeliveryCompany> allDeliveryCompanies() {
-        return deliveryCompanyService.getDeliveryCompanies();
     }
 
     @Transactional
@@ -140,6 +109,52 @@ public class OrderService {
         }
     }
 
+    public Order getLatestOrder() {
+        User user = userService.getUserByUsername();
+        return orderRepository.findTopByUserIdOrderByDateDesc(user.getId())
+                .orElseThrow(() -> new RuntimeException("Не е намерена последна поръчка за потребителя с ID: " + user.getId()));
+    }
+    public List<BuyerOrderDto> getOrders() {
+        User user = userService.getUserByUsername();
+        return getOrdersByBuyerId(user.getId());
+    }
+
+    private List<BuyerOrderDto> getOrdersByBuyerId(Long buyerId) {
+        List<Order> orderList = orderRepository.findOrdersByUserId(buyerId);
+        List<BuyerOrderDto> buyerOrderDtoList = new ArrayList<>();
+        for (int i = 0; i < orderList.size(); i++) {
+            Order order = orderList.get(i);
+            LocalDateTime orderDate = order.getDate();
+            String addressToDelivery = order.getDeliveryAddress();
+            PaymentMethod paymentMethod = order.getPaymentMethod();
+            String deliveryCompany = order.getDeliveryCompany().getName();
+            double deliveryFee = order.getDeliveryCompany().getDeliveryFee();
+
+            OrderItemResultDto orderItemResultDto = getOrderItemsByOrderId(order.getId());
+            buyerOrderDtoList.add(new BuyerOrderDto(orderDate, addressToDelivery, paymentMethod, deliveryCompany, deliveryFee, orderItemResultDto.getTotalItemPrice() + deliveryFee, orderItemResultDto.getOrderProductDtoList()));
+        }
+        return buyerOrderDtoList;
+    }
+
+    private OrderItemResultDto getOrderItemsByOrderId(Long orderId) {
+        List<OrderItem> orderItemList = orderItemService.getOrderItemsByOrderId(orderId);
+        List<OrderProductDto> orderProductDtoList = new ArrayList<>();
+        double priceWithDeliveryFee = 0;
+        for (OrderItem orderItem : orderItemList) {
+            String productName = orderItem.getName();
+            String productType = orderItem.getType();
+            int quantity = orderItem.getQuantity();
+            OrderProductDto orderProductDto = new OrderProductDto(productName, productType, quantity);
+            orderProductDtoList.add(orderProductDto);
+            priceWithDeliveryFee += orderItem.getPrice();
+        }
+        OrderItemResultDto orderItemResultDto = new OrderItemResultDto(orderProductDtoList, priceWithDeliveryFee);
+        return orderItemResultDto;
+    }
+
+    public List<DeliveryCompany> allDeliveryCompanies() {
+        return deliveryCompanyService.getDeliveryCompanies();
+    }
 
     public List<Order> getOrdersByUserId(Long userId) {
         return orderRepository.findOrdersByUserId(userId);
