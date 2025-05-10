@@ -1,5 +1,6 @@
 package com.dairystore.Controllers;
 
+import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.UserInformationDto;
 import com.dairystore.Services.UserService;
 import jakarta.validation.Valid;
@@ -37,7 +38,8 @@ public class UserController {
 
     @PostMapping("/edit")
     public ResponseEntity<?> editUserInformation(@Valid @RequestBody UserInformationDto userInformationDto, BindingResult bindingResult) {
-        userService.validateUserInformationDto(userInformationDto, bindingResult);
+        User user = userService.getUserByUsername();
+        userService.validateUserInformationDto(user,userInformationDto, bindingResult);
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors()
                     .stream()
@@ -50,8 +52,8 @@ public class UserController {
             return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
 
-        userService.updateCurrentUserInformation(userInformationDto);
-        return ResponseEntity.ok(Map.of("message", "User updated successfully"));
+        userService.updateCurrentUserInformation(user,userInformationDto);
+        return ResponseEntity.ok(Map.of("message", "Потребителят е обновен успешно"));
     }
 
     @DeleteMapping("/deleteCompany")

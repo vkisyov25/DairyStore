@@ -37,47 +37,15 @@ public class UserService {
                 .build();
     }
 
-    public void updateCurrentUserInformation(UserInformationDto userInformationDto) {
-        User user = getUserByUsername();
-
-        if (userInformationDto.getUsername() != null && !userInformationDto.getUsername().isEmpty()) {
-            user.setUsername(userInformationDto.getUsername());
-        }
-        if (userInformationDto.getName() != null && !userInformationDto.getName().isEmpty()) {
-            user.setName(userInformationDto.getName());
-        }
-        if (userInformationDto.getEmail() != null && !userInformationDto.getEmail().isEmpty()) {
-            user.setEmail(userInformationDto.getEmail());
-        }
-        if (userInformationDto.getPhone() != null && !userInformationDto.getPhone().isEmpty()) {
-            user.setPhone(userInformationDto.getPhone());
-        }
-        if (userInformationDto.getAddress() != null && !userInformationDto.getAddress().isEmpty()) {
-            user.setAddress(userInformationDto.getAddress());
-        }
-        if (userInformationDto.getCompanyName() != null && !userInformationDto.getCompanyName().isEmpty()) {
-            user.setCompanyName(userInformationDto.getCompanyName());
-        }
-        if (userInformationDto.getCompanyEIK() != null && !userInformationDto.getCompanyEIK().isEmpty()) {
-            user.setCompanyEIK(userInformationDto.getCompanyEIK());
-        }
-
-        /*public void updateCurrentUserInformation(UserInformationDto userInformationDto) {
-            User user = getUserByUsername();
-
-            Optional.ofNullable(userInformationDto.getUsername()).filter(s -> !s.isEmpty()).ifPresent(user::setUsername);
-            Optional.ofNullable(userInformationDto.getName()).filter(s -> !s.isEmpty()).ifPresent(user::setName);
-            Optional.ofNullable(userInformationDto.getEmail()).filter(s -> !s.isEmpty()).ifPresent(user::setEmail);
-            Optional.ofNullable(userInformationDto.getPhone()).filter(s -> !s.isEmpty()).ifPresent(user::setPhone);
-            Optional.ofNullable(userInformationDto.getAddress()).filter(s -> !s.isEmpty()).ifPresent(user::setAddress);
-            Optional.ofNullable(userInformationDto.getCompanyName()).filter(s -> !s.isEmpty()).ifPresent(user::setCompanyName);
-            Optional.ofNullable(userInformationDto.getCompanyEIK()).filter(s -> !s.isEmpty()).ifPresent(user::setCompanyEIK);
-
-            userRepository.save(user);
-        }*/
+    public void updateCurrentUserInformation(User user, UserInformationDto userInformationDto) {
+        user.setName(userInformationDto.getName());
+        user.setEmail(userInformationDto.getEmail());
+        user.setPhone(userInformationDto.getPhone());
+        user.setAddress(userInformationDto.getAddress());
+        user.setCompanyName(userInformationDto.getCompanyName());
+        user.setCompanyEIK(userInformationDto.getCompanyEIK());
 
         userRepository.save(user);
-
     }
 
     public void deleteCompanyInfoOnTheCurrentUser() {
@@ -87,43 +55,33 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void validateUserInformationDto(UserInformationDto user, BindingResult bindingResult) {
+    public void validateUserInformationDto(User user, UserInformationDto userInformationDto, BindingResult bindingResult) {
+        companyNameValidation(user, userInformationDto, bindingResult);
+        validateCompanyEIK(user, userInformationDto, bindingResult);
+        emailValidation(user, userInformationDto, bindingResult);
+    }
 
-        if (getUserByUsername().getAuthorities().equals("seller")) {
-            if (!user.getCompanyName().isEmpty()) {
-                if (userRepository.existsByCompanyName(user.getCompanyName())) {
-                    bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
-                }
-            }
-
-            if (user.getCompanyEIK() != null) {
-                if (userRepository.existsByCompanyEIK(user.getCompanyEIK())) {
-                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
-                }
-            }
-
-        }
-
-        if (getUserByUsername().getAuthorities().equals("buyer")) {
-            if (!user.getCompanyName().isEmpty()) {
-                if (userRepository.existsByCompanyName(user.getCompanyName()) && !user.getCompanyName().isEmpty()) {
-                    bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
-                }
-            }
-
-            if (user.getCompanyEIK() != null) {
-                if (userRepository.existsByCompanyEIK(user.getCompanyEIK()) && !user.getCompanyEIK().isEmpty()) {
-                    bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
-                }
-            }
-
-        }
-
-        if (user.getEmail() != null) {
-            if (userRepository.existsByEmail(user.getEmail())) {
-                bindingResult.rejectValue("email", "error.user", "Email already exists.");
+    private void emailValidation(User user, UserInformationDto userInformationDto, BindingResult bindingResult) {
+        if (!user.getEmail().equals(userInformationDto.getEmail())) {
+            if (userRepository.existsByEmail(userInformationDto.getEmail())) {
+                bindingResult.rejectValue("email", "error.user", "Имейл адресът вече съществува");
             }
         }
+    }
 
+    private void validateCompanyEIK(User user, UserInformationDto userInformationDto, BindingResult bindingResult) {
+        if (!user.getCompanyEIK().equals(userInformationDto.getCompanyEIK())) {
+            if (userRepository.existsByCompanyEIK(userInformationDto.getCompanyEIK())) {
+                bindingResult.rejectValue("companyEIK", "error.companyEIK", "EIK вече съществува");
+            }
+        }
+    }
+
+    private void companyNameValidation(User user, UserInformationDto userInformationDto, BindingResult bindingResult) {
+        if (!user.getCompanyName().equals(userInformationDto.getCompanyName())) {
+            if (userRepository.existsByCompanyName(userInformationDto.getCompanyName())) {
+                bindingResult.rejectValue("companyName", "error.companyName", "Името на фирмата вече съществува");
+            }
+        }
     }
 }
