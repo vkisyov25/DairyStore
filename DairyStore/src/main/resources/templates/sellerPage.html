@@ -110,6 +110,7 @@
             createProductDiv.style.display = "block";
             table.style.display = "none";
             document.getElementById("editProduct").style.display = "none"
+            document.getElementById("sellerAnalysis").style.display = "none";
         } else {
             createProductDiv.style.display = "none";
         }
@@ -191,6 +192,7 @@
             table.style.display = "block";
             createProductDiv.style.display = "none";
             document.getElementById("editProduct").style.display = "none";
+            document.getElementById("sellerAnalysis").style.display = "none";
         } else {
             table.style.display = "none";
         }
@@ -267,6 +269,7 @@
         if (editProductDiv.style.display === "none") {
             editProductDiv.style.display = "block"
             document.getElementById("product-table").style.display = "none";
+            document.getElementById("sellerAnalysis").style.display = "none";
         }
         fetch(`/products/${id}`)
             .then(response => {
@@ -387,6 +390,9 @@
         let sellerAnalysis = document.getElementById("sellerAnalysis");
         if (sellerAnalysis.style.display === "none") {
             sellerAnalysis.style.display = "block";
+            document.getElementById("createProduct").style.display = "none";
+            document.getElementById("product-table").style.display = "none";
+            document.getElementById("editProduct").style.display = "none";
         } else {
             sellerAnalysis.style.display = "none";
         }
