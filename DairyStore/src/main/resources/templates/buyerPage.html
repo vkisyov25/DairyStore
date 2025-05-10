@@ -11,7 +11,8 @@
 <div id="menu">
     <label th:text="${buyer}"></label>
     <br>
-    <a href="/userInformationPage.html">My profile information</a>
+    <!--<a href="/userInformationPage.html">My profile information</a>-->
+    <i class="fa-solid fa-circle-user" onclick="openUserProfile()"></i>
     <br>
     <br>
     <button id="loadProducts" onclick="loadProductsForSale()">Продукти за покуване</button>
@@ -20,10 +21,10 @@
     <i class="fa-solid fa-cart-shopping" onclick="viewShoppingCart()"></i>
     <br>
     <br>
-    <button type="submit" id="viewAnalysesBtn" onclick="viewAnalysis()">View analyses</button>
+    <button type="submit" id="viewAnalysesBtn" onclick="viewAnalysis()">Анализи</button>
     <br>
     <br>
-    <button type="submit" id="allOrdersBtn" onclick="viewOrders()">View your all orders</button>
+    <button type="submit" id="allOrdersBtn" onclick="viewOrders()">Моите поръчки</button>
     <br>
     <br>
     <form action="/test/logout" method="post">
@@ -106,6 +107,11 @@
 </div>
 <script src="https://js.stripe.com/v3/"></script>
 <script>
+
+    function openUserProfile() {
+        window.location.href = "/userInformationPage.html";
+    }
+
     let priceWithoutDeliveryFee = 0;
 
 
@@ -554,6 +560,8 @@
             document.getElementById("product-table").style.display = "none";
             document.getElementById("orderList").style.display = "none";
             document.getElementById("analysisResult").style.display = "none";
+            document.getElementById("order-input").style.display = "none";
+            document.getElementById("shopping-car-div").style.display = "none";
         } else {
             container.style.display = "none";
         }
