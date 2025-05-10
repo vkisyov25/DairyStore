@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -53,17 +51,6 @@ public class ProductController {
         }
         productService.createProduct(createProductDto);
         return ResponseEntity.ok(Map.of("message", "Продуктът е създаден успешно"));
-    }
-
-    @GetMapping("/listToBuy")
-    public String displayListToBuyPage() {
-        return "listToBuyPage";
-    }
-
-    @PostMapping("/listToBuy")
-    public String viewProductsByType(@RequestParam String productType, Model model) {
-        model.addAttribute("productList", productService.getProductsByType(productType));
-        return "listToBuyPage";
     }
 
     @DeleteMapping("/{id}")

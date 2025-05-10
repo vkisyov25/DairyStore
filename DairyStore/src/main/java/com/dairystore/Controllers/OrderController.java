@@ -1,14 +1,12 @@
 package com.dairystore.Controllers;
 
 import com.dairystore.Models.DeliveryCompany;
-import com.dairystore.Models.Order;
 import com.dairystore.Models.dtos.BuyerOrderDto;
 import com.dairystore.Models.dtos.OrderRequestDto;
 import com.dairystore.Services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,14 +46,6 @@ public class OrderController {
 
         }
     }
-
-    @GetMapping("/latest-order")
-    public String viewOrder (Model model){
-        Order order = orderService.getLatestOrder();
-        model.addAttribute("order", order);
-        return "currentOrder";
-    }
-
 
     @GetMapping("/viewAll")
     public ResponseEntity<List<BuyerOrderDto>> displayAllOrders() {
