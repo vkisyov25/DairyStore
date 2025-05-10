@@ -53,7 +53,7 @@ public class UserController {
         }
 
         userService.updateCurrentUserInformation(user,userInformationDto);
-        return ResponseEntity.ok(Map.of("message", "User updated successfully"));
+        return ResponseEntity.ok(Map.of("message", "Потребителят е обновен успешно"));
     }
 
     @DeleteMapping("/deleteCompany")
