@@ -25,12 +25,6 @@ import java.util.stream.Collectors;
 public class UserController {
     private final UserService userService;
 
-    /*@GetMapping("/allInformation")
-    public String getUserByUsername(Model model) {
-        model.addAttribute("user", userService.getUserByUsername());
-        return "userInformationPage";
-    }*/
-
     @GetMapping("/allInformation")
     public ResponseEntity<UserInformationDto> getCurrentUserInformation() {
         return ResponseEntity.ok(userService.getCurrentUserInformation());
@@ -39,7 +33,7 @@ public class UserController {
     @PostMapping("/edit")
     public ResponseEntity<?> editUserInformation(@Valid @RequestBody UserInformationDto userInformationDto, BindingResult bindingResult) {
         User user = userService.getUserByUsername();
-        userService.validateUserInformationDto(user,userInformationDto, bindingResult);
+        userService.validateUserInformationDto(user, userInformationDto, bindingResult);
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors()
                     .stream()
@@ -52,7 +46,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
 
-        userService.updateCurrentUserInformation(user,userInformationDto);
+        userService.updateCurrentUserInformation(user, userInformationDto);
         return ResponseEntity.ok(Map.of("message", "Потребителят е обновен успешно"));
     }
 
