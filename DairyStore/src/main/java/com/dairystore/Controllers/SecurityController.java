@@ -45,6 +45,8 @@ public class SecurityController {
                 return ResponseEntity.ok("redirect:/test/buyer");
             } else if (role.equals("seller")) {
                 return ResponseEntity.ok("redirect:/test/seller");
+            } else if (role.equals("admin")) {
+                return ResponseEntity.ok("redirect:/test/admin");
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Непозната роля.");
         } catch (UsernameNotFoundException e) {
@@ -86,6 +88,12 @@ public class SecurityController {
     public String buyerPage(Model model) {
         model.addAttribute("buyer", "Hello " + userService.getUserByUsername().getName());
         return "buyerPage";
+    }
+
+    @GetMapping("/admin")
+    public String adminPage(Model model) {
+        model.addAttribute("admin", "Hello " + userService.getUserByUsername().getName());
+        return "adminPage";
     }
 
     @PostMapping("/logout")
