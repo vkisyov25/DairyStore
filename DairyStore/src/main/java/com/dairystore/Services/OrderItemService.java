@@ -1,30 +1,15 @@
 package com.dairystore.Services;
 
 import com.dairystore.Models.OrderItem;
-import com.dairystore.Repository.OrderItemRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class OrderItemService {
-    private final OrderItemRepository orderItemRepository;
+public interface OrderItemService {
+    void saveOrderItem(OrderItem orderItem);
 
-    public void saveOrderItem(OrderItem orderItem) {
-        orderItemRepository.save(orderItem);
-    }
+    List<OrderItem> getOrderItemsByOrderId(Long orderId);
 
-    public List<OrderItem> getOrderItemsByOrderId(Long orderId) {
-        return orderItemRepository.findOrderItemsByOrderId(orderId);
-    }
+    List<OrderItem> getOrderItemsByCartId(Long cartId);
 
-    public List<OrderItem> getOrderItemsByCartId(Long cartId) {
-        return orderItemRepository.findOrderItemsByCartId(cartId);
-    }
-
-    public List<OrderItem> getOrderItemsBySellerId(Long sellerId) {
-        return orderItemRepository.findOrderItemsBySellerId(sellerId);
-    }
+    List<OrderItem> getOrderItemsBySellerId(Long sellerId);
 }

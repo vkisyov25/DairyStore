@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/all") //"/my-products"
+    @GetMapping("/all")
     public ResponseEntity<List<ViewProductDto>> getCurrentUserProducts() {
         return ResponseEntity.ok().body(productService.getCurrentUserProducts());
     }
@@ -39,13 +39,8 @@ public class ProductController {
 
         if (bindingResult.hasErrors()) {
 
-            Map<String, String> errors = bindingResult.getFieldErrors()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            FieldError::getField,
-                            fieldError -> fieldError.getDefaultMessage(),
-                            (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
-                    ));
+            Map<String, String> errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, fieldError -> fieldError.getDefaultMessage(), (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
+            ));
 
             return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
@@ -72,13 +67,8 @@ public class ProductController {
     @PutMapping("/edit")
     public ResponseEntity<?> saveEditedProduct(@Valid @RequestBody ViewProductDto viewProductDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            Map<String, String> errors = bindingResult.getFieldErrors()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            FieldError::getField,
-                            fieldError -> fieldError.getDefaultMessage(),
-                            (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
-                    ));
+            Map<String, String> errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, fieldError -> fieldError.getDefaultMessage(), (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
+            ));
             return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
 
