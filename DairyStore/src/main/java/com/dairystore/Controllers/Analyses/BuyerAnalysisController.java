@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/analysis")
 public class BuyerAnalysisController {
     private final BuyerAnalysisService buyerAnalysisService;
+
     @GetMapping("/buyer")
     public ResponseEntity<BuyerAnalyticsDto> analyzeUserShoppingBehavior() {
         BuyerAnalyticsDto analytics = buyerAnalysisService.getBuyerAnalysis();
