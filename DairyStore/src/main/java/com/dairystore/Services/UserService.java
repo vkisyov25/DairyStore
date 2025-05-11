@@ -1,6 +1,7 @@
 package com.dairystore.Services;
 
 import com.dairystore.Models.User;
+import com.dairystore.Models.dtos.UserDto;
 import com.dairystore.Models.dtos.UserInformationDto;
 import com.dairystore.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +85,23 @@ public class UserService {
             if (userRepository.existsByCompanyName(userInformationDto.getCompanyName())) {
                 bindingResult.rejectValue("companyName", "error.companyName", "Името на фирмата вече съществува");
             }
+        }
+    }
+
+    public List<UserDto> getUsers() {
+        List<UserDto> allUsersAsDto = userRepository.findAllUsersAsDto();
+        return allUsersAsDto.stream().filter(user -> user.getAuthorities().equals("seller") || user.getAuthorities().equals("buyer"))
+                .toList();
+    }
+
+    public void deleteUserById(Long userId) throws Exception {
+        isExist(userId);
+        userRepository.deleteById(userId);
+    }
+
+    private void isExist(Long userId) throws Exception {
+        if (!userRepository.existsById(userId)) {
+            throw new Exception("Потребителят не съществува в базата данни");
         }
     }
 }

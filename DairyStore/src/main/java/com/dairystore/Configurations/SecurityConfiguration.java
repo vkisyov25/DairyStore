@@ -38,11 +38,11 @@ public class SecurityConfiguration {
                                 .requestMatchers("/products/listToBuy").hasAuthority("buyer")
                                 .requestMatchers("/cart/add").hasAuthority("buyer")
                                 .requestMatchers("/cart/view").hasAuthority("buyer")
-                                .requestMatchers(HttpMethod.DELETE,"/cart/{productId}").hasAuthority("buyer")
+                                .requestMatchers(HttpMethod.DELETE, "/cart/{productId}").hasAuthority("buyer")
                                 .requestMatchers("/order/delivery-companies").hasAuthority("buyer")
                                 .requestMatchers("/order/make").hasAuthority("buyer")
                                 .requestMatchers("/order/latest-order").hasAuthority("buyer")
-                               /* .requestMatchers("/analytics/buyer").hasAuthority("buyer")*/
+                                /* .requestMatchers("/analytics/buyer").hasAuthority("buyer")*/
                                 .requestMatchers("/analysis/buyer").hasAuthority("buyer")
                                 .requestMatchers("/analysis/seller").hasAuthority("seller")
                                 .requestMatchers("/user/edit").hasAnyAuthority("seller", "buyer")
@@ -60,6 +60,11 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/products/{id}").hasAuthority("seller")
                                 .requestMatchers("/products/edit").hasAuthority("seller")
                                 .requestMatchers("/api/payments/create-payment-intent").hasAuthority("buyer")
+                                .requestMatchers("/delivery-company/all").hasAuthority("admin")
+                                .requestMatchers("/user/view-all").hasAuthority("admin")
+                                .requestMatchers(HttpMethod.POST, "/delivery-company/create").hasAuthority("admin")
+                                .requestMatchers(HttpMethod.DELETE, "/delivery-company/deleteBy/{companyId}").hasAuthority("admin")
+                                .requestMatchers(HttpMethod.DELETE, "/user/deleteBy/{userId}").hasAuthority("admin")
                                 .anyRequest().authenticated()
 
                 )
