@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Buyer</title>
-    <link rel="stylesheet" href="/buyerPage.css">
+    <link rel="stylesheet" href="/css/buyerPage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://js.stripe.com/v3/"></script>
 </head>
@@ -106,10 +106,10 @@
     <span th:text="${success}"></span>
 </div>
 <script src="https://js.stripe.com/v3/"></script>
-<script>
+<!--<script>
 
     function openUserProfile() {
-        window.location.href = "/userInformationPage.html";
+        window.location.href = "/html/userInformationPage.html";
     }
 
     let priceWithoutDeliveryFee = 0;
@@ -314,12 +314,12 @@
                  <input type="text" id="deliveryAddress" required><br>
                  <label for="deliveryCompany">Фирма доставчик</label>
                  <select id="deliveryCompany" required>
-                    <option value="">-- Избери --</option>
+                    <option value="">&#45;&#45; Избери &#45;&#45;</option>
                  </select><br>
 
                  <label for="paymentMethod">Начин на плащане</label>
                  <select id="paymentMethod" required>
-                    <option value="">-- Избери --</option>
+                    <option value="">&#45;&#45; Избери &#45;&#45;</option>
                     <option value="CARD">С карта</option>
                     <option value="CASH">Кеш</option>
                  </select><br>
@@ -328,7 +328,7 @@
                  <form id="payment-form" style="display:none;">
                     <div id="paymentInfo" >
                         <label for="card-element">Номер на карта</label>
-                        <div id="card-element"></div> <!-- Това е мястото, където ще се показва Stripe картовия елемент -->
+                        <div id="card-element"></div> &lt;!&ndash; Това е мястото, където ще се показва Stripe картовия елемент &ndash;&gt;
                         <button type="submit">Плащане</button>
                     </div>
                     <div id="payment-message"></div>
@@ -587,7 +587,7 @@
                         order.orderProductDtoList.forEach(product => {
                             console.log("Продукт:", product);  // Виж продукта
                             productsHtml += `
-                        <h3>-----------------------------------------------</h3>
+                        <h3>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</h3>
                         <ol>
                             <strong>Име:</strong> ${product.productName}
                             <br>
@@ -595,7 +595,7 @@
                             <br>
                             <strong>Количество:</strong> ${product.quantity} броя
                         </ol>
-                        <h3>-----------------------------------------------</h3>
+                        <h3>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</h3>
                     `;
                         });
                     } else {
@@ -625,6 +625,7 @@
 
             .catch(err => console.error(err));
     }
-</script>
+</script>-->
+<script src="/js/buyerPage.js"></script>
 </body>
 </html>

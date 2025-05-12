@@ -58,7 +58,7 @@ public class DeliveryCompanyController {
             return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
         deliveryCompanyService.createDeliveryCompany(createDeliveryCompanyDto);
-        return ResponseEntity.ok(Map.of("message", "Продуктът е създаден успешно"));
+        return ResponseEntity.ok(Map.of("message", "Фирмата доставчик е добавена успешно"));
     }
 
 }

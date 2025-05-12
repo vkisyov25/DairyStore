@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>User Information</title>
-    <link rel="stylesheet" href="/userInformation.css">
+    <link rel="stylesheet" href="/css/userInformation.css">
 
 </head>
 <body>
@@ -12,7 +12,7 @@
 <button id="saveBtn" style="display:none;" onclick="saveEditedUserInformation()">Запази</button>
 <div id="back-buttons"></div>
 </body>
-<script>
+<!--<script>
     console.log("Скриптът е зареден!");
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -163,7 +163,7 @@
                     displayErrors(result.errors);
                 } else {
                     alert(result.message);
-                    window.location.href = "/userInformationPage.html";
+                    window.location.href = "/html/userInformationPage.html";
                 }
             })
             .catch(error => {
@@ -209,12 +209,13 @@
             .then(result => {
                 console.log("Server response:", result);
                 alert(result.message || "Фирмата беше успешно изтрита!");
-                window.location.href = "/userInformationPage.html";
+                window.location.href = "/html/userInformationPage.html";
             })
             .catch(error => {
                 console.error("Error:", error);
                 alert("Възникна грешка при изтриването.");
             });
     }
-</script>
+</script>-->
+<script src="/js/userInformationPage.js"></script>
 </html>

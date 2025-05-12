@@ -99,7 +99,7 @@ public class SecurityController {
     @PostMapping("/logout")
     public String logout() {
         customUserDetailsService.deleteCookies();
-        return "redirect:/homePage.html";
+        return "redirect:/html/homePage.html";
     }
 
     @GetMapping("/tokenExpiration")
