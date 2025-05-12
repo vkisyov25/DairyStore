@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>CreateForm</title>
-    <link rel="stylesheet" href="/registerPage.css">
+    <link rel="stylesheet" href="/css/registerPage.css">
 
 </head>
 <body>
@@ -64,7 +64,7 @@
 
     <input class="submitBtn" type="submit" onclick="saveUser()" value="запази">
 </div>
-<script>
+<!--<script>
     function toggleCompanyFields() {
         const role = document.getElementById("role").value;
         const companyFields = document.getElementById("companyFields");
@@ -112,7 +112,7 @@
                 displayErrors(data.errors);
             } else {
                 alert(data.message);
-                window.location.href = "/login.html";
+                window.location.href = "/html/login.html";
             }
         }).catch(error => {
             console.error("Error:", error);
@@ -139,7 +139,7 @@
         });
     }
 
-</script>
-
+</script>-->
+<script src="/js/registerPage.js"></script>
 </body>
 </html>
