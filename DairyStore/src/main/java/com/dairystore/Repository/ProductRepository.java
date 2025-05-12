@@ -36,4 +36,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("UPDATE Product p SET p.quantity = p.quantity - :quantity WHERE p.id = :productId AND p.quantity >= :quantity")
     int updateProductQuantity(@Param("productId") Long productId, @Param("quantity") int quantity);
 
+    boolean existsByName(String name);
+
 }
