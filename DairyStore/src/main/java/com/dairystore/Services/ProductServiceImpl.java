@@ -8,6 +8,7 @@ import com.dairystore.Models.dtos.ViewProductDto;
 import com.dairystore.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,12 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(viewProductDto.getQuantity());
 
         productRepository.save(product);
+    }
+
+    public void isExist(String name, BindingResult bindingResult) {
+        if (productRepository.existsByName(name)) {
+            bindingResult.rejectValue("name", "error-name", "Продукт с това име вече съществува");
+        }
     }
 
     @Override

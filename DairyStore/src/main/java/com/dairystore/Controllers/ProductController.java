@@ -36,7 +36,7 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createNewProduct(@Valid @RequestBody CreateProductDto createProductDto, BindingResult bindingResult) {
-
+        productService.isExist(createProductDto.getName(), bindingResult);
         if (bindingResult.hasErrors()) {
 
             Map<String, String> errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, fieldError -> fieldError.getDefaultMessage(), (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
