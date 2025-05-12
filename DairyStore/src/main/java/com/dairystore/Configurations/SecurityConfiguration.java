@@ -68,7 +68,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/js/adminPage.js").hasAuthority("admin")
                                 .requestMatchers("/js/buyerPage.js").hasAuthority("buyer")
                                 .requestMatchers("/js/sellerPage.js").hasAuthority("seller")
-                                .requestMatchers("/js/login.js","/js/userInformationPage.js").permitAll()
+                                .requestMatchers("/js/login.js","/js/userInformationPage.js","/js/registerPage.js").permitAll()
                                 .anyRequest().authenticated()
 
                 )

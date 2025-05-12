@@ -65,7 +65,7 @@ function displayErrors(errors) {
         const errorSpan = document.getElementById(`error-${field}`);
         if (errorSpan) {
             errorSpan.textContent = Array.isArray(errors[field])
-                ? errors[field].join(" ") // Обединява грешките в един текст
+                ? errors[field][0]
                 : errors[field];
             errorSpan.style.color = "red";
         }
