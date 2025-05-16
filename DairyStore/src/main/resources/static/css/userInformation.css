@@ -1,14 +1,62 @@
-#deleteFirmBtn {
-    background-color: red;
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    text-align: center;
+    background-color: #f2a900;
+    padding: 20px;
     color: white;
-    padding: 10px 15px;
+}
+
+.main-content {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.user-info {
+    margin-bottom: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+button {
+    padding: 10px 20px;
+    font-weight: bold;
+    background-color: #f2a900;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
 }
 
-#deleteFirmBtn:hover {
-    background-color: darkred;
+button:hover {
+    background-color: #99f200;
+}
+
+.navigation-buttons {
+    text-align: center;
+    margin-top: 20px;
+    display: inline-block;
+    background-color: #f2a900;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.navigation-buttons:hover {
+    background-color: #99f200;
 }

@@ -1,9 +1,25 @@
+.background-blur {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background-image: url("https://goodfood.bg/wp-content/uploads/2022/09/lacticinios.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+
 body {
     background-color: #d1cdcd;
 }
 
+/*menu*/
 .menu {
-    position: fixed; /* Закрепване в горната част */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -11,41 +27,37 @@ body {
     padding: 10px 20px;
     display: flex;
     justify-content: center;
-    gap: 20px; /* Разстояние между бутоните */
+    gap: 20px;
+    z-index: 1000;
 }
 
 .fa-circle-user {
     font-size: 50px;
-    color: black;
-}
-
-.navbar a,
-.navbar button {
     color: white;
-    text-decoration: none;
-    padding: 10px 15px;
-    border: none;
-    background-color: #007bff; /* Син фон за бутоните */
-    border-radius: 5px;
+}
+
+.menu button {
+    border-radius: 15px;
+
+}
+
+.menu button:hover {
     cursor: pointer;
-    font-size: 16px;
-}
-
-.navbar button {
-    background-color: #28a745; /* Зелен фон за бутона */
-}
-
-.navbar a:hover,
-.navbar button:hover {
     opacity: 0.8;
 }
 
+.menu i:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+/*create product*/
 .product-form {
-    position: absolute;
+    position: fixed;
     top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 500px; /* Увеличаваме ширината */
+    max-width: 500px;
     width: 90%; /* За да изглежда добре и на малки екрани */
     background: #ffffff;
     padding: 25px;
@@ -98,14 +110,15 @@ body {
     border-radius: 5px;
     margin-top: 15px;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
 }
 
 .product-form button:hover {
     background: #99f200;
 }
 
+/*view own products*/
 #product-table {
+
     border-collapse: collapse;
     background-color: white;
     margin-top: 50px;
@@ -147,11 +160,12 @@ body {
     justify-content: center;
 }
 
+/*edit product*/
 #editProduct {
     background: white;
     width: 330px;
     position: fixed;
-    top: 50%;
+    top: 56%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
@@ -190,7 +204,6 @@ body {
     border-radius: 5px;
     margin-top: 15px;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
 }
 
 #editProduct button:hover {
@@ -203,4 +216,21 @@ body {
     margin-bottom: 5px;
 }
 
+/*Analyses*/
+.sellerAnalysis-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 
+}
+
+#sellerAnalysis {
+    position: fixed;
+    border: 5px solid #f27900;
+    border-radius: 15px;
+    padding: 30px;
+    width: 400px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 25px;
+}

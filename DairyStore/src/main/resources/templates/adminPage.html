@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin</title>
+    <link rel="stylesheet" href="/css/adminPage.css">
 </head>
 <body>
-<div>
+<div class="background-admin-photo"></div>
+<div class="menu">
     <nav>
-        <h2>You are admin</h2>
+        <h2>Администратор</h2>
         <div th:text="${admin}"></div>
         <br>
         <button id="viewDeliveryCompanyBtn" onclick="viewDeliveryCompany()">Виж фирмите доставчици</button>
@@ -19,256 +21,62 @@
         <button id="viewUsersBtn" onclick="viewUsers()">Виж всички потребители</button>
         <br>
         <form action="/test/logout" method="post">
-            <button type="submit">Logout</button>
+            <button type="submit">Изход</button>
         </form>
     </nav>
 </div>
 
-<table id="deliveryTable" style="display: none" border="1">
-    <thead>
-    <tr>
-        <th>Име</th>
-        <th>Доставка (лв)</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
-<div id="createDeliveryCompany" style="display: none">
-    <h2>Добавяне на фирма доставчик</h2>
-    <br>
-    <label for="deliveryCompanyName">Име</label>
-    <input id="deliveryCompanyName" type="text">
-    <br>
-    <span class="error-message" id="error-name"></span>
-    <br>
-    <label for="deliveryFee">Доставка(лв)</label>
-    <input type="text" id="deliveryFee">
-    <br>
-    <span class="error-message" id="error-deliveryFee"></span>
-    <br>
-    <button id="saveBtn" onclick="saveDeliveryCompany()">Запази</button>
-    <br>
-</div>
-
-<table id="usersTable" style="display: none" border="1">
-    <thead>
-    <tr>
-        <th>Потребителско име</th>
-        <th>Роля</th>
-        <th>Имейл</th>
-        <th>Име</th>
-        <th>Телефонен номер</th>
-        <th>Адрес</th>
-        <th>Фирма</th>
-        <th>ЕИК</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
-<!--<script>
-    function viewDeliveryCompany() {
-        let table = document.getElementById("deliveryTable")
-        if (table.style.display === "none") {
-            table.style.display = "block";
-            document.getElementById("createDeliveryCompany").style.display = "none";
-            document.getElementById("usersTable").style.display = "none";
-        } else {
-            table.style.display = "none";
-        }
-
-        fetch("/delivery-company/all")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Невалидна заявка")
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                const tableBody = document.querySelector("#deliveryTable tbody");
-                tableBody.innerHTML = "";
-
-                data.forEach(company => {
-                    const row = document.createElement("tr");
-
-                    row.innerHTML = `
-                        <td>${company.name}</td>
-                        <td>${company.deliveryFee.toFixed(2)}</td>
-                        <td><button type="submit" onclick="deleteDeliveryFee(${company.id})">Изтрий</button></td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(err => {
-                console.error("Грешка при зареждане:", err);
-            })
-    }
-
-    function deleteDeliveryFee(companyId) {
-        console.log(companyId);
-        fetch(`/delivery-company/deleteBy/${companyId}`, {
-            method: "DELETE"
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Невалидна заявка")
-                }
-                return response.text();
-            })
-            .then(() => {
-                document.getElementById("deliveryTable").style.display = "none";
-                viewDeliveryCompany()
-            })
-            .catch(error => {
-                alert("Грешка при изтриване: " + error.message);
-            })
-    }
-
-    function addDeliveryCompany() {
-        let createdDiv = document.getElementById("createDeliveryCompany")
-        if (createdDiv.style.display === "none") {
-            createdDiv.style.display = "block";
-            document.getElementById("deliveryTable").style.display = "none";
-            document.getElementById("usersTable").style.display = "none";
-        } else {
-            createdDiv.style.display = "none";
-        }
-    }
-
-    function saveDeliveryCompany() {
-        let obj = {
-            name: document.getElementById("deliveryCompanyName").value,
-            deliveryFee: document.getElementById("deliveryFee").value
-        };
-
-        fetch("/delivery-company/create", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(obj),
-            credentials: "include"
-        }).then(response => {
-            return response.json();
-        }).then(data => {
-            console.log(data);
-            if (data.errors) {
-                displayErrors(data.errors);
-            } else {
-                clearForm();
-                alert(data.message);
-                document.getElementById("createDeliveryCompany").style.display = "none";
-            }
-        }).catch(error => {
-            console.error("Грешка:", error);
-            alert(error);
-        });
-    }
-
-    function displayErrors(errors) {
-        // Изчистваме предишните грешки
-        document.querySelectorAll(".error-message").forEach(span => {
-            span.textContent = "";
-        });
-
-        // Обхождаме грешките и ги показваме под съответните полета
-        Object.keys(errors).forEach(field => {
-            const errorSpan = document.getElementById(`error-${field}`);
-            if (errorSpan) {
-                errorSpan.textContent = Array.isArray(errors[field])
-                    ? errors[field][0] // Вземаме само първата грешка за всяко поле
-                    : errors[field];
-                errorSpan.style.color = "red";
-            }
-        });
+<section class="deliveryCompanies-container">
+    <table id="deliveryTable" style="display: none" border="1">
+        <thead>
+        <tr>
+            <th>Име</th>
+            <th>Доставка (лв)</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</section>
 
 
-    }
+<section class="create-container">
+    <div id="createDeliveryCompany" style="display: none">
+        <h2>Добавяне на фирма доставчик</h2>
+        <label class="label" for="deliveryCompanyName">Име</label>
+        <input id="deliveryCompanyName" type="text">
+        <br>
+        <span class="error-message" id="error-name"></span>
+        <br>
+        <label class="label" for="deliveryFee">Доставка(лв)</label>
+        <input type="text" id="deliveryFee">
+        <br>
+        <span class="error-message" id="error-deliveryFee"></span>
+        <br>
+        <button id="saveBtn" onclick="saveDeliveryCompany()">Запази</button>
+    </div>
+</section>
 
-    function clearForm() {
-        //clear input fields
-        document.querySelectorAll("#createDeliveryCompany input").forEach(input => {
-            input.value = "";
-        });
-        //clear error fields
-        document.querySelectorAll(".error-message").forEach(span => {
-            span.textContent = "";
-        });
-    }
-
-    function viewUsers() {
-        let userTable = document.getElementById("usersTable")
-        if (userTable.style.display === "none") {
-            userTable.style.display = "block";
-            document.getElementById("createDeliveryCompany").style.display = "none";
-            document.getElementById("deliveryTable").style.display = "none";
-        } else {
-            userTable.style.display = "none";
-        }
-
-        fetch("/user/view-all")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Невалидна заявка")
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                const tableBody = document.querySelector("#usersTable tbody");
-                tableBody.innerHTML = "";
-
-                data.forEach(user => {
-                    const row = document.createElement("tr");
-
-                    row.innerHTML = `
-                        <td>${user.username}</td>
-                        <td>${user.authorities}</td>
-                        <td>${user.email}</td>
-                        <td>${user.name}</td>
-                        <td>${user.phone}</td>
-                        <td>${user.address}</td>
-                        <td>${user.companyName}</td>
-                        <td>${user.companyEIK}</td>
-                        <td><button type="submit" onclick="deleteUserById(${user.id})">Изтрий</button></td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(err => {
-                console.error("Грешка при зареждане:", err);
-            })
-    }
-
-    function deleteUserById(userId) {
-        if (!confirm("Сигурни ли сте, че искате да изтриете потребителя")) {
-            return;
-        }
-        console.log(userId);
-        fetch(`/user/deleteBy/${userId}`, {
-            method: "DELETE"
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Невалидна заявка")
-                }
-                return response.text();
-            })
-            .then(() => {
-                document.getElementById("usersTable").style.display = "none";
-                viewUsers()
-            })
-            .catch(error => {
-                alert("Грешка при изтриване: " + error.message);
-            })
-    }
-</script>-->
+<section class="users-container">
+    <table id="usersTable" style="display: none" border="1">
+        <thead>
+        <tr>
+            <th>Потребителско име</th>
+            <th>Роля</th>
+            <th>Имейл</th>
+            <th>Име</th>
+            <th>Телефонен номер</th>
+            <th>Адрес</th>
+            <th>Фирма</th>
+            <th>ЕИК</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</section>
 <script src="/js/adminPage.js"></script>
 </body>
 </html>

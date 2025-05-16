@@ -1,0 +1,168 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.background-admin-photo {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background-image: url("https://goodfood.bg/wp-content/uploads/2022/09/lacticinios.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+/* menu */
+.menu nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f2a900;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Разстояние между бутоните */
+    z-index: 1000;
+}
+
+.menu nav h2,
+.menu nav div,
+.menu nav form,
+.menu nav button {
+    margin: 5px;
+}
+
+.menu nav button {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.menu nav button:hover {
+    border: 1px solid #f27900;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffe38d;
+}
+
+/* add delivery company*/
+.create-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 80px); /* Изваждаме височината на менюто */
+}
+
+#createDeliveryCompany {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 30px 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    max-width: 300px;
+}
+
+#createDeliveryCompany h2 {
+    align-self: center;
+    margin-bottom: 10px;
+}
+
+#createDeliveryCompany input {
+    width: 100%;
+    padding: 6px;
+    font-size: 14px;
+    gap: 20px;
+}
+
+#createDeliveryCompany .error-message {
+    color: red;
+    font-size: 12px;
+    height: 14px;
+}
+
+#createDeliveryCompany button {
+    align-self: center;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f2a900;
+    font-size: 15px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#createDeliveryCompany button:hover {
+    background-color: #99f200;
+    cursor: pointer;
+}
+
+/*delivery company table*/
+.deliveryCompanies-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#deliveryTable {
+    background-color: white;
+    border: 5px solid #f27900;
+    box-shadow: 0 0 20px #f27900;
+    border-radius: 10px;
+}
+
+#deliveryTable thead tr {
+    background-color: #f27900;
+}
+
+#deliveryTable button {
+    background-color: white;
+}
+
+#deliveryTable button:hover {
+    cursor: pointer;
+    box-shadow: 0 0 15px #f27900
+}
+
+.users-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#usersTable {
+    font-size: 15px;
+    text-align: left;
+    background-color: white;
+    border: 5px solid #f27900;
+    box-shadow: 0 0 20px #f27900;
+    border-radius: 10px;
+}
+
+#usersTable thead tr {
+    background-color: #f27900;
+}
+
+#usersTable button {
+    background-color: white;
+}
+
+#usersTable button:hover {
+    cursor: pointer;
+    box-shadow: 0 0 15px #f27900
+}

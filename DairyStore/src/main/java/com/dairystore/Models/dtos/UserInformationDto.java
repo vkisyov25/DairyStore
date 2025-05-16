@@ -1,5 +1,6 @@
 package com.dairystore.Models.dtos;
 
+import com.dairystore.Validations.CompanyEIKDto;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@CompanyEIKDto
 public class UserInformationDto {
     private String username;
     private String authorities;
@@ -19,6 +21,5 @@ public class UserInformationDto {
     private String phone;
     private String address;
     private String companyName;
-    @Pattern(regexp = "^[0-9]{9}$", message = "EIK номерът на компанията трябва да е точно 9 цифри.")
     private String companyEIK;
 }

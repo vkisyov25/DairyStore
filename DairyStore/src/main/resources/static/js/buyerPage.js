@@ -1,3 +1,4 @@
+loadProductsForSale();
 function openUserProfile() {
     window.location.href = "/html/userInformationPage.html";
 }
@@ -144,7 +145,7 @@ function viewShoppingCart() {
                 tableBody.appendChild(row);
             })
             console.log("Обща сума на покупката", totalPrice);
-            document.getElementById("total-price").textContent = "Дължима сума без вкючена доставка: " + totalPrice.toFixed(2);
+            document.getElementById("total-price").textContent = "Дължима сума без вкючена доставка: " + totalPrice.toFixed(2)+" лв";
             priceWithoutDeliveryFee = totalPrice;
 
 
@@ -430,7 +431,7 @@ function viewAnalysis() {
                 <h3>Анализ на купувача</h3>
                 <p><strong>Обща сума:</strong> <span>${data.totalPurchasePrice.toFixed(2)} лв.</span></p>
                 <p><strong>Средна цена на покупка:</strong> <span>${data.averagePurchasePrice.toFixed(2)} лв.</span></p>
-                <p><strong>Най-често купуван продукт:</strong> <span>${data.mostPurchasedType}</span></p>
+                <p><strong>Най-често купуван тип продукт:</strong> <span>${data.mostPurchasedType}</span></p>
             `;
 
 
@@ -472,7 +473,7 @@ function viewOrders() {
             date.forEach(order => {
                 console.log("Обработва се поръчка:", order);
                 // Обработка на списъка с продукти
-                let productsHtml = "<ul>";
+                let productsHtml = "<ol>";
                 if (order.orderProductDtoList && order.orderProductDtoList.length > 0) {
                     order.orderProductDtoList.forEach(product => {
                         console.log("Продукт:", product);  // Виж продукта
@@ -497,7 +498,15 @@ function viewOrders() {
                 const divElement = document.createElement("div");
                 divElement.innerHTML = `
 
-                    <p><strong>Дата на поръчката:</strong><span>${order.orderDate}</span></p>
+                    <p><strong>Дата на поръчката:</strong><span>${new Date(order.orderDate).toLocaleString("bg-BG", {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                     })}
+                    </span></p>
                     <p><strong>Адрес на доставка:</strong><span>${order.addressToDelivery}</span></p>
                     <p><strong>Начин на плащане:</strong><span>${order.paymentMethod}</span></p>
                     <p><strong>Фирма доставчик:</strong><span>${order.deliveryCompany}</span></p>

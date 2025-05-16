@@ -80,19 +80,18 @@ public class SecurityController {
 
     @GetMapping("/seller")
     public String sellerPage(Model model) {
-        model.addAttribute("seller", "Hello " + userService.getUserByUsername().getName());
+        model.addAttribute("seller", "Здравей, " + userService.getUserByUsername().getName());
         return "sellerPage";
     }
 
     @GetMapping("/buyer")
     public String buyerPage(Model model) {
-        model.addAttribute("buyer", "Hello " + userService.getUserByUsername().getName());
+        model.addAttribute("buyer", "Здравей, " + userService.getUserByUsername().getName());
         return "buyerPage";
     }
 
     @GetMapping("/admin")
-    public String adminPage(Model model) {
-        model.addAttribute("admin", "Hello " + userService.getUserByUsername().getName());
+    public String adminPage() {
         return "adminPage";
     }
 
