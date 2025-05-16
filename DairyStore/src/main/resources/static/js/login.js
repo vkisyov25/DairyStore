@@ -16,16 +16,6 @@ document.getElementById("submitBtn").addEventListener("click", function (event) 
         },
         body: JSON.stringify(obj)
     })
-        /*.then(response => response.text()) // Връща текстов отговор от бекенда
-        .then(data => {
-            console.log("Отговор от сървъра:", data);
-            if (data.startsWith("redirect:")) {
-                window.location.href = data.replace("redirect:", ""); // Пренасочване
-            } else {
-                alert(data); // Показва грешка
-            }
-
-        })*/
         .then(response => {
             return response.text().then(data => ({status: response.status, body: data}));
         })

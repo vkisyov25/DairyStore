@@ -1,3 +1,16 @@
+.background-registration-photo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('https://oazistrade.com/wp-content/uploads/2014/07/mlechni-produkti.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px);
+    z-index: -1; /* поставя се зад останалото съдържание */
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #DBDBDB;
@@ -53,7 +66,6 @@ input, select {
 }
 
 .submitBtn:hover {
-    /*background-color: #f2a900;*/
     background-color: #99f200;
 }
 

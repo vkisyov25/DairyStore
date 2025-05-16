@@ -1,4 +1,7 @@
+addDeliveryCompany();
+
 function viewDeliveryCompany() {
+    clearForm();
     let table = document.getElementById("deliveryTable")
     if (table.style.display === "none") {
         table.style.display = "block";
@@ -57,6 +60,7 @@ function deleteDeliveryFee(companyId) {
 }
 
 function addDeliveryCompany() {
+    clearForm();
     let createdDiv = document.getElementById("createDeliveryCompany")
     if (createdDiv.style.display === "none") {
         createdDiv.style.display = "block";
@@ -129,6 +133,7 @@ function clearForm() {
 }
 
 function viewUsers() {
+    clearForm();
     let userTable = document.getElementById("usersTable")
     if (userTable.style.display === "none") {
         userTable.style.display = "block";

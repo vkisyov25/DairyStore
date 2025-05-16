@@ -1,3 +1,5 @@
+createProduct();
+
 function openUserProfile() {
     window.location.href = "/html/userInformationPage.html";
 }
@@ -196,10 +198,10 @@ function editProduct(id) {
             </select>
             <span class="error-message" id="type-error"></span><br>
             <br>
-             <label><strong>Тегло:</strong></label><br>
+             <label><strong>Тегло(кг):</strong></label><br>
              <input type="number" id="productWeight" value="${data.weight}" required><br>
              <span class="error-message" id="weight-error"></span><br>
-             <label><strong>Цена:</strong></label><br>
+             <label><strong>Цена(лв):</strong></label><br>
              <input type="number" id="productPrice" value="${data.price}" required><br>
              <span class="error-message" id="price-error"></span><br>
              <label><strong>Описание:</strong></label><br>
