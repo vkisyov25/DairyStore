@@ -62,6 +62,7 @@ public class SecurityController {
     @PostMapping("/register")
     public ResponseEntity<?> createRegistration(@Valid @RequestBody CreateUserDto createUserDto, BindingResult bindingResult) {
         customUserDetailsService.validateUser(createUserDto, bindingResult);
+        customUserDetailsService.isCompanyInfoValid(createUserDto.getCompanyEIK(), createUserDto.getCompanyName(), bindingResult);
         if (bindingResult.hasErrors()) {
             Map<String, List<String>> errors = bindingResult.getFieldErrors()
                     .stream()

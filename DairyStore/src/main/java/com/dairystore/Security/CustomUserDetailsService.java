@@ -16,6 +16,8 @@ public interface CustomUserDetailsService extends UserDetailsService {
 
     void create(CreateUserDto createUserDto);
 
+    void isCompanyInfoValid(String eik, String name, BindingResult bindingResult);
+
     void validateUser(CreateUserDto user, BindingResult bindingResult);
 
     boolean existsByEmail(String email);
