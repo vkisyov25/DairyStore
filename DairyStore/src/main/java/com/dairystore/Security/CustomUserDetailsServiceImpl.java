@@ -5,17 +5,26 @@ import com.dairystore.Models.dtos.CreateUserDto;
 import com.dairystore.Models.dtos.LoginUserDto;
 import com.dairystore.Repository.UserRepository;
 import com.dairystore.Utils.JwtUtil;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -79,6 +88,79 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
         User user = mapToUser(createUserDto);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
         userRepository.save(user);
+    }
+
+    public void isCompanyInfoValid(String eik, String name, BindingResult bindingResult) {
+        if (eik.isEmpty() || name.isEmpty()) {
+            return;
+        }
+        WebDriverManager.chromedriver().setup(); // изтегля съвместим chromedriver() за текущата версия на chrome
+        ChromeOptions options = new ChromeOptions();
+        /*options.addArguments("--headless=new");*/
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+
+        WebDriver driver = new ChromeDriver(options); //стартираме Chrome браузъра с форните опции чрез Selenium WebDriver
+
+
+        boolean isValid;
+
+        try {
+            driver.get("https://portal.registryagency.bg/CR/en/Reports/VerificationPersonOrg");
+
+            // Избиране на "Legal entity"
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1)); //Създаваш „изчакване“, което ще чака до 10 секунди даден елемент да се появи на страницата
+            //ExpectedConditions.presenceOfElementLocated - "Чакай да се появи елемент на страницата, който отговаря на даден селектор".
+            WebElement label = wait.until(ExpectedConditions.presenceOfElementLocated(
+                    By.cssSelector("label[for='CompanyFormId']")
+            ));
+            label.click();
+
+            WebElement inputEik = null;
+            WebElement inputName = null;
+
+            try {
+                //ExpectedConditions.visibilityOfElementLocated - "Намери елемент по даден селектор и изчакай той да стане видим на страницата."
+                //presenceOfElementLocated ➜ чака елементът да съществува в DOM-а (но може да е скрит)
+                //visibilityOfElementLocated ➜ чака елементът да е и видим, и достъпен за взаимодействие
+                inputEik = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("searchCriteria_ident")));
+                inputName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("searchCriteria_name")));
+            } catch (Exception ex) {
+                System.out.println("Не успя да намери полето за ЕИК или за името на фирмата");
+                ex.printStackTrace();
+            }
+
+            // Попълване и търсене
+            assert inputEik != null;
+            inputEik.clear();
+            inputEik.sendKeys(eik);
+            assert inputName != null;
+            inputName.clear();
+            inputName.sendKeys(name);
+
+            //ExpectedConditions.elementToBeClickable - Изчакай елементът: да съществува в DOM-а, да бъде видим и включен (enabled) — т.е. готов да бъде натиснат с мишката“
+            WebElement searchBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[contains(., 'Search')]")
+            ));
+            searchBtn.click();
+
+            // Изчакване на резултата да се появи с нужния текст
+            isValid = wait.until(driver1 -> {
+                WebElement div = driver1.findElement(By.cssSelector("div.result-count"));
+                String text = div.getText();
+                return text != null && text.contains("Total: 1");
+            });
+
+        } catch (Exception e) {
+            isValid = false;
+        } finally {
+            driver.quit();
+        }
+
+        if (!isValid) {
+            bindingResult.rejectValue("companyEIK", "companyEik-error", "Проверете еик на фирмата");
+            bindingResult.rejectValue("companyName", "companyName-error", "Проверете името на фирмата");
+        }
     }
 
     private User mapToUser(CreateUserDto dto) {

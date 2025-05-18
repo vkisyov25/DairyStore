@@ -3,6 +3,7 @@ package com.dairystore.Controllers;
 import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.UserDto;
 import com.dairystore.Models.dtos.UserInformationDto;
+import com.dairystore.Security.CustomUserDetailsService;
 import com.dairystore.Services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @GetMapping("/allInformation")
     public ResponseEntity<UserInformationDto> getCurrentUserInformation() {
@@ -37,6 +39,7 @@ public class UserController {
     public ResponseEntity<?> editUserInformation(@Valid @RequestBody UserInformationDto userInformationDto, BindingResult bindingResult) {
         User user = userService.getUserByUsername();
         userService.validateUserInformationDto(user, userInformationDto, bindingResult);
+        customUserDetailsService.isCompanyInfoValid(userInformationDto.getCompanyEIK(), userInformationDto.getCompanyName(), bindingResult);
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, fieldError -> fieldError.getDefaultMessage(), (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
             ));
