@@ -79,16 +79,22 @@ document.getElementById("editBtn").addEventListener("click", function () {
 
             let content = `
                  <h2>Моят профил - Редактиране</h2>
+                 <label for="name">Име</label><br>
                  <input type="text" id="name" value="${data.name}"><br>
                  <span class="error-message" id="error-name"></span><br>
+                 <label for="email">Имейл</label><br>
                  <input type="email" id="email" value="${data.email}"><br>
                  <span class="error-message" id="error-email"></span><br>
+                 <label for="phone">Телефонен номер</label><br>
                  <input type="text" id="phone" value="${data.phone}"><br>
                  <span class="error-message" id="error-phone"></span><br>
+                 <label for="address">Адрес</label><br>
                  <input type="text" id="address" value="${data.address}"><br>
                  <span class="error-message" id="error-address"></span><br>
+                 <label for="companyName">Име на фирмата</label><br>
                  <input type="text" id="companyName" value="${data.companyName}"><br>
                  <span class="error-message" id="error-companyName" ></span><br>
+                 <label for="companyEIK">ЕИК на фирмата</label><br>
                  <input type="text" id="companyEIK" value="${data.companyEIK}"><br>
                  <span class="error-message" id="error-companyEIK"></span><br>
              `;

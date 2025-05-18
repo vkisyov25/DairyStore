@@ -10,44 +10,44 @@
 <div class="background-registration-photo"></div>
 <div class="form-container">
     <h2>Регистрация</h2>
-    <label for="username">Username</label>
+    <label for="username">Потребителско име</label>
     <input type="text" id="username">
     <span class="error-message" id="error-username"></span>
     <br>
-    <label for="password">Password</label>
+    <label for="password">Парола</label>
     <input type="password" id="password">
     <span class="error-message" id="error-password"></span>
     <br>
     <label>Role:</label>
     <select id="role" onchange="toggleCompanyFields()">
-        <option value="buyer">Buyer</option>
-        <option value="seller">Seller</option>
+        <option value="buyer">Купувач</option>
+        <option value="seller">Продавач</option>
     </select>
     <br>
-    <label for="email">Email</label>
+    <label for="email">Имейл</label>
     <input type="email" id="email" required/>
     <span class="error-message" id="error-email"></span>
     <br>
-    <label>Full name</label>
+    <label>Пълно име</label>
     <input type="text" id="name">
     <span class="error-message" id="error-name"></span>
     <br>
-    <label>Phone</label>
+    <label>Телефонен номер</label>
     <input type="text" id="phone">
     <span class="error-message" id="error-phone"></span>
     <br>
-    <label>Address</label>
+    <label>Адрес</label>
     <input type="text" id="address">
     <span class="error-message" id="error-address"></span>
     <br>
 
     <!-- Полета за фирма -->
     <div id="companyFields" style="display: none;">
-        <label for="companyName">Company Name</label>
+        <label for="companyName">Име на фирмата</label>
         <input type="text" id="companyName">
         <span class="error-message" id="error-companyName"></span>
         <br>
-        <label for="companyEIK">Company EIK</label>
+        <label for="companyEIK">ЕИК на фирмата</label>
         <input type="text" id="companyEIK">
         <span class="error-message" id="error-companyEIK"></span>
         <div id="eikErrorMessage" style="color: red;"></div>

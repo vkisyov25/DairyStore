@@ -18,7 +18,7 @@ public class CompanyEIKDtoValidator implements ConstraintValidator<CompanyEIKDto
         if (currentUser.getAuthorities().equals("seller")) {
             if (!createUserDto.getCompanyEIK().matches("^[0-9]{9}$")) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("CompanyEIK must be only 9 digits").addPropertyNode("companyEIK").addConstraintViolation();
+                context.buildConstraintViolationWithTemplate("ЕИК-то на фирмата трябва да е точно 9 цифри").addPropertyNode("companyEIK").addConstraintViolation();
                 isValid = false;
             }
 
@@ -27,7 +27,7 @@ public class CompanyEIKDtoValidator implements ConstraintValidator<CompanyEIKDto
         if (currentUser.getAuthorities().equals("buyer") && !createUserDto.getCompanyEIK().isEmpty()) {
             if (!createUserDto.getCompanyEIK().matches("^[0-9]{9}$")) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("CompanyEIK must be only 9 digits").addPropertyNode("companyEIK").addConstraintViolation();
+                context.buildConstraintViolationWithTemplate("ЕИК-то на фирмата трябва да е точно 9 цифри").addPropertyNode("companyEIK").addConstraintViolation();
                 isValid = false;
             }
 

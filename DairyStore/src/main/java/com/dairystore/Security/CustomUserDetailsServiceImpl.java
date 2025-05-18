@@ -177,32 +177,32 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
             //По принцип seller няма как да има записани потребители с празно companyName, но метода existsByCompanyName() проверява за
             //всички потребители а buyer могат да имат и затова слагам !user.getCompanyName().isEmpty()
             if (existsByCompanyName(user.getCompanyName()) && !user.getCompanyName().isEmpty()) {
-                bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
+                bindingResult.rejectValue("companyName", "error.companyName", "Фирмата вече съществува");
             }
 
             if (existsByCompanyEIK(user.getCompanyEIK()) && !user.getCompanyEIK().isEmpty()) {
-                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
+                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Компанията с това EIK вече съществува");
             }
 
         }
 
         if (user.getAuthorities().equals("buyer")) {
             if (existsByCompanyName(user.getCompanyName()) && !user.getCompanyName().isEmpty()) {
-                bindingResult.rejectValue("companyName", "error.companyName", "Company already exists.");
+                bindingResult.rejectValue("companyName", "error.companyName", "Фирмата вече съществува");
             }
 
             if (existsByCompanyEIK(user.getCompanyEIK()) && !user.getCompanyEIK().isEmpty()) {
-                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Company EIK already exists");
+                bindingResult.rejectValue("companyEIK", "error.companyEIK", "Компанията с това EIK вече съществува");
             }
 
         }
 
         if (existsByEmail(user.getEmail())) {
-            bindingResult.rejectValue("email", "error.user", "Email already exists.");
+            bindingResult.rejectValue("email", "error.user", "Имейл адресът вече съществува");
         }
 
         if (existsByUsername(user.getUsername())) {
-            bindingResult.rejectValue("username", "error.user", "Username already exists.");
+            bindingResult.rejectValue("username", "error.user", "Потребителското име вече съществува");
         }
     }
 

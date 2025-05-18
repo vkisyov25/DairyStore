@@ -19,23 +19,23 @@ import lombok.Setter;
 @Setter
 @Builder
 public class CreateUserDto {
-    @NotBlank(message = "Username cannot be blank")
+    @NotBlank(message = "Потребителското име не може да бъде празно")
     private String username;
-    @NotBlank(message = "Password cannot be blank")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@.!%$?&])[A-Za-z\\d@.!%$?&]{8,}$", message = "The password must be at least 8 characters long and contain at least: one uppercase letter, " + "one lowercase letter, one number, and one special character (@, $, !, %, , ?, &).")
+    @NotBlank(message = "Паролата не може да бъде празна")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@.!%$?&])[A-Za-z\\d@.!%$?&]{8,}$", message = "Паролата трябва да е с дължина поне 8 знака и да съдържа поне: една главна буква, \" + \"една малка буква, едно число и един специален символ (@, $, !, %, , ?, &).")
     private String password;
     @NotBlank
     private String authorities;
-    @NotBlank(message = "Email cannot be blank")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Invalid email format")
+    @NotBlank(message = "Имейлът не може да бъде празен")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Невалиден формат")
     @Email
     private String email;
-    @NotBlank(message = "Name cannot be blank")
+    @NotBlank(message = "Името не моце да бъде празно")
     private String name;
-    @NotBlank(message = "Phone number cannot be blank.")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits.")
+    @NotBlank(message = "Телефонният номер не може да бъде празен")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Телефонният номер трябва да е точно 10 цифри")
     private String phone;
-    @NotBlank(message = "Address cannot be blank")
+    @NotBlank(message = "Адресът не може да бъде празен")
     private String address;
 
     //@Column(unique = true) //Махнах ги заради проблема при регистрация на потребители с роля byuer защото като

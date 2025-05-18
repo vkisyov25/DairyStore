@@ -13,14 +13,14 @@ public class SellerFieldsValidator implements ConstraintValidator<ValidSellerFie
 
             if (createUserDto.getCompanyName() == null || createUserDto.getCompanyName().isBlank()) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("Company name is required for sellers").addPropertyNode("companyName") // Свързваме грешката с конкретно поле
+                context.buildConstraintViolationWithTemplate("Името на фирмата е задължително поле за продавачите").addPropertyNode("companyName") // Свързваме грешката с конкретно поле
                         .addConstraintViolation();
                 isValid = false;
             }
 
             if (createUserDto.getCompanyEIK() == null || createUserDto.getCompanyEIK().isBlank()) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("Company EIK is required for sellers").addPropertyNode("companyEIK") // Свързваме грешката с конкретно поле
+                context.buildConstraintViolationWithTemplate("ЕИК-то на фирмата е задължително за продавачите").addPropertyNode("companyEIK") // Свързваме грешката с конкретно поле
                         .addConstraintViolation();
                 isValid = false;
             }
