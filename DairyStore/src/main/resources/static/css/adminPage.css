@@ -166,3 +166,25 @@ body {
     cursor: pointer;
     box-shadow: 0 0 15px #f27900
 }
+
+#product-table {
+    font-size: 15px;
+    text-align: left;
+    background-color: white;
+    border: 5px solid #f27900;
+    box-shadow: 0 0 20px #f27900;
+    border-radius: 10px;
+}
+
+#product-table thead tr {
+    background-color: #f27900;
+}
+
+#product-table button {
+    background-color: white;
+}
+
+#product-table button:hover {
+    cursor: pointer;
+    box-shadow: 0 0 15px #f27900
+}

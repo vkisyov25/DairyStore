@@ -1,6 +1,7 @@
 package com.dairystore.Repository;
 
 import com.dairystore.Models.Product;
+import com.dairystore.Models.dtos.ViewProductAdminDto;
 import com.dairystore.Models.dtos.ViewProductDto;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,6 +25,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT new com.dairystore.Models.dtos.ViewProductDto(product.id, product.name, product.type, product.weight, product.price, product.description, product.discount, product.quantity) FROM Product product WHERE product.user.username =?1")
     List<ViewProductDto> findBySellerUsername(String username);
+
+    @Query("SELECT new com.dairystore.Models.dtos.ViewProductAdminDto(product.id, product.name, product.type, product.weight, product.price, product.description, product.discount, product.quantity, product.user.username) FROM Product product")
+    List<ViewProductAdminDto> findViewProductDtoList();
 
     @Query("SELECT new com.dairystore.Models.dtos.ViewProductDto(product.id, product.name, product.type, product.weight, product.price, product.description, product.discount, product.quantity) FROM Product product WHERE product.id =?1")
     ViewProductDto findByProductId(Long id);

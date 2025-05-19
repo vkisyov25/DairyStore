@@ -7,6 +7,7 @@ function viewDeliveryCompany() {
         table.style.display = "block";
         document.getElementById("createDeliveryCompany").style.display = "none";
         document.getElementById("usersTable").style.display = "none";
+        document.getElementById("product-table").style.display = "none";
     } else {
         table.style.display = "none";
     }
@@ -66,6 +67,7 @@ function addDeliveryCompany() {
         createdDiv.style.display = "block";
         document.getElementById("deliveryTable").style.display = "none";
         document.getElementById("usersTable").style.display = "none";
+        document.getElementById("product-table").style.display = "none";
     } else {
         createdDiv.style.display = "none";
     }
@@ -139,6 +141,7 @@ function viewUsers() {
         userTable.style.display = "block";
         document.getElementById("createDeliveryCompany").style.display = "none";
         document.getElementById("deliveryTable").style.display = "none";
+        document.getElementById("product-table").style.display = "none";
     } else {
         userTable.style.display = "none";
     }
@@ -198,4 +201,80 @@ function deleteUserById(userId) {
         .catch(error => {
             alert("Грешка при изтриване: " + error.message);
         })
+}
+
+function viewProducts() {
+    let productTable = document.getElementById("product-table");
+    if (productTable.style.display === "none") {
+        productTable.style.display = "block";
+        document.getElementById("createDeliveryCompany").style.display = "none";
+        document.getElementById("deliveryTable").style.display = "none";
+        document.getElementById("usersTable").style.display = "none";
+    } else {
+        productTable.style.display = "none";
+    }
+    fetch("/products/all")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Невалидна заявка")
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            const tableBody = document.getElementById("tbody")
+            tableBody.innerHTML = "";
+            data.forEach(product => {
+                const row = document.createElement("tr")
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.type}</td>
+                    <td>${product.weight}</td>
+                    <td>${product.price}</td>
+                    <td>${product.description}</td>
+                    <td>${product.discount}</td>
+                    <td>${product.quantity}</td>
+                    <td>${product.username}</td>
+                    <td><button id="deleteProductBtn" onclick="deleteProduct(${product.id})">Изтрий</button></td>
+                    `;
+
+                tableBody.appendChild(row);
+
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error)
+        });
+}
+
+function deleteProduct(id) {
+    if (!confirm("Сигурни ли сте, че искате да изтриете продукта")) {
+        return;
+    }
+    document.getElementById("product-table").style.display = "none";
+    fetch(`/products/${id}`, {
+        method: "DELETE"
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Неуспешна заявка");
+            }
+            return response.text();
+        })
+        .then(() => {
+            removeProductFromTable(id);
+            viewProducts();
+            alert("Продуктът е изтрит успешно!");
+        })
+        .catch(error => {
+            console.error("Грешка при изтриване:", error);
+            alert("Възникна грешка при изтриването на продукта.");
+        });
+}
+
+function removeProductFromTable() {
+    const row = document.getElementById("product-${id}");
+    if (row) {
+        row.remove();
+    }
 }

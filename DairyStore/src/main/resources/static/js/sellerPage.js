@@ -96,7 +96,7 @@ function viewYourProducts() {
         table.style.display = "none";
     }
 
-    fetch("/products/all")
+    fetch("/products/all-for-current-user")
         .then(response => {
             if (!response.ok) {
                 return new Error("Response is not okay")

@@ -2,6 +2,7 @@ package com.dairystore.Controllers;
 
 import com.dairystore.Models.dtos.CreateProductDto;
 import com.dairystore.Models.dtos.ProductForSaleDto;
+import com.dairystore.Models.dtos.ViewProductAdminDto;
 import com.dairystore.Models.dtos.ViewProductDto;
 import com.dairystore.Services.ProductService;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/all")
+    @GetMapping("/all-for-current-user")
     public ResponseEntity<List<ViewProductDto>> getCurrentUserProducts() {
         return ResponseEntity.ok().body(productService.getCurrentUserProducts());
     }
@@ -79,5 +80,10 @@ public class ProductController {
     @GetMapping("/for-sale")
     public ResponseEntity<List<ProductForSaleDto>> loadProductsForSale() {
         return ResponseEntity.ok().body(productService.getProductsForSale());
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ViewProductAdminDto>> viewAllProducts() {
+        return ResponseEntity.ok().body(productService.getAllProducts());
     }
 }

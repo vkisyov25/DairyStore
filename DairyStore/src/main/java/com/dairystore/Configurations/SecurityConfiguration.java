@@ -30,7 +30,8 @@ public class SecurityConfiguration {
                         authorizeRequest -> authorizeRequest
                                 .requestMatchers("/test/home", "/test/login", "/test/register", "/test/tokenExpiration").permitAll()
                                 .requestMatchers("/order/check-availability").hasAuthority("buyer")
-                                .requestMatchers("/products/all").hasAuthority("seller")
+                                .requestMatchers("/products/all-for-current-user").hasAuthority("seller")
+                                .requestMatchers("/products/all").hasAuthority("admin")
                                 .requestMatchers("/products/create").hasAuthority("seller")
                                 .requestMatchers("/user/allInformation").hasAnyAuthority("seller", "buyer")
                                 .requestMatchers("/test/seller").hasAuthority("seller")
@@ -56,7 +57,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/css/sellerPage.css").hasAuthority("seller")
                                 .requestMatchers("/products/for-sale").hasAuthority("buyer")
                                 .requestMatchers("/css/buyerPage.css").hasAuthority("buyer")
-                                .requestMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority("seller")
+                                .requestMatchers(HttpMethod.DELETE, "/products/{id}").hasAnyAuthority("seller", "admin")
                                 .requestMatchers(HttpMethod.GET, "/products/{id}").hasAuthority("seller")
                                 .requestMatchers("/products/edit").hasAuthority("seller")
                                 .requestMatchers("/api/payments/create-payment-intent").hasAuthority("buyer")
@@ -68,7 +69,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/js/adminPage.js").hasAuthority("admin")
                                 .requestMatchers("/js/buyerPage.js").hasAuthority("buyer")
                                 .requestMatchers("/js/sellerPage.js").hasAuthority("seller")
-                                .requestMatchers("/js/login.js","/js/userInformationPage.js","/js/registerPage.js").permitAll()
+                                .requestMatchers("/js/login.js", "/js/userInformationPage.js", "/js/registerPage.js").permitAll()
                                 .anyRequest().authenticated()
 
                 )
