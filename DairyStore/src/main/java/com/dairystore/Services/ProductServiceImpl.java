@@ -4,6 +4,7 @@ import com.dairystore.Models.Product;
 import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.CreateProductDto;
 import com.dairystore.Models.dtos.ProductForSaleDto;
+import com.dairystore.Models.dtos.ViewProductAdminDto;
 import com.dairystore.Models.dtos.ViewProductDto;
 import com.dairystore.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,11 @@ public class ProductServiceImpl implements ProductService {
     public List<ViewProductDto> getCurrentUserProducts() {
         User user = userService.getUserByUsername();
         return productRepository.findBySellerUsername(user.getUsername());
+    }
+
+    @Override
+    public List<ViewProductAdminDto> getAllProducts() {
+        return productRepository.findViewProductDtoList();
     }
 
     @Override

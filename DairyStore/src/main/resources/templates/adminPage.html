@@ -20,6 +20,9 @@
         <br>
         <button id="viewUsersBtn" onclick="viewUsers()">Виж всички потребители</button>
         <br>
+        <br>
+        <button id="viewProductsBtn" onclick="viewProducts()">Виж всички продукти</button>
+        <br>
         <form action="/test/logout" method="post">
             <button type="submit">Изход</button>
         </form>
@@ -77,6 +80,29 @@
         </tbody>
     </table>
 </section>
+
+<section class="users-container">
+    <table id="product-table" style="display: none;">
+        <thead>
+        <tr>
+            <th>Име</th>
+            <th>Тип</th>
+            <th>Тегло (кг)</th>
+            <th>Цена(лв)</th>
+            <th>Описание</th>
+            <th>Отстъпка (%)</th>
+            <th>Количество</th>
+            <th>Продавач</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+</section>
+
 <script src="/js/adminPage.js"></script>
 </body>
 </html>
