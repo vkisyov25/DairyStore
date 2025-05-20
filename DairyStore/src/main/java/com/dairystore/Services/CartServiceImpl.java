@@ -60,7 +60,10 @@ public class CartServiceImpl implements CartService {
     private ShoppingCartDto mapToShoppingCartDto(User user, CartItem cartItem) {
         Product product = cartItem.getProduct();
         int quantity = cartItem.getQuantity();
-        double discount = user.getCompanyName().isEmpty() ? 0 : product.getDiscount();
+        double discount = 0;
+        if(!user.getCompanyName().isEmpty() && quantity>15){
+            discount = cartItem.getProduct().getDiscount();
+        }
         double totalPricePerProduct = calculateTotalPricePerProduct(user, product, quantity);
 
         return ShoppingCartDto.builder()
@@ -77,7 +80,10 @@ public class CartServiceImpl implements CartService {
 
     private double calculateTotalPricePerProduct(User user, Product product, int quantity) {
         double basePrice = product.getPrice() * quantity;
-        double discountAmount = user.getCompanyName().isEmpty() ? 0 : basePrice * (product.getDiscount() / 100);
+        double discountAmount =0;
+        if(quantity>15){
+            discountAmount = user.getCompanyName().isEmpty() ? 0 : basePrice * (product.getDiscount() / 100);
+        }
         double total = basePrice - discountAmount;
         return Math.round(total * 100.0) / 100.0;
     }

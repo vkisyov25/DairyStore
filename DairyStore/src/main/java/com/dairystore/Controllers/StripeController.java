@@ -2,19 +2,25 @@ package com.dairystore.Controllers;
 
 import com.dairystore.Models.dtos.PaymentRequestDTO;
 import com.dairystore.Models.dtos.PaymentResponseDTO;
+import com.dairystore.Services.StripeService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/payments")
 public class StripeController {
+
+    private final StripeService stripeService;
 
     @PostMapping("/create-payment-intent")
     public ResponseEntity<PaymentResponseDTO> createPaymentIntent(@RequestBody PaymentRequestDTO request) throws StripeException {
@@ -46,4 +52,16 @@ public class StripeController {
         return ResponseEntity.ok(responseDTO);
     }
 
+
+    @PostMapping("/create-seller-account")
+    public ResponseEntity<String> createSellerAccount(@RequestParam String email) throws Exception {
+        String accountId = stripeService.createConnectedAccount(email);
+        String onboardingUrl = stripeService.generateOnboardingLink(accountId);
+
+        // 👉 Тук запиши `accountId` в базата данни към съответния продавач
+
+        return ResponseEntity.ok(onboardingUrl);
+
+
+    }
 }

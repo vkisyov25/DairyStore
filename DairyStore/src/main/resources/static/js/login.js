@@ -20,7 +20,7 @@ document.getElementById("submitBtn").addEventListener("click", function (event) 
             return response.text().then(data => ({status: response.status, body: data}));
         })
         .then(({status, body}) => {
-            /*console.log("Отговор от сървъра:", status, body);*/
+            console.log("Отговор от сървъра:", status, body);
 
             if (status === 200 && body.startsWith("redirect:")) {
                 window.location.href = body.replace("redirect:", ""); // Пренасочване
