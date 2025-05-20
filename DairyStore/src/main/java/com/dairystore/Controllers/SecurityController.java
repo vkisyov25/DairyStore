@@ -60,7 +60,7 @@ public class SecurityController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> createRegistration(@Valid @RequestBody CreateUserDto createUserDto, BindingResult bindingResult) {
+    public ResponseEntity<?> createRegistration(@Valid @RequestBody CreateUserDto createUserDto, BindingResult bindingResult) throws Exception {
         customUserDetailsService.validateUser(createUserDto, bindingResult);
         customUserDetailsService.isCompanyInfoValid(createUserDto.getCompanyEIK(), createUserDto.getCompanyName(), bindingResult);
         if (bindingResult.hasErrors()) {
@@ -75,7 +75,7 @@ public class SecurityController {
         }
 
         customUserDetailsService.create(createUserDto);
-        emailService.sendRegistrationEmail(createUserDto.getEmail(), createUserDto.getName());
+        /*emailService.sendRegistrationEmail(createUserDto.getEmail(), createUserDto.getName());*/
         return ResponseEntity.ok(Map.of("message", "Успешна регистрация"));
     }
 

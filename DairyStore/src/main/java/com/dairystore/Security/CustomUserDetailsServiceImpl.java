@@ -4,6 +4,8 @@ import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.CreateUserDto;
 import com.dairystore.Models.dtos.LoginUserDto;
 import com.dairystore.Repository.UserRepository;
+import com.dairystore.Services.EmailService;
+import com.dairystore.Services.StripeService;
 import com.dairystore.Utils.JwtUtil;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import jakarta.servlet.http.Cookie;
@@ -34,6 +36,8 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
     private final HttpServletResponse response;
     private final HttpServletRequest request;
     private final PasswordEncoder passwordEncoder;
+    private final StripeService stripeService;
+    private final EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -84,9 +88,19 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
     }
 
     @Override
-    public void create(CreateUserDto createUserDto) {
+    public void create(CreateUserDto createUserDto) throws Exception {
         User user = mapToUser(createUserDto);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
+        if(createUserDto.getAuthorities().equals("seller")){
+            String accountId = stripeService.createConnectedAccount(createUserDto.getEmail());
+            System.out.println(accountId);
+            user.setAccountId(accountId);
+            String onboardingLink = stripeService.generateOnboardingLink(accountId);
+            emailService.sendRegistrationEmailToSeller(createUserDto.getEmail(), createUserDto.getName(), onboardingLink);
+
+        }else {
+            emailService.sendRegistrationEmailToBuyer(createUserDto.getEmail(), createUserDto.getName());
+        }
         userRepository.save(user);
     }
 

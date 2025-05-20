@@ -115,7 +115,7 @@
     text-align: center;
 }
 
-#cart_table th, #product-table td {
+#cart_table th, #cart_table td {
     border: 2px solid black;
     padding: 14px;
     font-size: 18px;
@@ -262,8 +262,9 @@ p {
 }
 
 .buyerAnalysis-container {
+    position:fixed;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     justify-items: center;
     margin-top: 150px;
 
@@ -282,6 +283,8 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
+    position:relative;
+    top:+85px;
 }
 
 #orderList {

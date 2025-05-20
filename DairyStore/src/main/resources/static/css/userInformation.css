@@ -63,3 +63,7 @@ button:hover {
 .navigation-buttons:hover {
     background-color: #99f200;
 }
+#deleteFirmBtn:hover{
+    background-color: red;
+    opacity: 0.9;
+}
