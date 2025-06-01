@@ -4,6 +4,7 @@ function openUserProfile() {
 }
 
 let priceWithoutDeliveryFee = 0;
+let priceWithDeliveryFee = 0;
 
 
 function loadProductsForSale() {
@@ -163,6 +164,9 @@ function viewShoppingCart() {
 }
 
 function deleteProductFromCart(productId) {
+    if (document.getElementById("order-input").style.display==="block"){
+        inputOrderInfo();
+    }
 
     fetch(`/cart/${productId}`, {
         method: "DELETE"
@@ -212,10 +216,10 @@ function inputOrderInfo() {
                  <select id="paymentMethod" required>
                     <option value="">-- Избери --</option>
                     <option value="CARD">С карта</option>
-                    <option value="CASH">Кеш</option>
+                    <option value="CASH">Наложен платеж</option>
                  </select><br>
                  <p>Такса за доставка: <span id="deliveryFee">-</span> лв.</p><br>
-                 <p>Цена с включена доставка: <span id="totalPrice">-</span> лв.</p>
+                 <p>Сума за плащане с включена доставка: <span id="totalPrice">-</span> лв.</p>
                  <form id="payment-form" style="display:none;">
                     <div id="paymentInfo" >
                         <label for="card-element">Номер на карта</label>
@@ -251,9 +255,8 @@ function inputOrderInfo() {
 
 
                 let deliveryFee = parseFloat(document.getElementById("deliveryFee").textContent) || 0;
-                let totalWithDeliveryFee = priceWithoutDeliveryFee + deliveryFee;
-
-                document.getElementById("totalPrice").textContent = totalWithDeliveryFee.toFixed(2) + "";
+                priceWithDeliveryFee = priceWithoutDeliveryFee + deliveryFee;
+                document.getElementById("totalPrice").textContent =  priceWithDeliveryFee.toFixed(2) + "";
             });
 
 
@@ -315,7 +318,8 @@ function inputOrderInfo() {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
-                            amount: priceWithoutDeliveryFee * 100,  // Примерна сума в стотинки
+                            amount: Math.round((priceWithDeliveryFee + (priceWithDeliveryFee * 0.040 + 1.0)) * 100),
+                            // Примерна сума в стотинки
                             payment_method: stripePaymentMethod.id // Изпращате paymentMethod ID към сървъра
                         })
                     });
@@ -408,15 +412,7 @@ async function makeOrder(address, company, paymentMethod, stripePaymentMethodId)
 
 function viewAnalysis() {
     let analysisResult = document.getElementById("analysisResult");
-
-    if (analysisResult.style.display === "none") {
-        analysisResult.style.display = "block";
-        document.getElementById("product-table").style.display = "none";
-        document.getElementById("orderList").style.display = "none";
-        document.getElementById("shopping-car-div").style.display = "none";
-    } else {
-        analysisResult.style.display = "none";
-    }
+    analysisResult.style.display = "block";
 
     fetch("/analysis/buyer")
         .then(response => {
@@ -428,8 +424,7 @@ function viewAnalysis() {
         .then(data => {
             console.log(data)
             analysisResult.innerHTML = `
-                <h3>Анализ на купувача</h3>
-                <p><strong>Обща сума:</strong> <span>${data.totalPurchasePrice.toFixed(2)} лв.</span></p>
+                <p><strong>Похарчени пари до момента:</strong> <span>${data.totalPurchasePrice.toFixed(2)} лв.</span></p>
                 <p><strong>Средна цена на покупка:</strong> <span>${data.averagePurchasePrice.toFixed(2)} лв.</span></p>
                 <p><strong>Най-купуван тип продукт:</strong> <span>${data.mostPurchasedType}</span></p>
             `;
@@ -444,13 +439,13 @@ function viewAnalysis() {
 }
 
 function viewOrders() {
+    viewAnalysis();
     const container = document.getElementById("orderList");
 
     if (container.style.display === "none") {
         container.style.display = "block";
         document.getElementById("product-table").style.display = "none";
         document.getElementById("orderList").style.display = "none";
-        document.getElementById("analysisResult").style.display = "none";
         document.getElementById("order-input").style.display = "none";
         document.getElementById("shopping-car-div").style.display = "none";
     } else {

@@ -45,5 +45,6 @@ public class CreateUserDto {
     //@Column(unique = true) // както при companyName
     //@Pattern(regexp = "^[0-9]{9}$")
     private String companyEIK;
+    private String accountId;
 
 }

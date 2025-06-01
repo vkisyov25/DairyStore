@@ -1,6 +1,7 @@
 package com.dairystore.Services;
 
 import com.dairystore.Models.Cart;
+import com.dairystore.Models.CartItem;
 import com.dairystore.Models.DeliveryCompany;
 import com.dairystore.Models.Order;
 import com.dairystore.Models.OrderItem;
@@ -13,13 +14,18 @@ import com.dairystore.Models.dtos.ShoppingCartDto;
 import com.dairystore.Models.enums.PaymentMethod;
 import com.dairystore.Repository.OrderRepository;
 import com.dairystore.Repository.ProductRepository;
+import com.stripe.Stripe;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.type.descriptor.java.CharacterArrayJavaType;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +37,8 @@ public class OrderServiceImpl implements OrderService {
     private final UserServiceImpl userService;
     private final CartServiceImpl cartService;
     private final ProductRepository productRepository;
+
+    private final StripeService stripeService;
 
     private static Order createOrder(String deliveryAddress, PaymentMethod paymentMethod, String paymentIntentId, User user, DeliveryCompany deliveryCompany) {
         Order order = Order.builder()
@@ -65,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
         User user = userService.getUserByUsername();
         Cart cart = cartService.getCartByUser(user);
         List<ShoppingCartDto> shoppingCartDtoList = cartService.viewShoppingCart();
-
+        List<CartItem> cartItemList = cartItemService.getAll();
         updateProductQuantities(shoppingCartDtoList);
 
         DeliveryCompany deliveryCompany = deliveryCompanyService.getDeliveryCompanyById(Long.parseLong(deliveryCompanyId));
@@ -74,12 +82,16 @@ public class OrderServiceImpl implements OrderService {
 
         createOrderItem(cart, shoppingCartDtoList, order);
 
+        Map<String, Long> sellerAmounts = calculateDistribution(cartItemList, shoppingCartDtoList,deliveryCompany);
+        stripeService.distributeToSellers(paymentIntentId, sellerAmounts);
+
         orderRepository.save(order);
         cartItemService.deleteCartItemByCartId(cart.getId());
 
     }
 
-    private void createOrderItem(Cart cart, List<ShoppingCartDto> shoppingCartDtoList, Order order) {
+
+    private void createOrderItem(Cart cart, @NotNull List<ShoppingCartDto> shoppingCartDtoList, Order order) {
         OrderItem orderItem = null;
         for (int i = 0; i < shoppingCartDtoList.size(); i++) {
             Product product = productRepository.findProductById(shoppingCartDtoList.get(i).getId());
@@ -167,8 +179,23 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findOrdersByUserId(userId);
     }
 
-   /* @Override
-    public Order getOrderById(Long orderId){
-        return orderRepository.findOrdersById(orderId);
-    }*/
+
+    private Map<String, Long> calculateDistribution(List<CartItem> items, List<ShoppingCartDto> shoppingCartDtoList,DeliveryCompany deliveryCompany) {
+        Map<String, Long> sellerMap = new HashMap<>();
+        System.out.println("items size:"+items.size());
+        for (int i = 0; i < items.size(); i++) {
+            String sellerStripeAccountId = items.get(i).getProduct().getUser().getAccountId();
+            System.out.println("i ="+i+"sellerAccountId"+sellerStripeAccountId);
+            long itemTotal = (long) (shoppingCartDtoList.get(i).getTotalPricePerProduct() * 100);
+            sellerMap.put(sellerStripeAccountId,
+                    sellerMap.getOrDefault(sellerStripeAccountId, 0L) + itemTotal);
+        }
+
+        System.out.println("calculateDestribution");
+        System.out.println("sellerMap size"+sellerMap.size());
+        sellerMap.entrySet().forEach(Map.Entry::getKey);
+        sellerMap.entrySet().forEach(Map.Entry::getValue);
+        return sellerMap;
+    }
+
 }

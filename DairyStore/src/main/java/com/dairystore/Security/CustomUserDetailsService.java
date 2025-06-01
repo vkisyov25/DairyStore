@@ -14,7 +14,7 @@ public interface CustomUserDetailsService extends UserDetailsService {
 
     void deleteCookies();
 
-    void create(CreateUserDto createUserDto);
+    void create(CreateUserDto createUserDto) throws Exception;
 
     void isCompanyInfoValid(String eik, String name, BindingResult bindingResult);
 
