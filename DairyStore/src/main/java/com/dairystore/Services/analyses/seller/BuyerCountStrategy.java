@@ -22,7 +22,8 @@ public class BuyerCountStrategy implements SellerAnalysisStrategy {
         List<OrderItem> orderItemList = orderItemService.getOrderItemsBySellerId(user.getId());
         Set<Long> uniqueCartIds = new HashSet<>();
         for (int i = 0; i < orderItemList.size(); i++) {
-            uniqueCartIds.add(orderItemList.get(i).getCartId());
+            /*uniqueCartIds.add(orderItemList.get(i).getCart().getId());*/
+            uniqueCartIds.add(orderItemList.get(i).getOrder().getUser().getId());
         }
 
         builder.buyerCount(uniqueCartIds.size());

@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryAddress(deliveryAddress)
                 .deliveryCompany(deliveryCompany)
                 .date(LocalDateTime.now())
-                .userId(user.getId())
+                .user(user)
                 .paymentIntentId(paymentIntentId)
                 .deliveryCompany(deliveryCompany)
                 .build();
@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
                     .weight(shoppingCartDtoList.get(i).getWeight())
                     .price(shoppingCartDtoList.get(i).getPrice())
                     .discount(shoppingCartDtoList.get(i).getDiscount())
-                    .cartId(cart.getId())
+                    /*.cart(cart)*/
                     .order(order)
                     .sellerId(product.getUser().getId())
                     .description(product.getDescription())
@@ -117,6 +117,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findTopByUserIdOrderByDateDesc(user.getId())
                 .orElseThrow(() -> new RuntimeException("Не е намерена последна поръчка за потребителя с ID: " + user.getId()));
     }
+
     @Override
     public List<BuyerOrderDto> getOrders() {
         User user = userService.getUserByUsername();
@@ -150,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
             int quantity = orderItem.getQuantity();
             OrderProductDto orderProductDto = new OrderProductDto(productName, productType, quantity);
             orderProductDtoList.add(orderProductDto);
-            priceWithDeliveryFee += orderItem.getPrice();
+            priceWithDeliveryFee += orderItem.getTotalPrice();
         }
         OrderItemResultDto orderItemResultDto = new OrderItemResultDto(orderProductDtoList, priceWithDeliveryFee);
         return orderItemResultDto;
@@ -165,4 +166,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getOrdersByUserId(Long userId) {
         return orderRepository.findOrdersByUserId(userId);
     }
+
+   /* @Override
+    public Order getOrderById(Long orderId){
+        return orderRepository.findOrdersById(orderId);
+    }*/
 }

@@ -431,7 +431,7 @@ function viewAnalysis() {
                 <h3>Анализ на купувача</h3>
                 <p><strong>Обща сума:</strong> <span>${data.totalPurchasePrice.toFixed(2)} лв.</span></p>
                 <p><strong>Средна цена на покупка:</strong> <span>${data.averagePurchasePrice.toFixed(2)} лв.</span></p>
-                <p><strong>Най-често купуван тип продукт:</strong> <span>${data.mostPurchasedType}</span></p>
+                <p><strong>Най-купуван тип продукт:</strong> <span>${data.mostPurchasedType}</span></p>
             `;
 
 

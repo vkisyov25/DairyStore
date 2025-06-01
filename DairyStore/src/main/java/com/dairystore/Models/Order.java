@@ -41,12 +41,13 @@ public class Order {
     private PaymentMethod paymentMethod;
     @Column(nullable = false)
     private LocalDateTime date;
-    @Column(nullable = false, name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private User user;
     @Column(nullable = false)
     private String paymentIntentId;
     @ManyToOne
-    @JoinColumn(name = "delivery_company_id")
+    @JoinColumn(name = "delivery_companies_id")
     @JsonIgnore
     private DeliveryCompany deliveryCompany;
 

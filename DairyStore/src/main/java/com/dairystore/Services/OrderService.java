@@ -19,4 +19,5 @@ public interface OrderService {
     List<DeliveryCompany> allDeliveryCompanies();
 
     List<Order> getOrdersByUserId(Long userId);
+    /*  Order getOrderById(Long orderId);*/
 }

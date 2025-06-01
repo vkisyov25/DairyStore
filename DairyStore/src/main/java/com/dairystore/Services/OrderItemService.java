@@ -9,7 +9,7 @@ public interface OrderItemService {
 
     List<OrderItem> getOrderItemsByOrderId(Long orderId);
 
-    List<OrderItem> getOrderItemsByCartId(Long cartId);
+    List<OrderItem> getOrderItemsByUserId(Long cartId);
 
     List<OrderItem> getOrderItemsBySellerId(Long sellerId);
 }

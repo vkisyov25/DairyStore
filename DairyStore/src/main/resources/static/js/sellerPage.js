@@ -306,7 +306,7 @@ function viewSellerAnalysis() {
             console.log(data);
             sellerAnalysis.innerHTML = `
                 <h3>Анализ на продавача</h3>
-                <p><strong>Печалба:</strong> <span>${data.totalEarnings.toFixed(2)} лв.</span></p>
+                <p><strong>Оборот:</strong> <span>${data.totalEarnings.toFixed(2)} лв.</span></p>
                 <p><strong>Най-продаваният продукт:</strong> <span>${data.topSellingProduct}</span></p>
                 <p><strong>Брой купувачи, който са купили от продуктите ви:</strong> <span>${data.buyerCount}</span></p>
                 `;

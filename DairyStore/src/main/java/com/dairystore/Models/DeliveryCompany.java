@@ -18,7 +18,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "delivery_company")
+@Table(name = "delivery_companies")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

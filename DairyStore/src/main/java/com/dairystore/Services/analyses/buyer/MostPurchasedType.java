@@ -18,7 +18,7 @@ public class MostPurchasedType implements BuyerAnalysisStrategy {
 
     @Override
     public void analyze(User user, BuyerAnalyticsDto.BuyerAnalyticsDtoBuilder builder) {
-        List<OrderItem> orderItemList = orderItemService.getOrderItemsByCartId(user.getCart().getId());
+        List<OrderItem> orderItemList = orderItemService.getOrderItemsByUserId(user.getId());
 
         Map<String, Integer> categoryCountMap = new HashMap<>();
         for (int i = 0; i < orderItemList.size(); i++) {

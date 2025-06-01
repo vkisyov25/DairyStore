@@ -25,10 +25,10 @@ public class TopSellingProductStrategy implements SellerAnalysisStrategy {
             int count = 0;
             if (productQuantitiesMap.containsKey(orderItemList.get(i).getName())) {
                 count = productQuantitiesMap.get(orderItemList.get(i).getName());
-                count += 1;
+                count += orderItemList.get(i).getQuantity();
                 productQuantitiesMap.put(orderItemList.get(i).getName(), count);
             } else {
-                productQuantitiesMap.put(orderItemList.get(i).getName(), 1);
+                productQuantitiesMap.put(orderItemList.get(i).getName(), orderItemList.get(i).getQuantity());
             }
         }
 

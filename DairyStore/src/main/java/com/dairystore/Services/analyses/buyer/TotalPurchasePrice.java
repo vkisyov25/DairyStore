@@ -16,7 +16,7 @@ public class TotalPurchasePrice implements BuyerAnalysisStrategy {
 
     @Override
     public void analyze(User user, BuyerAnalyticsDto.BuyerAnalyticsDtoBuilder builder) {
-        List<OrderItem> orderItemList = orderItemService.getOrderItemsByCartId(user.getCart().getId());
+        List<OrderItem> orderItemList = orderItemService.getOrderItemsByUserId(user.getId());
         double totalPrice = orderItemList.stream().mapToDouble(product -> product.getTotalPrice()).sum();
         builder.totalPurchasePrice(totalPrice);
     }
