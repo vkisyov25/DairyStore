@@ -16,9 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Роля:", role);
             const backButtons = document.getElementById("back-buttons");
             if (role === "seller") {
-                backButtons.innerHTML = '<a href="/test/seller">Back</a>';
+                backButtons.innerHTML = '<a href="/test/seller">Назад</a>';
             } else if (role === "buyer") {
-                backButtons.innerHTML = '<a href="/test/buyer">Back</a>';
+                backButtons.innerHTML = '<a href="/test/buyer">Назад</a>';
             }
 
             const container = document.getElementById("data-container");

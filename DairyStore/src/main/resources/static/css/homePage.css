@@ -7,11 +7,27 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-image: url('https://oazistrade.com/wp-content/uploads/2014/07/mlechni-produkti.jpg');
+    background-image: url('../images/homePageBackground.jpg');
     background-size: cover;
     background-position: center;
     text-align: center;
 }
+
+body::after {
+    content: "";
+    position: absolute;
+    top: 5vh;
+    right: 20vw;
+    width: 60vw;
+    height: 40vh;
+    background-image: url('../images/logo-transparent.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 1;
+    opacity: 0.8;
+}
+
 
 h1 {
     font-size: 36px;

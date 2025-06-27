@@ -35,7 +35,6 @@ public class StripeService {
         return account.getId();
     }
 
-
     public String generateOnboardingLink(String accountId) throws Exception {
         AccountLinkCreateParams params = AccountLinkCreateParams.builder()
                 .setAccount(accountId)
@@ -48,22 +47,14 @@ public class StripeService {
         return accountLink.getUrl();
     }
 
-    public void distributeToSellers(String paymentIntentId, @NotNull Map<String, Long> sellerAmounts) throws StripeException {
-        System.out.println("sellerAmaounts size in distributeZTzoSellers:" + sellerAmounts.size());
-        System.out.println("hello");
-        System.out.println(sellerAmounts.size());
-        System.out.println(paymentIntentId);
+    public void distributeToSellers(@NotNull Map<String, Long> sellerAmounts) throws StripeException {
         for (Map.Entry<String, Long> entry : sellerAmounts.entrySet()) {
             String sellerAccountId = entry.getKey();
-            System.out.println("key"+sellerAccountId);
             Long amount = entry.getValue();
-            System.out.println("value"+amount);
-            /*acct_1RQbbmGdl1eBGqyT*/
             TransferCreateParams transferParams = TransferCreateParams.builder()
                     .setAmount(amount)
                     .setCurrency("bgn")
                     .setDestination(sellerAccountId)
-                    /*.setSourceTransaction(paymentIntentId)*/
                     .build();
 
             Transfer.create(transferParams);

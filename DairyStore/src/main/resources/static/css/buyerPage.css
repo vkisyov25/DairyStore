@@ -141,7 +141,7 @@
 }
 
 #shopping-car-div {
-    width: 900px;
+    width: 1050px;
     font-size: 20px;
     margin-left: 600px;
 }
@@ -262,7 +262,7 @@ p {
 }
 
 .buyerAnalysis-container {
-    position:fixed;
+    position: fixed;
     display: flex;
     justify-content: left;
     justify-items: center;
@@ -283,8 +283,8 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    position:relative;
-    top:+85px;
+    position: relative;
+    top: +85px;
 }
 
 #orderList {

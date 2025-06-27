@@ -39,7 +39,11 @@ public class UserController {
     public ResponseEntity<?> editUserInformation(@Valid @RequestBody UserInformationDto userInformationDto, BindingResult bindingResult) {
         User user = userService.getUserByUsername();
         userService.validateUserInformationDto(user, userInformationDto, bindingResult);
-        customUserDetailsService.isCompanyInfoValid(userInformationDto.getCompanyEIK(), userInformationDto.getCompanyName(), bindingResult);
+        if(!userInformationDto.getCompanyName().isEmpty() && !userInformationDto.getCompanyEIK().isEmpty()){
+            if((!user.getCompanyName().equals(userInformationDto.getCompanyName())) && (!user.getCompanyEIK().equals(userInformationDto.getCompanyName()))){
+                customUserDetailsService.isCompanyInfoValid(userInformationDto.getCompanyEIK(), userInformationDto.getCompanyName(), bindingResult);
+            }
+        }
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, fieldError -> fieldError.getDefaultMessage(), (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
             ));

@@ -30,7 +30,7 @@ public class CreateUserDto {
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Невалиден формат")
     @Email
     private String email;
-    @NotBlank(message = "Името не моце да бъде празно")
+    @NotBlank(message = "Името не може да бъде празно")
     private String name;
     @NotBlank(message = "Телефонният номер не може да бъде празен")
     @Pattern(regexp = "^[0-9]{10}$", message = "Телефонният номер трябва да е точно 10 цифри")

@@ -7,15 +7,15 @@ body {
 
 .background-admin-photo {
     position: fixed;
-    top: 80px;
+    top: 70px;
     left: 0;
     width: 100%;
-    height: calc(100vh - 80px);
-    background-image: url("https://goodfood.bg/wp-content/uploads/2022/09/lacticinios.jpg");
+    height: calc(100vh);
+    background-image: url('../images/adminBackground.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: blur(8px);
+    filter: blur(3px);
     z-index: -1;
 }
 

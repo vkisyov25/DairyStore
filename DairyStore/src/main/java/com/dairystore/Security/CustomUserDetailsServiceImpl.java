@@ -52,7 +52,7 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
         // Генериране на JWT токен
         String token = jwtUtil.generateToken(customUserDetails);
 
-        String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
+        /*String role = customUserDetails.getAuthorities().iterator().next().getAuthority();*/
         //Collection<? extends GrantedAuthority> cc = authentication.getAuthorities();
 
 
@@ -91,14 +91,13 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
     public void create(CreateUserDto createUserDto) throws Exception {
         User user = mapToUser(createUserDto);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
-        if(createUserDto.getAuthorities().equals("seller")){
+        if (createUserDto.getAuthorities().equals("seller")) {
             String accountId = stripeService.createConnectedAccount(createUserDto.getEmail());
-            System.out.println(accountId);
             user.setAccountId(accountId);
             String onboardingLink = stripeService.generateOnboardingLink(accountId);
             emailService.sendRegistrationEmailToSeller(createUserDto.getEmail(), createUserDto.getName(), onboardingLink);
 
-        }else {
+        } else {
             emailService.sendRegistrationEmailToBuyer(createUserDto.getEmail(), createUserDto.getName());
         }
         userRepository.save(user);
@@ -114,7 +113,7 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
 
-        WebDriver driver = new ChromeDriver(options); //стартираме Chrome браузъра с форните опции чрез Selenium WebDriver
+        WebDriver driver = new ChromeDriver(options); //стартираме Chrome браузъра с горните опции чрез Selenium WebDriver
 
 
         boolean isValid;

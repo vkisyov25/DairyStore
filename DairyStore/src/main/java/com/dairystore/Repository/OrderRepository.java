@@ -15,5 +15,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT order FROM Order order WHERE order.user.id =?1")
     List<Order> findOrdersByUserId(Long user_id);
 
+    @Query("SELECT order FROM Order order WHERE order.id =?1")
+    Order findOrderById(Long user_id);
     /*Order findOrdersByUserId(Long userId);*/
 }

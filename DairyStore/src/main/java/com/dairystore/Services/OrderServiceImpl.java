@@ -14,10 +14,8 @@ import com.dairystore.Models.dtos.ShoppingCartDto;
 import com.dairystore.Models.enums.PaymentMethod;
 import com.dairystore.Repository.OrderRepository;
 import com.dairystore.Repository.ProductRepository;
-import com.stripe.Stripe;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.type.descriptor.java.CharacterArrayJavaType;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -80,10 +79,10 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = createOrder(deliveryAddress, paymentMethod, paymentIntentId, user, deliveryCompany);
 
-        createOrderItem(cart, shoppingCartDtoList, order);
+        createOrderItem(shoppingCartDtoList, order);
 
-        Map<String, Long> sellerAmounts = calculateDistribution(cartItemList, shoppingCartDtoList,deliveryCompany);
-        stripeService.distributeToSellers(paymentIntentId, sellerAmounts);
+        Map<String, Long> sellerAmounts = calculateDistribution(cartItemList, shoppingCartDtoList, deliveryCompany);
+        stripeService.distributeToSellers(sellerAmounts);
 
         orderRepository.save(order);
         cartItemService.deleteCartItemByCartId(cart.getId());
@@ -91,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private void createOrderItem(Cart cart, @NotNull List<ShoppingCartDto> shoppingCartDtoList, Order order) {
+    private void createOrderItem(@NotNull List<ShoppingCartDto> shoppingCartDtoList, Order order) {
         OrderItem orderItem = null;
         for (int i = 0; i < shoppingCartDtoList.size(); i++) {
             Product product = productRepository.findProductById(shoppingCartDtoList.get(i).getId());
@@ -103,7 +102,6 @@ public class OrderServiceImpl implements OrderService {
                     .weight(shoppingCartDtoList.get(i).getWeight())
                     .price(shoppingCartDtoList.get(i).getPrice())
                     .discount(shoppingCartDtoList.get(i).getDiscount())
-                    /*.cart(cart)*/
                     .order(order)
                     .sellerId(product.getUser().getId())
                     .description(product.getDescription())
@@ -121,13 +119,6 @@ public class OrderServiceImpl implements OrderService {
                 throw new Exception("Недостатъчно количество от продукта с име: " + item.getName());
             }
         }
-    }
-
-    @Override
-    public Order getLatestOrder() {
-        User user = userService.getUserByUsername();
-        return orderRepository.findTopByUserIdOrderByDateDesc(user.getId())
-                .orElseThrow(() -> new RuntimeException("Не е намерена последна поръчка за потребителя с ID: " + user.getId()));
     }
 
     @Override
@@ -180,22 +171,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private Map<String, Long> calculateDistribution(List<CartItem> items, List<ShoppingCartDto> shoppingCartDtoList,DeliveryCompany deliveryCompany) {
+    private Map<String, Long> calculateDistribution(List<CartItem> items, List<ShoppingCartDto> shoppingCartDtoList, DeliveryCompany deliveryCompany) {
         Map<String, Long> sellerMap = new HashMap<>();
-        System.out.println("items size:"+items.size());
         for (int i = 0; i < items.size(); i++) {
             String sellerStripeAccountId = items.get(i).getProduct().getUser().getAccountId();
-            System.out.println("i ="+i+"sellerAccountId"+sellerStripeAccountId);
             long itemTotal = (long) (shoppingCartDtoList.get(i).getTotalPricePerProduct() * 100);
             sellerMap.put(sellerStripeAccountId,
                     sellerMap.getOrDefault(sellerStripeAccountId, 0L) + itemTotal);
         }
 
-        System.out.println("calculateDestribution");
-        System.out.println("sellerMap size"+sellerMap.size());
         sellerMap.entrySet().forEach(Map.Entry::getKey);
         sellerMap.entrySet().forEach(Map.Entry::getValue);
         return sellerMap;
+    }
+
+    public Order getOrderById(Long id){
+       return orderRepository.findOrderById(id);
     }
 
 }
