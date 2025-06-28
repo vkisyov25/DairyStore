@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderItemServiceImpl implements OrderItemService {
     private final OrderItemRepository orderItemRepository;
-    /*    private final OrderService orderService;*/
+
     private final OrderRepository orderRepository;
 
     @Override
@@ -32,7 +32,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         List<OrderItem> orderItemList = new ArrayList<>();
         List<Order> orderList = orderRepository.findOrdersByUserId(userId);
         for (int i = 0; i < orderList.size(); i++) {
-            List<OrderItem> orderItemsByOrderId = orderItemRepository.findOrderItemsByOrderId(orderList.get(i).getId()); //2
+            List<OrderItem> orderItemsByOrderId = orderItemRepository.findOrderItemsByOrderId(orderList.get(i).getId());
             for (int j = 0; j < orderItemsByOrderId.size(); j++) {
                 OrderItem orderItem = OrderItem.builder()
                         .id(orderItemsByOrderId.get(j).getId())

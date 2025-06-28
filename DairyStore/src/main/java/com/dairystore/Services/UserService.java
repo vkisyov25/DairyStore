@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 public interface UserService {
-    User getUserByUsername();
+    User getCurrentUser();
 
     UserInformationDto getCurrentUserInformation();
 

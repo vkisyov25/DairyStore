@@ -81,13 +81,13 @@ public class SecurityController {
 
     @GetMapping("/seller")
     public String sellerPage(Model model) {
-        model.addAttribute("seller", "Здравей, " + userService.getUserByUsername().getName());
+        model.addAttribute("seller", "Здравей, " + userService.getCurrentUser().getName());
         return "sellerPage";
     }
 
     @GetMapping("/buyer")
     public String buyerPage(Model model) {
-        model.addAttribute("buyer", "Здравей, " + userService.getUserByUsername().getName());
+        model.addAttribute("buyer", "Здравей, " + userService.getCurrentUser().getName());
         return "buyerPage";
     }
 

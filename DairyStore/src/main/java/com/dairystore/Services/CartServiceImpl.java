@@ -23,7 +23,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addToCart(Long productId, int quantity) throws Exception {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         Product product = productService.getProductById(productId);
         validateProductQuantity(quantity, product);
         Cart cart = findOrCreateCart(user);
@@ -49,7 +49,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<ShoppingCartDto> viewShoppingCart() {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         List<CartItem> cartItemList = cartItemService.getCartItemsByCart(user.getCart());
 
         return cartItemList.stream()

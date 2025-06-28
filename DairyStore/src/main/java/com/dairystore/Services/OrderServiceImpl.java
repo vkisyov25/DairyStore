@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void makeOrder(String deliveryAddress, String deliveryCompanyId, PaymentMethod paymentMethod, String paymentIntentId) throws Exception {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         Cart cart = cartService.getCartByUser(user);
         List<ShoppingCartDto> shoppingCartDtoList = cartService.viewShoppingCart();
         List<CartItem> cartItemList = cartItemService.getAll();
@@ -123,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<BuyerOrderDto> getOrders() {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         return getOrdersByBuyerId(user.getId());
     }
 

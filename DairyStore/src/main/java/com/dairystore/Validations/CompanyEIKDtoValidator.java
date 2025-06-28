@@ -13,7 +13,7 @@ public class CompanyEIKDtoValidator implements ConstraintValidator<CompanyEIKDto
 
     @Override
     public boolean isValid(UserInformationDto createUserDto, ConstraintValidatorContext context) {
-        User currentUser = userService.getUserByUsername();
+        User currentUser = userService.getCurrentUser();
         boolean isValid = true;
         if (currentUser.getAuthorities().equals("seller")) {
             if (!createUserDto.getCompanyEIK().matches("^[0-9]{9}$")) {

@@ -41,7 +41,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public void deleteCartItemByProductId(long productId) throws Exception {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         Long cart_id = user.getCart().getId();
         isExist(productId, cart_id);
         cartItemRepository.deleteByProductId(productId, cart_id);

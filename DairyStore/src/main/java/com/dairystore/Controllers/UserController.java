@@ -37,13 +37,15 @@ public class UserController {
 
     @PostMapping("/edit")
     public ResponseEntity<?> editUserInformation(@Valid @RequestBody UserInformationDto userInformationDto, BindingResult bindingResult) {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         userService.validateUserInformationDto(user, userInformationDto, bindingResult);
-        if(!userInformationDto.getCompanyName().isEmpty() && !userInformationDto.getCompanyEIK().isEmpty()){
-            if((!user.getCompanyName().equals(userInformationDto.getCompanyName())) && (!user.getCompanyEIK().equals(userInformationDto.getCompanyName()))){
+
+        if (!userInformationDto.getCompanyName().isEmpty() && !userInformationDto.getCompanyEIK().isEmpty()) {
+            if ((!user.getCompanyName().equals(userInformationDto.getCompanyName())) || (!user.getCompanyEIK().equals(userInformationDto.getCompanyEIK()))) {
                 customUserDetailsService.isCompanyInfoValid(userInformationDto.getCompanyEIK(), userInformationDto.getCompanyName(), bindingResult);
             }
         }
+
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, fieldError -> fieldError.getDefaultMessage(), (existing, replacement) -> existing // Ако има повече от една грешка за дадено поле, вземи първата
             ));

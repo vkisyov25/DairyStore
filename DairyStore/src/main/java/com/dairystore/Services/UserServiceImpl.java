@@ -17,8 +17,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    @Override
-    public User getUserByUsername() {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = null;
         if (authentication != null && authentication.isAuthenticated()) {
@@ -29,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInformationDto getCurrentUserInformation() {
-        User user = getUserByUsername();
+        User user = getCurrentUser();
         return UserInformationDto.builder()
                 .username(user.getUsername())
                 .authorities(user.getAuthorities())
@@ -56,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteCompanyInfoOnTheCurrentUser() {
-        User user = getUserByUsername();
+        User user = getCurrentUser();
         user.setCompanyName("");
         user.setCompanyEIK("");
         userRepository.save(user);

@@ -25,7 +25,5 @@ public class Cart {
     private User user;
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItem> cartItemList;
-    /*@OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
-    private OrderItem orderItem;*/
 
 }

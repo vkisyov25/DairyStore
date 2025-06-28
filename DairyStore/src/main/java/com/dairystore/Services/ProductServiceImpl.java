@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ViewProductDto> getCurrentUserProducts() {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         return productRepository.findBySellerUsername(user.getUsername());
     }
 
@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void createProduct(CreateProductDto createProductDto) {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         Product product = Product.builder()
                 .name(createProductDto.getName())
                 .type(createProductDto.getType())

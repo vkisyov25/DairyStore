@@ -42,9 +42,6 @@ public class OrderItem {
     private double discount;
     @Column(nullable = false)
     private Long sellerId;
-    /* @OneToOne(cascade = CascadeType.ALL)
-     @JoinColumn(name = "cart_id", referencedColumnName = "id", unique = true)
-     private Cart cart;*/
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;

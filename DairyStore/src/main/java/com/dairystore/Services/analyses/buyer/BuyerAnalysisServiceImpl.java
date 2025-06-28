@@ -16,7 +16,7 @@ public class BuyerAnalysisServiceImpl implements BuyerAnalysisService {
 
     @Override
     public BuyerAnalyticsDto getBuyerAnalysis() {
-        User user = userService.getUserByUsername();
+        User user = userService.getCurrentUser();
         BuyerAnalyticsDto.BuyerAnalyticsDtoBuilder builder = BuyerAnalyticsDto.builder();
         strategyList.forEach(strategyList -> strategyList.analyze(user, builder));
         return builder.build();

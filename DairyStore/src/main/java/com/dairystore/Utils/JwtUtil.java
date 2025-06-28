@@ -59,6 +59,7 @@ public class JwtUtil {
                 .getSubject();
     }
 
+/*
     public String getRoleFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)  // Тайният ключ
@@ -68,6 +69,7 @@ public class JwtUtil {
         List<String> roles = claims.get("roles", List.class);  // Вземи ролите като списък
         return roles != null && !roles.isEmpty() ? roles.get(0) : null;  // Върни първата роля, ако съществува
     }
+*/
 
     public Collection<? extends GrantedAuthority> getAuthoritiesFromToken(String token) {
         Claims claims = extractAllClaims(token);
