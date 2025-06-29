@@ -149,7 +149,7 @@ body {
     font-size: 15px;
     text-align: left;
     background-color: white;
-    border: 5px solid #f27900;
+    border: 1px solid #f27900;
     box-shadow: 0 0 20px #f27900;
     border-radius: 10px;
 }
@@ -171,7 +171,7 @@ body {
     font-size: 15px;
     text-align: left;
     background-color: white;
-    border: 5px solid #f27900;
+    border: 1px solid #f27900;
     box-shadow: 0 0 20px #f27900;
     border-radius: 10px;
 }
@@ -187,4 +187,13 @@ body {
 #product-table button:hover {
     cursor: pointer;
     box-shadow: 0 0 15px #f27900
+}
+#product-table th,
+#product-table td {
+    border-right: 1px solid #f27900;
+    padding: 8px;
+}
+#product-table th:last-child,
+#product-table td:last-child {
+    border-right: none;
 }

@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
         User user = userService.getCurrentUser();
         Cart cart = cartService.getCartByUser(user);
         List<ShoppingCartDto> shoppingCartDtoList = cartService.viewShoppingCart();
-        List<CartItem> cartItemList = cartItemService.getAll();
+     /*   List<CartItem> cartItemList = cartItemService.getAll();*/
         updateProductQuantities(shoppingCartDtoList);
 
         DeliveryCompany deliveryCompany = deliveryCompanyService.getDeliveryCompanyById(Long.parseLong(deliveryCompanyId));
@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
 
         createOrderItem(shoppingCartDtoList, order);
 
-        Map<String, Long> sellerAmounts = calculateDistribution(cartItemList, shoppingCartDtoList, deliveryCompany);
+        Map<String, Long> sellerAmounts = calculateDistribution(shoppingCartDtoList, deliveryCompany);
         stripeService.distributeToSellers(sellerAmounts);
 
         orderRepository.save(order);
@@ -170,10 +170,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private Map<String, Long> calculateDistribution(List<CartItem> items, List<ShoppingCartDto> shoppingCartDtoList, DeliveryCompany deliveryCompany) {
+    private Map<String, Long> calculateDistribution(List<ShoppingCartDto> shoppingCartDtoList, DeliveryCompany deliveryCompany) {
         Map<String, Long> sellerMap = new HashMap<>();
-        for (int i = 0; i < items.size(); i++) {
-            String sellerStripeAccountId = items.get(i).getProduct().getUser().getAccountId();
+        for (int i = 0; i < shoppingCartDtoList.size(); i++) {
+            //Ако името се направи, така че да се дублира кода по-надолу няма да работи правилно
+            Product product = productRepository.findProductByName(shoppingCartDtoList.get(i).getName());
+            String sellerStripeAccountId = product.getUser().getAccountId();
             long itemTotal = (long) (shoppingCartDtoList.get(i).getTotalPricePerProduct() * 100);
             sellerMap.put(sellerStripeAccountId,
                     sellerMap.getOrDefault(sellerStripeAccountId, 0L) + itemTotal);

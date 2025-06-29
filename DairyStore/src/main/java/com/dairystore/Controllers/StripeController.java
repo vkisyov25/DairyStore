@@ -30,7 +30,7 @@ public class StripeController {
         // Получаваме сумата от DTO
         int amount = request.getAmount();
 
-        // Получаваме paymentMethod от DTO (предполага се, че ще го изпращате от клиента)
+        // Получаваме paymentMethod от DTO (изпраща се от клиента)
         String paymentMethodId = request.getPaymentMethodId();  // Новото поле от клиента
 
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
@@ -45,7 +45,7 @@ public class StripeController {
         // Създаваме PaymentIntent
         PaymentIntent paymentIntent = PaymentIntent.create(params);
 
-        // Създаваме отговорния DTO и го връщаме
+        // Създаваме DTO (който връща отговора) и го връщаме
         PaymentResponseDTO responseDTO = new PaymentResponseDTO(paymentIntent.getClientSecret());
 
         return ResponseEntity.ok(responseDTO);

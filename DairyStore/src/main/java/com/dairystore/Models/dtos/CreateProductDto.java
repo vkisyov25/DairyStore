@@ -29,6 +29,6 @@ public class CreateProductDto {
     @Positive(message = "Отстъпката трябва да бъде положително число")
     private double discount;
     /*@NotNull(message = "Полето количество не може да бъде празно")*/
-    @Min(value = 1, message = "Количеството не може да бъде по-малка от 1")
+    @Min(value = 1, message = "Количеството не може да бъде по-малко от 1")
     private int quantity;
 }
