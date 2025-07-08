@@ -304,7 +304,7 @@ function inputOrderInfo() {
                         type: 'card',
                         card: cardElement,
                         billing_details: {
-                            name: 'Потребител'  // Може да добавиш име на потребителя
+                            name: 'Потребител'
                         }
                     });
 
@@ -319,7 +319,6 @@ function inputOrderInfo() {
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             amount: Math.round((priceWithDeliveryFee + (priceWithDeliveryFee * 0.040 + 1.0)) * 100),
-                            // Примерна сума в стотинки
                             payment_method: stripePaymentMethod.id // Изпращате paymentMethod ID към сървъра
                         })
                     });
@@ -346,7 +345,7 @@ function inputOrderInfo() {
                         await makeOrder(address, company, paymentMethodValue, stripePaymentMethod.id);
                         loadProductsForSale();
                     }
-                    4
+
                 });
             });
 

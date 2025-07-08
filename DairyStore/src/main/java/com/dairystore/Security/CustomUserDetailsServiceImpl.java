@@ -122,7 +122,7 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
             driver.get("https://portal.registryagency.bg/CR/en/Reports/VerificationPersonOrg");
 
             // Избиране на "Legal entity"
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1)); //Създаваш „изчакване“, което ще чака до 10 секунди даден елемент да се появи на страницата
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1)); //Създава се  „изчакване“, което ще чака до 1 секунди даден елемент да се появи на страницата
             //ExpectedConditions.presenceOfElementLocated - "Чакай да се появи елемент на страницата, който отговаря на даден селектор".
             WebElement label = wait.until(ExpectedConditions.presenceOfElementLocated(
                     By.cssSelector("label[for='CompanyFormId']")

@@ -21,6 +21,9 @@ public class StripeController {
 
     private final StripeService stripeService;
 
+   /* Задава Stripe API ключ
+    Създава PaymentIntent
+    Връща clientSecret към клиента*/
     @PostMapping("/create-payment-intent")
     public ResponseEntity<PaymentResponseDTO> createPaymentIntent(@RequestBody PaymentRequestDTO request) throws StripeException {
         // Задаваме таен ключ на Stripe
@@ -45,7 +48,7 @@ public class StripeController {
         // Създаваме PaymentIntent
         PaymentIntent paymentIntent = PaymentIntent.create(params);
 
-        // Създаваме DTO (който връща отговора) и го връщаме
+        // Създаваме DTO (който връща clientSecret) и го връщаме на frontend за да продължи с плащането
         PaymentResponseDTO responseDTO = new PaymentResponseDTO(paymentIntent.getClientSecret());
 
         return ResponseEntity.ok(responseDTO);
