@@ -59,7 +59,7 @@ A modern web platform that connects dairy producers with customers, ensuring tra
 
 
 ## Project Structure
-
+```
 src/main/java/com/dairystore/
 ├── Configurations/ # JWT, Security, Stripe configuration
 ├── Controllers/ # REST controllers (Product, Order, Cart, User...)
@@ -84,7 +84,7 @@ src/main/resources/
 │ └── images/ # UI images and backgrounds
 ├── templates/ # Server-side rendered HTML templates
 └── application.properties # Spring Boot configuration
-
+```
 The backend follows a layered architecture with clear separation of concerns:
 - Controllers → Services → Repositories → DB
 - Business logic is encapsulated in services (with Impl classes)
