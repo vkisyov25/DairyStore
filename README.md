@@ -1,6 +1,6 @@
 ![image](https://github.com/user-attachments/assets/276dbefd-85e8-4bc4-900a-94d7fc47c85e)
 
-# 🧀 DairyStore – Online Marketplace for Dairy Products
+# 🧀 DairyStore – E-commerce web app for dairy products
 
 A modern web platform that connects dairy producers with customers, ensuring transparency, direct sales, and secure payments.
 
