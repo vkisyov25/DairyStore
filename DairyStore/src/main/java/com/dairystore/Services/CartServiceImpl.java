@@ -30,7 +30,7 @@ public class CartServiceImpl implements CartService {
         cartItemService.saveCartItems(cart, product, quantity);
     }
 
-    private void validateProductQuantity(int quantity, Product product) throws Exception {
+    public void validateProductQuantity(int quantity, Product product) throws Exception {
         if (quantity > product.getQuantity()) {
             throw new Exception("Няма достатъчно количество от продукта в наличност!");
         }
@@ -84,7 +84,7 @@ public class CartServiceImpl implements CartService {
                 .build();
     }
 
-    private double calculateTotalPricePerProduct(User user, Product product, int quantity) {
+    public double calculateTotalPricePerProduct(User user, Product product, int quantity) {
         double basePrice = product.getPrice() * quantity;
         double discountAmount = 0;
 

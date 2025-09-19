@@ -31,7 +31,7 @@ public class CartItemServiceImpl implements CartItemService {
         cartItemRepository.updateProductQuantity(product.getId(), quantity, cart.getId());
     }
 
-    private void createCartItem(Cart cart, Product product, int quantity) {
+    public void createCartItem(Cart cart, Product product, int quantity) {
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setProduct(product);
@@ -48,7 +48,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     }
 
-    private void isExist(Long productId, Long cart_id) throws Exception {
+    public void isExist(Long productId, Long cart_id) throws Exception {
         if (!cartItemRepository.existsByProductIdAndCartId(productId, cart_id)) {
             throw new Exception("Продуктът не съществува в базата данни");
         }

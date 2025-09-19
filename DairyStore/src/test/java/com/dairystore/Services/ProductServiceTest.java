@@ -1,11 +1,14 @@
 package com.dairystore.Services;
 
+import com.dairystore.Models.Cart;
 import com.dairystore.Models.CartItem;
 import com.dairystore.Models.Product;
 import com.dairystore.Models.User;
 import com.dairystore.Models.dtos.CreateProductDto;
+import com.dairystore.Models.dtos.ProductForSaleDto;
 import com.dairystore.Models.dtos.ViewProductDto;
 import com.dairystore.Repository.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -34,15 +37,27 @@ class ProductServiceTest {
     @InjectMocks
     private ProductServiceImpl productService;
 
-    @Test
-    public void createProduct_shouldSaveProductWithCorrectValues() {
-        //Arrange
-        User currentUser = new User();
+    private Product product;
+    private Cart cart;
+    private User currentUser;
+    private CreateProductDto createProductDto;
+
+    private List<ViewProductDto> viewProductDtoList;
+    private List<Product> productList;
+    private List<CartItem> cartItemList;
+    @BeforeEach
+    void setUp(){
+        currentUser = new User();
         currentUser.setId(1L);
+        currentUser.setUsername("ventsy");
+        currentUser.setCompanyName("Firma");
 
-        //Product product = new Product();
+        product = new Product();
+        product.setId(10L);
+        product.setQuantity(50);
+        product.setPrice(22.55);
 
-        CreateProductDto createProductDto = new CreateProductDto();
+        createProductDto = new CreateProductDto();
         createProductDto.setName("Краве кашкавал - Дъбраж");
         createProductDto.setType("Кашкавал");
         createProductDto.setWeight(0.565);
@@ -51,6 +66,25 @@ class ProductServiceTest {
         createProductDto.setDiscount(1);
         createProductDto.setQuantity(100);
 
+        viewProductDtoList = new ArrayList<>();
+        ViewProductDto viewProductDto = new ViewProductDto(1L,"Краве кашкавал - Дъбраж","кашкавал", 0.560,22.67,"100% краве мляко",2,100);
+        viewProductDtoList.add(viewProductDto);
+
+        productList = new ArrayList<>();
+        cartItemList = new ArrayList<>();
+        Product product1 = new Product(1l,"Краве кашкавал - Дъбраж", "кашкавал",0.450,21.55,"100% краве мляко",1,100,currentUser,cartItemList);
+        Product product2 = new Product(1l,"Краве масло - Дъбраж", "масло",0.450,21.55,"100% краве мляко",1,100,currentUser,cartItemList);
+        Product product3 = new Product(1l,"Краве сирене - Дъбраж", "сирене",0.450,21.55,"100% краве мляко",1,100,currentUser,cartItemList);
+        Product product4 = new Product(1l,"Краве кашкавал - Лещен", "кашкавал",0.450,21.55,"100% краве мляко",1,100,currentUser,cartItemList);
+        productList.add(product1);
+        productList.add(product2);
+        productList.add(product3);
+        productList.add(product4);
+    }
+
+    @Test
+    public void createProduct_whenValuesIsCorrect_shouldSaveProduct() {
+        //Arrange
         when(userService.getCurrentUser()).thenReturn(currentUser);
 
         //Act
@@ -74,14 +108,8 @@ class ProductServiceTest {
 
 
     @Test
-    public void getCurrentUserProduct_shouldReturnProductsForCurrentUser() {
+    public void getCurrentUserProducts_whenUserHasProducts_shouldReturnProducts() {
         //Arrange
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setName("Ventsislav");
-        List<ViewProductDto> viewProductDtoList = new ArrayList<>();
-        ViewProductDto viewProductDto = new ViewProductDto(1L,"Краве кашкавал - Дъбраж","кашкавал", 0.560,22.67,"100% краве мляко",2,100);
-        viewProductDtoList.add(viewProductDto);
         when(userService.getCurrentUser()).thenReturn(currentUser);
         when(productRepository.findBySellerUsername(currentUser.getUsername())).thenReturn(viewProductDtoList);
         //Act
@@ -91,7 +119,7 @@ class ProductServiceTest {
     }
 
     @Test
-    public void deleteById_productExists_shouldDeleteProduct(){
+    public void deleteById_whenItIsExist_shouldDeleteProduct(){
         //Arrange
         Long productId = 2L;
         when(productRepository.existsById(productId)).thenReturn(true);
@@ -102,37 +130,22 @@ class ProductServiceTest {
     }
 
     @Test
-    public void deleteById_productNotExists_shouldThrowException(){
+    public void deleteById_whenProductIsNotExists_shouldThrowException(){
         //Arrange
-        Long productId = 2L;
-        when(productRepository.existsById(productId)).thenReturn(false);
+        when(productRepository.existsById(product.getId())).thenReturn(false);
         //Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            productService.deleteById(productId);
+            productService.deleteById(product.getId());
         });
 
-        assertEquals("Продуктът с ID " + productId + " не съществува!", exception.getMessage());
+        assertEquals("Продуктът с ID " + product.getId() + " не съществува!", exception.getMessage());
         verify(productRepository, never()).deleteById(any());
     }
 
     @Test
-    public void getProductsByType_shouldReturnAllWhenTypeIsAll(){
+    public void getProductsByType_whenTypeIsAll_shouldReturnAll(){
         //Arrange
         String productType = "всички";
-        //when(productType.equals("всички")).thenReturn(true);
-        List<Product> productList = new ArrayList<>();
-        User user = new User();
-        user.setId(1l);
-        user.setUsername("ventsy");
-        List<CartItem> cartItemList = new ArrayList<>();
-        Product product1 = new Product(1l,"Краве кашкавал - Дъбраж", "кашкавал",0.450,21.55,"100% краве мляко",1,100,user,cartItemList);
-        Product product2 = new Product(1l,"Краве масло - Дъбраж", "масло",0.450,21.55,"100% краве мляко",1,100,user,cartItemList);
-        Product product3 = new Product(1l,"Краве сирене - Дъбраж", "сирене",0.450,21.55,"100% краве мляко",1,100,user,cartItemList);
-        Product product4 = new Product(1l,"Краве кашкавал - Лещен", "кашкавал",0.450,21.55,"100% краве мляко",1,100,user,cartItemList);
-        productList.add(product1);
-        productList.add(product2);
-        productList.add(product3);
-        productList.add(product4);
         when(productRepository.findAll()).thenReturn(productList);
         //Act
         List<Product> result = productService.getProductsByType(productType);
@@ -143,16 +156,11 @@ class ProductServiceTest {
     }
 
     @Test
-    public void getProductsByType_shouldAllOfSameType(){
+    public void getProductsByType_whenTypeIsSpecific_shouldReturnAllOfSameType(){
         //Arrange
         String productType = "сирене";
-
-        List<Product> productList = new ArrayList<>();
-        User user = new User();
-        user.setId(1l);
-        user.setUsername("ventsy");
-        List<CartItem> cartItemList = new ArrayList<>();
-        Product product3 = new Product(1l,"Краве сирене - Дъбраж", "сирене",0.450,21.55,"100% краве мляко",1,100,user,cartItemList);
+        productList = new ArrayList<>();
+        Product product3 = new Product(1l,"Краве сирене - Дъбраж", "сирене",0.450,21.55,"100% краве мляко",1,100,currentUser,cartItemList);
         productList.add(product3);
         when(productRepository.findProductsByType(productType)).thenReturn(productList);
         //Act
@@ -161,5 +169,16 @@ class ProductServiceTest {
         assertEquals(productList,result);
         verify(productRepository, times(1)).findProductsByType(productType);
         verify(productRepository, never()).findAll();
+    }
+
+    @Test
+    public void getProductsForSale_whenQuantityIsMoreThanZero_shouldReturnItemsInAvailable(){
+        //Arrange
+        when(productRepository.findProductsForSale()).thenReturn(viewProductDtoList);
+        //Act
+        List<ProductForSaleDto> result =  productService.getProductsForSale();
+        //Assert
+        assertEquals(1, result.size());
+        assertEquals("В наличност", result.get(0).getAvailability());
     }
 }
