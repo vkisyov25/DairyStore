@@ -109,20 +109,25 @@ public class ProductServiceImpl implements ProductService {
                 availability = "Изчерпано";
             }
 
-            ProductForSaleDto productForSaleDto = ProductForSaleDto.builder()
-                    .id(productsForSale.get(i).getId())
-                    .name(productsForSale.get(i).getName())
-                    .type(productsForSale.get(i).getType())
-                    .weight(productsForSale.get(i).getWeight())
-                    .price(productsForSale.get(i).getPrice())
-                    .description(productsForSale.get(i).getDescription())
-                    .availability(availability)
-                    .build();
+            ProductForSaleDto productForSaleDto = makeProductForSaleDto(productsForSale, i, availability);
 
             productForSaleDtoList.add(productForSaleDto);
         }
 
         return productForSaleDtoList;
+    }
+
+    private static ProductForSaleDto makeProductForSaleDto(List<ViewProductDto> productsForSale, int i, String availability) {
+        ProductForSaleDto productForSaleDto = ProductForSaleDto.builder()
+                .id(productsForSale.get(i).getId())
+                .name(productsForSale.get(i).getName())
+                .type(productsForSale.get(i).getType())
+                .weight(productsForSale.get(i).getWeight())
+                .price(productsForSale.get(i).getPrice())
+                .description(productsForSale.get(i).getDescription())
+                .availability(availability)
+                .build();
+        return productForSaleDto;
     }
 
     @Override

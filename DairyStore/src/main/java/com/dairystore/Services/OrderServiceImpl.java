@@ -126,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
         return getOrdersByBuyerId(user.getId());
     }
 
-    private List<BuyerOrderDto> getOrdersByBuyerId(Long buyerId) {
+    public List<BuyerOrderDto> getOrdersByBuyerId(Long buyerId) {
         List<Order> orderList = orderRepository.findOrdersByUserId(buyerId);
         List<BuyerOrderDto> buyerOrderDtoList = new ArrayList<>();
         for (int i = 0; i < orderList.size(); i++) {
